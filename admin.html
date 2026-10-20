@@ -686,7 +686,7 @@ async function loadAllStories(){
  try{
   const d=await request('api/admin_cerita.php');
   allStories=d.data||[];
-  renderStats(); populateMajorFilter(); filterStories();
+  renderStats(); populateMajorFilter(); filterStories(); loadStatistik();
  }catch(e){showToast(e.message,'error');}
 }
 
@@ -746,76 +746,7 @@ function showToast(m,type='success'){const t=document.getElementById('toast');t.
 (async()=>{try{const r=await fetch('api/admin_status.php');const d=await r.json();if(d.logged_in){document.getElementById('login-screen').style.display='none';document.getElementById('dashboard-screen').style.display='block';loadAllStories();}}catch(e){}})();
 </script>
 <script>
-
-async function loadStatistik() {
-
-    try {
-
-        const response = await fetch("api/admin_statistik.php");
-
-        const result = await response.json();
-
-        if (result.success) {
-
-            const data = result.data;
-
-            document.getElementById("total-users").textContent = data.users;
-
-            document.getElementById("total-pengunjung").textContent =
-                data.pengunjung_unik;
-
-            document.getElementById("kunjungan-hari-ini").textContent =
-                data.hari_ini;
-
-            document.getElementById("total-cerita").textContent =
-                data.cerita;
-        }
-
-    } catch (error) {
-
-        console.error("Gagal mengambil statistik:", error);
-
-    }
-
-}
-
-
-/* JALANKAN STATISTIK */
-
-async function loadStatistik() {
-
-    try {
-
-        const response = await fetch("api/admin_statistik.php");
-
-        const result = await response.json();
-
-        if (result.success) {
-
-            const data = result.data;
-
-            document.getElementById("total-users").textContent =
-                data.users ?? 0;
-
-            document.getElementById("total-pengunjung").textContent =
-                data.pengunjung_unik ?? 0;
-
-            document.getElementById("kunjungan-hari-ini").textContent =
-                data.hari_ini ?? 0;
-
-            document.getElementById("stat-total").textContent =
-                data.cerita ?? 0;
-
-        }
-
-    } catch (error) {
-
-        console.error("Gagal mengambil statistik:", error);
-
-    }
-
-}
-
+async function loadStatistik(){try{const r=await fetch('api/admin_statistik.php',{credentials:'same-origin'});const d=await r.json();if(!r.ok||!d.success)throw new Error(d.message||'Statistik gagal dimuat');document.getElementById('total-users').textContent=d.data.users??0;document.getElementById('total-pengunjung').textContent=d.data.pengunjung_unik??0;document.getElementById('kunjungan-hari-ini').textContent=d.data.hari_ini??0;}catch(e){showToast(e.message,'error');}}
 </script>
 
 </body>

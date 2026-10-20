@@ -385,7 +385,8 @@ input,textarea,select,button{border-radius:14px !important;}
 <div class="field"><label>Fakultas/Jurusan</label><input type="text" id="reg-fakultas" placeholder="misal: Teknik Informatika"></div>
 <div class="field"><label>Universitas</label><input type="text" id="reg-univ" placeholder="misal: Universitas Indonesia"></div>
 <div class="error-text" id="reg-error" style="display:none;"></div>
-<button class="submit" onclick="submitRegister()">Buat akun</button>
+<button class="submit" id="auth-submit" onclick="submitAuth()">Buat akun</button>
+<div class="close-link" id="auth-switch" onclick="toggleAuthMode()">Sudah punya akun? Masuk</div>
 <div class="close-link" onclick="closeRegister()">Batal</div>
 </div>
 </div>
@@ -584,6 +585,7 @@ risetoperasi:{name:"Riset Operasi",icon:"📈",category:"lainnya",users:[],guide
 // APLIKASI LOGIC
 // =============================================
 let currentUser = null;
+let authMode = 'register';
 let regPhotoData = null;
 let editPhotoData = null;
 let lastSubjectKey = null;
@@ -1148,8 +1150,10 @@ function closeNotepad() {
 
 // Register
 function openRegister() {
-    document.getElementById('overlay-register').classList.add('open');
+    authMode='register'; updateAuthMode(); document.getElementById('overlay-register').classList.add('open');
 }
+function toggleAuthMode(){authMode=authMode==='register'?'login':'register';updateAuthMode();}
+function updateAuthMode(){const registering=authMode==='register';document.querySelectorAll('#overlay-register .photo-upload,#overlay-register .field').forEach(el=>{const id=el.querySelector('input')?.id;el.style.display=registering||id==='reg-email'||id==='reg-password'?'':'none';});document.querySelector('#overlay-register h3').textContent=registering?'Buat akun':'Masuk';document.getElementById('auth-submit').textContent=registering?'Buat akun':'Masuk';document.getElementById('auth-switch').textContent=registering?'Sudah punya akun? Masuk':'Belum punya akun? Daftar';}
 
 function closeRegister() {
     document.getElementById('overlay-register').classList.remove('open');
@@ -1188,6 +1192,7 @@ document.addEventListener('click', e => {
 });
 
 // Register submit
+async function submitAuth(){if(authMode==='login'){const email=document.getElementById('reg-email').value.trim(),password=document.getElementById('reg-password').value,errBox=document.getElementById('reg-error');try{const r=await fetch('api/login.php',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password})});const d=await r.json();if(!r.ok||!d.success)throw new Error(d.message||'Login gagal');currentUser={...d.user,pondok:d.user.tahun_lulus||'',fakultas:d.user.fakultas||'',univ:d.user.universitas||'',photo:d.user.foto||'',stories:[]};renderAuthArea();closeRegister();openMyProfile();return;}catch(e){errBox.textContent=e.message;errBox.style.display='block';return;}}return submitRegister();}
 async function submitRegister() {
  const email=document.getElementById('reg-email').value.trim(), nama=document.getElementById('reg-nama').value.trim(), password=document.getElementById('reg-password').value, angkatan=document.getElementById('reg-angkatan').value.trim(), pondok=document.getElementById('reg-pondok').value.trim(), fakultas=document.getElementById('reg-fakultas').value.trim(), univ=document.getElementById('reg-univ').value.trim(), errBox=document.getElementById('reg-error');
  if(!email||!nama||password.length<8){errBox.textContent='Email, nama, dan password minimal 8 karakter wajib diisi.';errBox.style.display='block';return;}
