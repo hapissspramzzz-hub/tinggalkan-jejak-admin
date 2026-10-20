@@ -14,7 +14,7 @@ Aplikasi PHP dan MySQL untuk berbagi cerita mahasiswa dengan moderasi admin.
 1. Letakkan folder proyek di `C:\laragon\www\tinggalkan-jejak-admin` lalu jalankan Apache dan MySQL.
 2. Buat database kosong bernama `tinggalkan_jejak` di phpMyAdmin, lalu impor `tinggalkan_jejak.sql`. Dump ini berisi skema dan data referensi yang digunakan aplikasi. Jangan impor ke database yang berisi data penting tanpa backup terlebih dahulu.
 3. Secara bawaan koneksi memakai `127.0.0.1`, database `tinggalkan_jejak`, user `root`, dan password kosong. Atur `DB_HOST`, `DB_NAME`, `DB_USER`, dan `DB_PASS` di environment bila nilai tersebut berbeda.
-4. Atur variabel environment `ADMIN_PASSWORD` ke kata sandi acak minimal 16 karakter sebelum menjalankan Apache. Di Windows, set sebagai System environment variable, lalu tutup dan buka kembali Laragon agar Apache mewarisinya. Kata sandi admin bawaan telah dihapus.
+4. Untuk alamat lokal `localhost` atau Laragon `.test`, password admin pengembangan adalah `h4f1dz`. Untuk domain publik, atur environment `ADMIN_PASSWORD` ke kata sandi acak minimal 16 karakter sebelum menjalankan Apache. Di Windows, set sebagai System environment variable, lalu tutup dan buka kembali Laragon agar Apache mewarisinya.
 5. Buka halaman utama melalui Laragon virtual host atau `http://localhost/tinggalkan-jejak-admin/`. Panel admin ada di `/admin.html`.
 
 ## Fitur
