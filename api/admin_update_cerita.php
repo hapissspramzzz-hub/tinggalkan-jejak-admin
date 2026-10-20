@@ -1,13 +1,2 @@
 <?php
-require_once __DIR__ . "/admin_guard.php";
-require_once __DIR__ . "/../config/koneksi.php";
-$d=json_decode(file_get_contents("php://input"),true);
-$id=(int)($d["id"]??0); $status=$d["status"]??"";
-$map=["published"=>"approved","pending"=>"pending","rejected"=>"rejected"];
-if($id<=0||!isset($map[$status])){http_response_code(400);echo json_encode(["success"=>false,"message"=>"Data tidak valid"]);exit;}
-$s=$map[$status];
-$stmt=$conn->prepare("UPDATE cerita SET status=? WHERE id=?");
-$stmt->bind_param("si",$s,$id);
-$stmt->execute();
-echo json_encode(["success"=>true,"message"=>"Status diperbarui"]);
-?>
+require_once __DIR__.'/admin_guard.php';require_once __DIR__.'/../config/koneksi.php';header('Content-Type: application/json; charset=UTF-8');if($_SERVER['REQUEST_METHOD']!=='POST'){http_response_code(405);echo json_encode(['success'=>false,'message'=>'Metode tidak didukung']);exit;}$d=json_decode(file_get_contents('php://input'),true)?:[];$id=(int)($d['id']??0);$map=['published'=>'approved','pending'=>'pending','rejected'=>'rejected'];$status=$d['status']??'';if($id<1||!isset($map[$status])){http_response_code(400);echo json_encode(['success'=>false,'message'=>'Data tidak valid']);exit;}$q=$conn->prepare('UPDATE cerita SET status=? WHERE id=?');$v=$map[$status];$q->bind_param('si',$v,$id);$q->execute();if(!$q->affected_rows&&!$conn->query('SELECT 1 FROM cerita WHERE id='.(int)$id)->num_rows){http_response_code(404);echo json_encode(['success'=>false,'message'=>'Cerita tidak ditemukan']);exit;}echo json_encode(['success'=>true,'message'=>'Status diperbarui']);

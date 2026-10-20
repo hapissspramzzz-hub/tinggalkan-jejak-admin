@@ -1274,45 +1274,9 @@ function closeEdit() {
     document.getElementById('overlay-edit').classList.remove('open');
 }
 
-function submitEditProfile() {
-    const email = document.getElementById('edit-email').value.trim();
-    const nama = document.getElementById('edit-nama').value.trim();
-    const angkatan = document.getElementById('edit-angkatan').value.trim();
-    const pondok = document.getElementById('edit-pondok').value.trim();
-    const fakultas = document.getElementById('edit-fakultas').value.trim();
-    const univ = document.getElementById('edit-univ').value.trim();
-    const errBox = document.getElementById('edit-error');
-    
-    if (!email || !nama || !angkatan || !pondok || !fakultas || !univ) {
-        errBox.textContent = 'Semua kolom wajib diisi.';
-        errBox.style.display = 'block';
-        return;
-    }
-    
-    errBox.style.display = 'none';
-    currentUser.email = email;
-    currentUser.nama = nama;
-    currentUser.angkatan = angkatan;
-    currentUser.pondok = pondok;
-    currentUser.fakultas = fakultas;
-    currentUser.univ = univ;
-    if (editPhotoData) currentUser.photo = editPhotoData;
-    
-    renderAuthArea();
-    closeEdit();
-    if (document.getElementById('screen-myprofile').classList.contains('active')) {
-        openMyProfile();
-    }
-}
+async function submitEditProfile(){const email=document.getElementById('edit-email').value.trim(),nama=document.getElementById('edit-nama').value.trim(),angkatan=document.getElementById('edit-angkatan').value.trim(),pondok=document.getElementById('edit-pondok').value.trim(),fakultas=document.getElementById('edit-fakultas').value.trim(),univ=document.getElementById('edit-univ').value.trim(),errBox=document.getElementById('edit-error');if(!email||!nama||!fakultas||!univ){errBox.textContent='Nama, email, jurusan dan universitas wajib diisi.';errBox.style.display='block';return;}try{const r=await fetch('api/profile.php',{method:'PUT',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,nama,angkatan,tahun_lulus:pondok,fakultas,universitas:univ,foto:editPhotoData||currentUser.photo||''})});const d=await r.json();if(!r.ok||!d.success)throw new Error(d.message||'Gagal menyimpan profil');Object.assign(currentUser,{email,nama,angkatan,pondok,fakultas,univ,photo:editPhotoData||currentUser.photo});renderAuthArea();closeEdit();if(document.getElementById('screen-myprofile').classList.contains('active'))openMyProfile();}catch(e){errBox.textContent=e.message;errBox.style.display='block';}}
 
-function deleteAccount() {
-    if (!currentUser) return;
-    if (!confirm(`Yakin hapus akun "${currentUser.nama}"?`)) return;
-    currentUser = null;
-    renderAuthArea();
-    goHome();
-}
-
+async function deleteAccount(){if(!currentUser||!confirm(`Yakin hapus akun "${currentUser.nama}" beserta cerita yang terkait?`))return;try{const r=await fetch('api/profile.php',{method:'DELETE',credentials:'same-origin'});const d=await r.json();if(!r.ok||!d.success)throw new Error(d.message||'Gagal menghapus akun');currentUser=null;renderAuthArea();goHome();}catch(e){alert(e.message);}}
 // Cropper
 let cropperTarget = null;
 let cropperState = {
