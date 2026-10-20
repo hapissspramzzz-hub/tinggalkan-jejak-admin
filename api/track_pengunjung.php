@@ -1,0 +1,2 @@
+<?php
+header('Content-Type: application/json; charset=UTF-8');require_once __DIR__.'/../config/koneksi.php';$d=json_decode(file_get_contents('php://input'),true)?:[];$visitor=substr(trim($d['visitor_id']??''),0,100);$page=substr(trim($d['halaman']??'index'),0,255);if($visitor===''){http_response_code(400);echo json_encode(['success'=>false]);exit;}$ip=$_SERVER['REMOTE_ADDR']??null;$stmt=$conn->prepare('INSERT INTO pengunjung(visitor_id,halaman,ip_address) VALUES(?,?,?)');$stmt->bind_param('sss',$visitor,$page,$ip);$stmt->execute();echo json_encode(['success'=>true]);

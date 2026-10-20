@@ -1,0 +1,3 @@
+<?php
+require_once __DIR__.'/admin_guard.php';require_once __DIR__.'/../config/koneksi.php';header('Content-Type: application/json; charset=UTF-8');
+$users=(int)$conn->query("SELECT COUNT(*) n FROM users WHERE role='user'")->fetch_assoc()['n'];$stories=(int)$conn->query('SELECT COUNT(*) n FROM cerita')->fetch_assoc()['n'];$visitors=(int)$conn->query('SELECT COUNT(DISTINCT visitor_id) n FROM pengunjung')->fetch_assoc()['n'];$today=(int)$conn->query('SELECT COUNT(DISTINCT visitor_id) n FROM pengunjung WHERE DATE(created_at)=CURDATE()')->fetch_assoc()['n'];echo json_encode(['success'=>true,'data'=>['users'=>$users,'cerita'=>$stories,'pengunjung_unik'=>$visitors,'hari_ini'=>$today]]);

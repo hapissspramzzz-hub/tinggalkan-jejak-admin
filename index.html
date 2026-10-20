@@ -377,7 +377,8 @@ input,textarea,select,button{border-radius:14px !important;}
 <div class="photo-preview" id="reg-photo-preview">📷</div>
 <label class="upload-btn">Unggah foto<input type="file" accept="image/*" id="reg-photo" onchange="handlePhotoSelect(event,'reg')"></label>
 </div>
-<div class="field"><label>Email</label><input type="email" id="reg-email" placeholder="nama@email.com"></div>
+<div class="field"><label>Email</label><input type="email" id="reg-email" placeholder="nama@email.com" autocomplete="email"></div>
+<div class="field"><label>Password (min. 8 karakter)</label><input type="password" id="reg-password" autocomplete="new-password"></div>
 <div class="field"><label>Nama lengkap</label><input type="text" id="reg-nama" placeholder="Nama lengkap kamu"></div>
 <div class="field"><label>Nama angkatan</label><input type="text" id="reg-angkatan" placeholder="misal: Angkatan 22"></div>
 <div class="field"><label>Kapan lulus</label><input type="text" id="reg-pondok" placeholder="misal: Juni 2022"></div>
@@ -614,6 +615,7 @@ function renderHome() {
     
     renderMajorGrid(filteredMajors);
     renderCommunitySection();
+    loadCommunityStories();
 }
 
 function renderMajorGrid(keys) {
@@ -650,35 +652,8 @@ function filterMajors() {
     renderMajorGrid(keys);
 }
 
-function renderCommunitySection() {
-    const section = document.getElementById('community-section');
-    const list = document.getElementById('community-list');
-    
-    // Try to load from localStorage
-    try {
-        const data = localStorage.getItem(STORAGE_KEY_STORIES);
-        communityStories = data ? JSON.parse(data) : [];
-    } catch(e) {
-        communityStories = [];
-    }
-    
-    const published = communityStories.filter(s => s.status === 'published');
-    if (!published.length) {
-        section.style.display = 'none';
-        return;
-    }
-    section.style.display = 'block';
-    list.innerHTML = published.map(s => `
-        <div class="story-card" onclick='openNotepad(${JSON.stringify(s.title)},${JSON.stringify(s.content)},${JSON.stringify(s.authorName)},${JSON.stringify(s.fakultasTag||"")},false)'>
-            <span class="quote-mark">"</span>
-            ${s.fakultasTag ? `<div class="fak-tag">Buat ${s.fakultasTag}</div>` : ''}
-            <h4>${s.title}</h4>
-            <p class="snippet">${s.snippet}</p>
-            <span class="toggle">Buka catatan →</span>
-            <div class="by-line">oleh ${s.authorName} · ${s.angkatan || 'Mahasiswa'}</div>
-        </div>
-    `).join('');
-}
+
+function renderCommunitySection(){const section=document.getElementById('community-section'),list=document.getElementById('community-list');const stories=communityStories||[];if(!stories.length){section.style.display='none';return;}section.style.display='block';list.replaceChildren();stories.forEach(story=>{const card=document.createElement('div');card.className='story-card';card.addEventListener('click',()=>openNotepad(story.title,story.content,story.authorName,story.fakultasTag||'',false));const mark=document.createElement('span');mark.className='quote-mark';mark.textContent='"';card.append(mark);if(story.fakultasTag){const tag=document.createElement('div');tag.className='fak-tag';tag.textContent='Buat '+story.fakultasTag;card.append(tag);}const title=document.createElement('h4');title.textContent=story.title;card.append(title);const snippet=document.createElement('p');snippet.className='snippet';snippet.textContent=story.snippet||story.content.slice(0,90);card.append(snippet);const open=document.createElement('span');open.className='toggle';open.textContent='Buka catatan →';card.append(open);const by=document.createElement('div');by.className='by-line';by.textContent='oleh '+story.authorName+' · '+(story.angkatan||'Mahasiswa');card.append(by);list.append(card);});}
 
 // Open Major
 function openMajor(key) {
@@ -1119,6 +1094,7 @@ function goHome() {
     showScreen('home');
     currentMajorKey = null;
     renderCommunitySection();
+    loadCommunityStories();
 }
 
 let navigationState = { screen: 'home', scrollY: 0 };
@@ -1212,41 +1188,14 @@ document.addEventListener('click', e => {
 });
 
 // Register submit
-function submitRegister() {
-    const email = document.getElementById('reg-email').value.trim();
-    const nama = document.getElementById('reg-nama').value.trim();
-    const angkatan = document.getElementById('reg-angkatan').value.trim();
-    const pondok = document.getElementById('reg-pondok').value.trim();
-    const fakultas = document.getElementById('reg-fakultas').value.trim();
-    const univ = document.getElementById('reg-univ').value.trim();
-    const errBox = document.getElementById('reg-error');
-    
-    if (!email || !nama || !angkatan || !pondok || !fakultas || !univ) {
-        errBox.textContent = 'Semua kolom wajib diisi.';
-        errBox.style.display = 'block';
-        return;
-    }
-    
-    errBox.style.display = 'none';
-    currentUser = {
-        email,
-        nama,
-        angkatan,
-        pondok,
-        fakultas,
-        univ,
-        photo: regPhotoData || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(email)}`,
-        stories: []
-    };
-    
-    renderAuthArea();
-    closeRegister();
-    clearRegisterForm();
-    openMyProfile();
+async function submitRegister() {
+ const email=document.getElementById('reg-email').value.trim(), nama=document.getElementById('reg-nama').value.trim(), password=document.getElementById('reg-password').value, angkatan=document.getElementById('reg-angkatan').value.trim(), pondok=document.getElementById('reg-pondok').value.trim(), fakultas=document.getElementById('reg-fakultas').value.trim(), univ=document.getElementById('reg-univ').value.trim(), errBox=document.getElementById('reg-error');
+ if(!email||!nama||password.length<8){errBox.textContent='Email, nama, dan password minimal 8 karakter wajib diisi.';errBox.style.display='block';return;}
+ try{const r=await fetch('api/register.php',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,nama,password,angkatan,tahun_lulus:pondok,fakultas,universitas:univ,foto:regPhotoData||''})});const d=await r.json();if(!r.ok||!d.success)throw new Error(d.message||'Pendaftaran gagal');currentUser={...d.user,pondok:d.user.tahun_lulus||pondok,fakultas:d.user.fakultas||fakultas,univ:d.user.universitas||univ,photo:d.user.foto||'',stories:[]};renderAuthArea();closeRegister();clearRegisterForm();openMyProfile();}
+ catch(e){errBox.textContent=e.message;errBox.style.display='block';}
 }
-
 function clearRegisterForm() {
-    ['reg-email', 'reg-nama', 'reg-angkatan', 'reg-pondok', 'reg-fakultas', 'reg-univ'].forEach(id => {
+    ['reg-email', 'reg-password', 'reg-nama', 'reg-angkatan', 'reg-pondok', 'reg-fakultas', 'reg-univ'].forEach(id => {
         document.getElementById(id).value = '';
     });
     regPhotoData = null;
@@ -1269,64 +1218,13 @@ function openMyProfile() {
     renderMyStories();
 }
 
-function renderMyStories() {
-    const list = document.getElementById('my-story-list');
-    if (!currentUser.stories.length) {
-        list.innerHTML = `<div class="empty">Belum ada cerita. Yuk tulis jejak pertamamu di atas.</div>`;
-        return;
-    }
-    list.innerHTML = currentUser.stories.map(s => `
-        <div class="story-card" onclick='openNotepad(${JSON.stringify(s.title)},${JSON.stringify(s.content)},${JSON.stringify(currentUser.nama)},${JSON.stringify(s.fakultasTag||"")},false)'>
-            <span class="quote-mark">"</span>
-            ${s.fakultasTag ? `<div class="fak-tag">Buat ${s.fakultasTag}</div>` : ''}
-            <h4>${s.title}</h4>
-            <p class="snippet">${s.snippet}</p>
-            <span class="toggle">Buka catatan →</span>
-        </div>
-    `).join('');
-}
+function renderMyStories(){const list=document.getElementById('my-story-list');if(!currentUser.stories.length){list.innerHTML='<div class="empty">Belum ada cerita. Yuk tulis jejak pertamamu di atas.</div>';return;}list.replaceChildren();currentUser.stories.forEach(story=>{const card=document.createElement('div');card.className='story-card';card.addEventListener('click',()=>openNotepad(story.title,story.content,currentUser.nama,story.fakultasTag||'',false));const title=document.createElement('h4');title.textContent=story.title;const snippet=document.createElement('p');snippet.className='snippet';snippet.textContent=story.snippet||story.content.slice(0,90);const status=document.createElement('span');status.className='toggle';status.textContent=story.status==='pending'?'Menunggu persetujuan':story.status==='approved'?'Tayang':'Ditolak';card.append(title,snippet,status);list.append(card);});}
 
-function submitMyStory() {
-    const title = document.getElementById('new-story-title').value.trim();
-    const content = document.getElementById('new-story-content').value.trim();
-    const selectEl = document.getElementById('new-story-fakultas');
-    const fakultasTag = selectEl.value === '__lainnya__' ? 
-        document.getElementById('new-story-fakultas-other').value.trim() : 
-        selectEl.value.trim();
-    
-    if (!title || !content) return;
-    
-    const snippet = content.length > 90 ? content.slice(0, 90).trim() + '…' : content;
-    const id = 'C-' + Date.now().toString(36).toUpperCase();
-    const story = {
-        id,
-        title,
-        content,
-        snippet,
-        fakultasTag: fakultasTag || null,
-        authorName: currentUser.nama,
-        angkatan: currentUser.angkatan,
-        status: 'pending'
-    };
-    
-    currentUser.stories.unshift(story);
-    
-    // Save to localStorage
-    try {
-        const existing = localStorage.getItem(STORAGE_KEY_STORIES);
-        const stories = existing ? JSON.parse(existing) : [];
-        stories.unshift(story);
-        localStorage.setItem(STORAGE_KEY_STORIES, JSON.stringify(stories));
-    } catch(e) {}
-    
-    document.getElementById('new-story-title').value = '';
-    document.getElementById('new-story-content').value = '';
-    document.getElementById('new-story-fakultas').value = '';
-    document.getElementById('new-story-fakultas-other').value = '';
-    document.getElementById('new-story-fakultas-other').style.display = 'none';
-    renderMyStories();
+async function submitMyStory() {
+ if(!currentUser){openRegister();return;}const title=document.getElementById('new-story-title').value.trim(),content=document.getElementById('new-story-content').value.trim(),sel=document.getElementById('new-story-fakultas');const jurusan=sel.value==='__lainnya__'?document.getElementById('new-story-fakultas-other').value.trim():sel.value;if(!title||!content){alert('Judul dan isi cerita wajib diisi.');return;}
+ try{const r=await fetch('api/cerita.php',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({judul:title,isi:content,jurusan})});const d=await r.json();if(!r.ok||!d.success)throw new Error(d.message||'Cerita gagal dikirim');document.getElementById('new-story-title').value='';document.getElementById('new-story-content').value='';sel.value='';document.getElementById('new-story-fakultas-other').value='';document.getElementById('new-story-fakultas-other').style.display='none';alert(d.message);await loadMyStories();}catch(e){alert(e.message);}
 }
-
+async function loadMyStories(){if(!currentUser)return;try{const r=await fetch('api/cerita_saya.php',{credentials:'same-origin'});const d=await r.json();if(r.ok&&d.success){currentUser.stories=d.data||[];renderMyStories();}}catch(e){console.error('Gagal memuat cerita saya',e);}}
 function populateFakultasSelect() {
     const select = document.getElementById('new-story-fakultas');
     const options = Object.values(MAJORS_DATA).map(m => 
@@ -1351,12 +1249,7 @@ function handleFakultasSelectChange() {
     }
 }
 
-function logout() {
-    currentUser = null;
-    renderAuthArea();
-    goHome();
-}
-
+async function logout(){try{await fetch('api/logout.php',{method:'POST',credentials:'same-origin'});}catch(e){}currentUser=null;renderAuthArea();goHome();}
 function openEditProfile() {
     if (!currentUser) return;
     document.getElementById('edit-email').value = currentUser.email;
@@ -1538,10 +1431,12 @@ function closeCropper() {
 // =============================================
 // INIT
 // =============================================
+
 populateFakultasSelect();
 renderHome();
 renderSubjects();
 renderAuthArea();
+restoreSession();
 
 console.log('✅ 100 JURUSAN SIAP!');
 console.log(`📚 Total: ${Object.keys(MAJORS_DATA).length} jurusan`);
