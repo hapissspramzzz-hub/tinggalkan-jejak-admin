@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Tinggalkan Jejak</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #FAF5E8;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .admin-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .admin-header {
+            background: #FFFFFF;
+            border-radius: 20px;
+            padding: 24px 32px;
+            margin-bottom: 24px;
+            border: 1px solid #ECE6D6;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .admin-header h1 {
+            font-family: 'Fraunces', serif;
+            font-size: 24px;
+            color: #1B2333;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .admin-header h1 .badge-admin {
+            font-size: 12px;
+            background: #3E8E63;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 999px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+        }
+
+        .admin-stats {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .stat-box {
+            background: #FAF5E8;
+            padding: 8px 16px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .stat-box .number {
+            font-family: 'Fraunces', serif;
+            font-size: 22px;
+            font-weight: 700;
+            color: #1B2333;
+        }
+
+        .stat-box .label {
+            font-size: 11px;
+            color: #6B7280;
+            font-weight: 500;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 10px 24px;
+            border: 2px solid #ECE6D6;
+            border-radius: 999px;
+            background: white;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            color: #6B7280;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .tab-btn:hover {
+            border-color: #3E8E63;
+            color: #1B2333;
+        }
+
+        .tab-btn.active {
+            background: #3E8E63;
+            border-color: #3E8E63;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Story Card */
+        .story-card-admin {
+            background: white;
+            border: 1px solid #ECE6D6;
+            border-radius: 16px;
+            padding: 20px 24px;
+            margin-bottom: 16px;
+            transition: all 0.2s;
+        }
+
+        .story-card-admin:hover {
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+        }
+
+        .story-card-admin .story-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .story-card-admin .story-author {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .story-card-admin .story-author img {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #FAF5E8;
+            object-fit: cover;
+            border: 2px solid #ECE6D6;
+        }
+
+        .story-card-admin .story-author .name {
+            font-weight: 600;
+            font-size: 14px;
+            color: #1B2333;
+        }
+
+        .story-card-admin .story-author .detail {
+            font-size: 12px;
+            color: #6B7280;
+        }
+
+        .story-card-admin .story-title {
+            font-family: 'Fraunces', serif;
+            font-size: 18px;
+            font-weight: 600;
+            color: #1B2333;
+            margin-bottom: 8px;
+        }
+
+        .story-card-admin .story-content {
+            color: #4B5563;
+            font-size: 14px;
+            line-height: 1.7;
+            margin-bottom: 12px;
+            max-height: 120px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .story-card-admin .story-content.expanded {
+            max-height: none;
+        }
+
+        .story-card-admin .story-content .read-more {
+            color: #3E8E63;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .story-card-admin .story-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+
+        .story-card-admin .story-tags .tag {
+            background: rgba(62, 142, 99, 0.1);
+            color: #3E8E63;
+            padding: 2px 12px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .story-card-admin .story-tags .tag.pending {
+            background: rgba(242, 153, 74, 0.14);
+            color: #B5651D;
+        }
+
+        .story-card-admin .story-tags .tag.rejected {
+            background: rgba(214, 67, 46, 0.12);
+            color: #B5342A;
+        }
+
+        .story-card-admin .story-tags .tag.published {
+            background: rgba(62, 142, 99, 0.14);
+            color: #2E6B47;
+        }
+
+        .story-card-admin .story-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #ECE6D6;
+        }
+
+        .btn {
+            padding: 8px 20px;
+            border: none;
+            border-radius: 999px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        }
+
+        .btn-approve {
+            background: linear-gradient(160deg, #3E8E63, #5BAF7A);
+            color: white;
+        }
+
+        .btn-approve:hover {
+            background: linear-gradient(160deg, #2E7A53, #4A9F6A);
+        }
+
+        .btn-reject {
+            background: #D6432E;
+            color: white;
+        }
+
+        .btn-reject:hover {
+            background: #B5342A;
+        }
+
+        .btn-delete {
+            background: #6B7280;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #4B5563;
+        }
+
+        .btn-published {
+            background: #3E8E63;
+            color: white;
+            opacity: 0.6;
+            cursor: default;
+        }
+
+        .btn-published:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-rejected {
+            background: #6B7280;
+            color: white;
+            opacity: 0.6;
+            cursor: default;
+        }
+
+        .btn-rejected:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border-radius: 16px;
+            border: 2px dashed #ECE6D6;
+        }
+
+        .empty-state .icon {
+            font-size: 48px;
+            display: block;
+            margin-bottom: 12px;
+        }
+
+        .empty-state h3 {
+            font-family: 'Fraunces', serif;
+            font-size: 20px;
+            color: #1B2333;
+            margin-bottom: 8px;
+        }
+
+        .empty-state p {
+            color: #6B7280;
+            font-size: 14px;
+        }
+
+        /* Login */
+        .login-box {
+            max-width: 400px;
+            margin: 80px auto;
+            background: white;
+            padding: 36px;
+            border-radius: 20px;
+            border: 1px solid #ECE6D6;
+            text-align: center;
+        }
+
+        .login-box h2 {
+            font-family: 'Fraunces', serif;
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .login-box p.sub {
+            color: #6B7280;
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+
+        .login-box input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #ECE6D6;
+            border-radius: 12px;
+            font-size: 14px;
+            margin-bottom: 12px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .login-box input:focus {
+            outline: none;
+            border-color: #3E8E63;
+        }
+
+        .login-box .btn-login {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(160deg, #3E8E63, #5BAF7A);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .login-box .btn-login:hover {
+            opacity: 0.9;
+        }
+
+        .login-box .error {
+            color: #D6432E;
+            font-size: 13px;
+            margin-bottom: 12px;
+            display: none;
+        }
+
+        /* Back to site */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #6B7280;
+            text-decoration: none;
+            font-size: 13px;
+            margin-bottom: 16px;
+            font-weight: 500;
+        }
+
+        .back-link:hover {
+            color: #1B2333;
+        }
+
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #1B2333;
+            color: white;
+            padding: 14px 24px;
+            border-radius: 12px;
+            font-weight: 500;
+            font-size: 14px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 999;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast.success {
+            background: #3E8E63;
+        }
+
+        .toast.error {
+            background: #D6432E;
+        }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .admin-header {
+                padding: 16px 20px;
+            }
+
+            .admin-header h1 {
+                font-size: 20px;
+            }
+
+            .story-card-admin {
+                padding: 16px;
+            }
+
+            .story-card-admin .story-meta {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .story-card-admin .story-actions {
+                flex-direction: column;
+            }
+
+            .story-card-admin .story-actions .btn {
+                width: 100%;
+                text-align: center;
+            }
+
+            .tabs {
+                justify-content: center;
+            }
+
+            .tab-btn {
+                padding: 8px 16px;
+                font-size: 12px;
+                flex: 1;
+                text-align: center;
+            }
+
+            .admin-stats {
+                width: 100%;
+                justify-content: space-around;
+            }
+        }
+
+        /* Filter */
+        .filter-bar {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .filter-bar input,
+        .filter-bar select {
+            padding: 10px 16px;
+            border: 1px solid #ECE6D6;
+            border-radius: 12px;
+            font-size: 13px;
+            font-family: 'Inter', sans-serif;
+            background: white;
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .filter-bar input:focus,
+        .filter-bar select:focus {
+            outline: none;
+            border-color: #3E8E63;
+        }
+
+        .refresh-btn {
+            padding: 10px 20px;
+            background: white;
+            border: 1px solid #ECE6D6;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            color: #1B2333;
+            transition: all 0.2s;
+        }
+
+        .refresh-btn:hover {
+            border-color: #3E8E63;
+            background: #FAF5E8;
+        }
+
+        /* Story view count */
+        .story-views {
+            font-size: 12px;
+            color: #6B7280;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="admin-container" id="app">
+
+        <!-- Login Screen -->
+        <div id="login-screen" style="display:block;">
+            <div class="login-box">
+                <h2>🔐 Admin Panel</h2>
+                <p class="sub">Masuk untuk mengelola cerita yang masuk</p>
+                <div class="error" id="login-error">Password salah!</div>
+                <input type="password" id="admin-password" placeholder="Masukkan password admin" onkeydown="if(event.key==='Enter') adminLogin()">
+                <button class="btn-login" onclick="adminLogin()">Masuk</button>
+                <p style="margin-top:16px;font-size:12px;color:#6B7280;">Gunakan password admin untuk masuk.</p>
+                <a href="index.html" class="back-link" style="margin-top:12px;display:inline-block;">← Kembali ke Beranda</a>
+            </div>
+        </div>
+
+        <!-- Dashboard -->
+        <div id="dashboard-screen" style="display:none;">
+
+            <!-- Header -->
+            <div class="admin-header">
+                <div>
+                    <h1>
+                        📋 Admin Panel
+                        <span class="badge-admin">Beta</span>
+                    </h1>
+                    <div style="font-size:13px;color:#6B7280;margin-top:4px;">
+                        Kelola cerita sebelum ditampilkan di jurusan
+                    </div>
+                </div>
+                <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+                    <div class="admin-stats">
+                        <div class="stat-box">
+                            <div class="number" id="stat-pending">0</div>
+                            <div class="label">Menunggu</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="number" id="stat-published">0</div>
+                            <div class="label">Tayang</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="number" id="stat-total">0</div>
+                            <div class="label">Total</div>
+                        </div>
+                        <div class="stat-box">
+    <div class="number" id="total-users">0</div>
+    <div class="label">👥 Total User</div>
+</div>
+
+<div class="stat-box">
+    <div class="number" id="total-pengunjung">0</div>
+    <div class="label">👁️ Total Pengunjung</div>
+</div>
+
+<div class="stat-box">
+    <div class="number" id="kunjungan-hari-ini">0</div>
+    <div class="label">📅 Pengunjung Hari Ini</div>
+</div>
+                    </div>
+                    <button class="btn btn-delete" style="padding:6px 16px;font-size:12px;" onclick="adminLogout()">Keluar</button>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="pending" onclick="switchTab('pending')">
+                    ⏳ Menunggu <span id="badge-pending" style="background:#F2994A;color:white;padding:0 8px;border-radius:999px;font-size:11px;margin-left:4px;">0</span>
+                </button>
+                <button class="tab-btn" data-tab="published" onclick="switchTab('published')">
+                    ✅ Sudah Tayang <span id="badge-published" style="background:#3E8E63;color:white;padding:0 8px;border-radius:999px;font-size:11px;margin-left:4px;">0</span>
+                </button>
+                <button class="tab-btn" data-tab="rejected" onclick="switchTab('rejected')">
+                    ❌ Ditolak <span id="badge-rejected" style="background:#D6432E;color:white;padding:0 8px;border-radius:999px;font-size:11px;margin-left:4px;">0</span>
+                </button>
+                <button class="tab-btn" data-tab="all" onclick="switchTab('all')">
+                    📋 Semua
+                </button>
+            </div>
+
+            <!-- Filter -->
+            <div class="filter-bar">
+                <input type="text" id="search-input" placeholder="🔍 Cari judul atau penulis..." oninput="filterStories()">
+                <select id="major-filter" onchange="filterStories()">
+                    <option value="">Semua jurusan</option>
+                </select>
+                <button class="refresh-btn" onclick="loadAllStories()">🔄 Refresh</button>
+            </div>
+
+            <!-- Story List -->
+            <div id="story-list">
+                <!-- Stories will be rendered here -->
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+let currentTab='pending', allStories=[];
+
+async function request(url,opt={}){
+ const r=await fetch(url,{credentials:'same-origin',...opt,headers:{'Content-Type':'application/json',...(opt.headers||{})}});
+ const d=await r.json();
+ if(!r.ok||!d.success) throw new Error(d.message||'Terjadi kesalahan');
+ return d;
+}
+
+async function adminLogin(){
+ const password=document.getElementById('admin-password').value;
+ const err=document.getElementById('login-error');
+ try{
+  await request('api/admin_login.php',{method:'POST',body:JSON.stringify({password})});
+  err.style.display='none';
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('dashboard-screen').style.display='block';
+  loadAllStories();
+ }catch(e){err.textContent=e.message;err.style.display='block';}
+}
+
+async function adminLogout(){
+ try{await request('api/admin_logout.php',{method:'POST',body:'{}'});}catch(e){}
+ document.getElementById('dashboard-screen').style.display='none';
+ document.getElementById('login-screen').style.display='block';
+}
+
+async function loadAllStories(){
+ try{
+  const d=await request('api/admin_cerita.php');
+  allStories=d.data||[];
+  renderStats(); populateMajorFilter(); filterStories();
+ }catch(e){showToast(e.message,'error');}
+}
+
+function renderStats(){
+ const p=allStories.filter(x=>x.status==='pending').length;
+ const a=allStories.filter(x=>x.status==='published').length;
+ const r=allStories.filter(x=>x.status==='rejected').length;
+ document.getElementById('stat-pending').textContent=p;
+ document.getElementById('stat-published').textContent=a;
+ document.getElementById('stat-total').textContent=allStories.length;
+ document.getElementById('badge-pending').textContent=p;
+ document.getElementById('badge-published').textContent=a;
+ document.getElementById('badge-rejected').textContent=r;
+}
+
+function populateMajorFilter(){
+ const s=document.getElementById('major-filter'),old=s.value;
+ const majors=[...new Set(allStories.map(x=>x.fakultasTag).filter(Boolean))].sort();
+ s.innerHTML='<option value="">Semua jurusan</option>';
+ majors.forEach(m=>s.innerHTML+=`<option value="${m}">${m}</option>`);
+ s.value=old;
+}
+
+function filterStories(){
+ const q=document.getElementById('search-input').value.toLowerCase();
+ const m=document.getElementById('major-filter').value;
+ renderStories(allStories.filter(x=>
+  (currentTab==='all'||x.status===currentTab)&&
+  (!q||(x.title||'').toLowerCase().includes(q)||(x.authorName||'').toLowerCase().includes(q)||(x.content||'').toLowerCase().includes(q))&&
+  (!m||x.fakultasTag===m)
+ ));
+}
+
+function esc(v){const d=document.createElement('div');d.textContent=v??'';return d.innerHTML;}
+function renderStories(stories){
+ const c=document.getElementById('story-list');
+ if(!stories.length){c.innerHTML='<div class="empty-state"><span class="icon">📭</span><h3>Tidak ada cerita</h3><p>Data dari database akan muncul di sini.</p></div>';return;}
+ c.innerHTML=stories.map(x=>`<div class="story-card-admin">
+  <div class="story-meta"><div class="story-author"><div><div class="name">${esc(x.authorName||'Anonim')}</div><div class="detail">${esc(x.angkatan||'Mahasiswa')} · ${new Date(x.tanggal).toLocaleDateString('id-ID')}</div></div></div></div>
+  <div class="story-title">${esc(x.title)}</div>
+  <div class="story-content">${esc(x.content)}</div>
+  <div class="story-tags">${x.fakultasTag?`<span class="tag">📌 ${esc(x.fakultasTag)}</span>`:''}<span class="tag ${x.status}">${x.status==='pending'?'⏳ Menunggu':x.status==='published'?'✅ Tayang':'❌ Ditolak'}</span></div>
+  <div class="story-actions">
+   ${x.status!=='published'?`<button class="btn btn-approve" onclick="approveStory(${x.id})">✅ Setujui</button>`:''}
+   ${x.status!=='rejected'?`<button class="btn btn-reject" onclick="rejectStory(${x.id})">❌ Tolak</button>`:''}
+   <button class="btn btn-delete" onclick="deleteStory(${x.id})">🗑️ Hapus</button>
+  </div></div>`).join('');
+}
+
+async function approveStory(id){if(!confirm('Setujui cerita ini?'))return;await request('api/admin_update_cerita.php',{method:'POST',body:JSON.stringify({id,status:'published'})});showToast('Cerita disetujui','success');loadAllStories();}
+async function rejectStory(id){if(!confirm('Tolak cerita ini?'))return;await request('api/admin_update_cerita.php',{method:'POST',body:JSON.stringify({id,status:'rejected'})});showToast('Cerita ditolak','error');loadAllStories();}
+async function deleteStory(id){if(!confirm('Hapus permanen?'))return;await request('api/admin_delete_cerita.php',{method:'POST',body:JSON.stringify({id})});showToast('Cerita dihapus','success');loadAllStories();}
+
+function switchTab(t){currentTab=t;document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active',b.dataset.tab===t));filterStories();}
+function showToast(m,type='success'){const t=document.getElementById('toast');t.textContent=m;t.className=`toast ${type}`;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+
+(async()=>{try{const r=await fetch('api/admin_status.php');const d=await r.json();if(d.logged_in){document.getElementById('login-screen').style.display='none';document.getElementById('dashboard-screen').style.display='block';loadAllStories();}}catch(e){}})();
+</script>
+<script>
+
+async function loadStatistik() {
+
+    try {
+
+        const response = await fetch("api/admin_statistik.php");
+
+        const result = await response.json();
+
+        if (result.success) {
+
+            const data = result.data;
+
+            document.getElementById("total-users").textContent = data.users;
+
+            document.getElementById("total-pengunjung").textContent =
+                data.pengunjung_unik;
+
+            document.getElementById("kunjungan-hari-ini").textContent =
+                data.hari_ini;
+
+            document.getElementById("total-cerita").textContent =
+                data.cerita;
+        }
+
+    } catch (error) {
+
+        console.error("Gagal mengambil statistik:", error);
+
+    }
+
+}
+
+
+/* JALANKAN STATISTIK */
+
+async function loadStatistik() {
+
+    try {
+
+        const response = await fetch("api/admin_statistik.php");
+
+        const result = await response.json();
+
+        if (result.success) {
+
+            const data = result.data;
+
+            document.getElementById("total-users").textContent =
+                data.users ?? 0;
+
+            document.getElementById("total-pengunjung").textContent =
+                data.pengunjung_unik ?? 0;
+
+            document.getElementById("kunjungan-hari-ini").textContent =
+                data.hari_ini ?? 0;
+
+            document.getElementById("stat-total").textContent =
+                data.cerita ?? 0;
+
+        }
+
+    } catch (error) {
+
+        console.error("Gagal mengambil statistik:", error);
+
+    }
+
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1586 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tinggalkan Jejak - 100 Jurusan</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+:root{
+--bg:#FAF5E8;--card:#FFFFFF;--soft:#FFFFFF;--ink:#1B2333;--ink-soft:#6B7280;
+--border:#ECE6D6;--blue:#3E8E63;--orange:#F2994A;
+--grad: linear-gradient(160deg, #F2914D 0%, #EFAE55 45%, #7CB77A 100%);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif;min-height:100vh;overflow-x:hidden;}
+.topnav{position:relative;z-index:10;}
+.screen{position:relative;z-index:1;display:none;animation:fadeIn .35s ease;}
+.screen.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+.topnav{display:flex;justify-content:space-between;align-items:center;padding:16px clamp(16px,4vw,28px);background:var(--bg);flex-wrap:wrap;gap:10px;}
+.brand{font-family:'Fraunces',serif;font-weight:600;font-size:18px;color:var(--ink);display:flex;align-items:center;gap:8px;cursor:pointer;}
+.brand .mark{width:22px;height:22px;border-radius:6px;background:var(--grad);display:inline-block;}
+#auth-area{position:relative;}
+.btn-masuk{background:var(--grad);color:#fff;border:none;font-family:'Inter',sans-serif;font-weight:600;font-size:13px;padding:10px 20px;border-radius:999px;cursor:pointer;box-shadow:0 4px 14px rgba(62,142,99,0.25);transition:transform .15s ease,box-shadow .15s ease;}
+.btn-masuk:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(62,142,99,0.32);}
+.profile-chip{display:flex;align-items:center;gap:10px;cursor:pointer;padding:6px 14px 6px 6px;border-radius:999px;border:1px solid var(--border);background:var(--soft);}
+.profile-chip img{width:30px;height:30px;border-radius:50%;background:var(--soft);object-fit:cover;}
+.profile-chip span{font-size:13px;font-weight:600;}
+.chip-dropdown{position:absolute;top:44px;right:0;background:#fff;border:1px solid var(--border);border-radius:12px;box-shadow:0 12px 30px rgba(0,0,0,0.12);min-width:160px;overflow:hidden;display:none;z-index:20;}
+.chip-dropdown.open{display:block;}
+.chip-dropdown button{width:100%;text-align:left;background:none;border:none;padding:12px 16px;font-size:13px;cursor:pointer;color:var(--ink);font-family:'Inter',sans-serif;}
+.chip-dropdown button:hover{background:var(--soft);}
+.hero{position:relative;margin:10px 20px 0;border-radius:24px;padding:40px 32px;text-align:center;background:var(--card);color:var(--ink);overflow:hidden;border:1px solid var(--border);}
+.hero::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 85% 20%,rgba(124,183,122,0.10),transparent 55%);}
+.eyebrow{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-soft);font-weight:600;margin-bottom:14px;display:flex;align-items:center;justify-content:center;gap:10px;position:relative;}
+.eyebrow .dot{width:5px;height:5px;background:var(--orange);border-radius:50%;display:inline-block;opacity:.8;}
+.hero h1{font-family:'Fraunces',serif;font-weight:600;font-size:clamp(28px,5vw,46px);margin:0 0 12px;position:relative;color:var(--ink);}
+.hero h1 em{font-style:italic;color:var(--orange);}
+.hero p.tag{color:var(--ink-soft);max-width:480px;margin:0 auto;font-size:15px;line-height:1.6;position:relative;}
+.hero .total-badge{display:inline-block;background:var(--grad);color:#fff;padding:6px 18px;border-radius:999px;font-weight:600;font-size:14px;margin-top:16px;}
+.footprints{display:flex;justify-content:center;gap:18px;margin-top:26px;opacity:.75;position:relative;}
+.footprints span{font-size:14px;transform:rotate(var(--r,0deg));display:inline-block;}
+.container{max-width:min(1200px,94vw);margin:0 auto;padding:28px clamp(16px,4vw,24px) 48px;}
+.section-label{display:flex;align-items:center;gap:10px;font-family:'Fraunces',serif;font-size:19px;margin-bottom:16px;color:var(--ink);}
+.section-label::before{content:"👣";font-size:16px;}
+.major-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;}
+.major-card{background:var(--card);color:var(--ink);border-radius:20px;padding:18px 16px;cursor:pointer;border:1px solid var(--border);position:relative;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease;}
+.major-card:hover{transform:translateY(-4px);border-color:var(--blue);box-shadow:0 12px 26px rgba(62,142,99,0.14);}
+.major-card .icon{font-size:26px;display:block;margin-bottom:8px;}
+.major-card h3{font-family:'Fraunces',serif;font-size:16px;margin:0 0 4px;font-weight:600;}
+.major-card .count{font-size:11px;color:var(--ink-soft);letter-spacing:.03em;}
+.major-card .corner{position:absolute;top:12px;right:12px;width:6px;height:6px;background:var(--orange);opacity:0;border-radius:50%;transition:opacity .18s ease;}
+.major-card:hover .corner{opacity:1;}
+.empty-story-badge{display:inline-block;font-size:9px;font-weight:600;background:rgba(107,114,128,0.12);color:#6B7280;padding:2px 8px;border-radius:999px;margin-top:2px;}
+.subject-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;}
+.subject-card{background:var(--card);color:var(--ink);border-radius:18px;padding:18px 18px;cursor:pointer;border:1px solid var(--border);transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease;}
+.subject-card:hover{transform:translateY(-3px);border-color:var(--blue);box-shadow:0 10px 22px rgba(62,142,99,0.12);}
+.subject-card .icon{font-size:24px;display:block;margin-bottom:8px;}
+.subject-card h3{font-family:'Fraunces',serif;font-size:16px;margin:0 0 4px;font-weight:600;}
+.subject-card .count{font-size:12px;color:var(--ink-soft);}
+.topic-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:14px 20px;font-family:'Fraunces',serif;font-weight:600;font-size:14px;color:var(--ink);cursor:pointer;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease;}
+.topic-card:hover{transform:translateY(-2px);border-color:var(--blue);box-shadow:0 8px 20px rgba(62,142,99,0.10);}
+.detail-list{display:flex;flex-direction:column;gap:10px;}
+.detail-item{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 18px;display:flex;align-items:center;gap:12px;}
+.detail-item .bullet{color:var(--orange);font-size:18px;}
+.detail-item .text{font-size:14px;color:var(--ink);}
+.back-btn{display:inline-flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--border);color:var(--ink);font-family:'Inter',sans-serif;font-size:13px;padding:8px 16px;border-radius:999px;cursor:pointer;margin-bottom:18px;transition:border-color .15s ease,background .15s ease;}
+.back-btn:hover{border-color:var(--blue);background:var(--soft);}
+.exit-btn{background:none;border:none;font-size:22px;cursor:pointer;color:var(--ink-soft);font-weight:300;transition:color 0.2s;}
+.exit-btn:hover{color:var(--ink);}
+.page-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;position:relative;}
+.page-header .back-btn{margin-bottom:0;}
+.page-header .exit-btn{font-size:26px;padding:0 10px;}
+.major-title{display:flex;align-items:center;gap:12px;margin-bottom:4px;}
+.major-title .icon{font-size:28px;}
+.major-title h2{font-family:'Fraunces',serif;font-size:28px;margin:0;font-weight:600;}
+.major-sub{color:var(--ink-soft);font-size:14px;margin:0 0 18px 0;}
+.user-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;}
+.user-card{background:var(--card);border:1px solid #FFFFFF;box-shadow:0 1px 4px rgba(27,35,51,0.06);border-radius:18px;padding:16px;cursor:pointer;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease;}
+.user-card:hover{transform:translateY(-3px);border-color:var(--orange);box-shadow:0 10px 24px rgba(27,35,51,0.1);}
+.user-card img{width:50px;height:50px;border-radius:50%;background:var(--card);border:2px solid var(--card);box-shadow:0 0 0 1px var(--border);object-fit:cover;margin-bottom:10px;}
+.id-box{border:1px solid #FFFFFF;box-shadow:0 1px 3px rgba(27,35,51,0.05);border-radius:12px;padding:8px 12px;background:var(--card);text-align:left;}
+.id-box .id-name{font-family:'Fraunces',serif;font-weight:600;font-size:13px;color:var(--ink);margin-bottom:3px;}
+.id-box .id-line{font-size:11px;color:var(--ink-soft);line-height:1.5;}
+@media (max-width:640px){.user-grid{grid-template-columns:1fr;gap:14px;}.user-card{padding:16px;}}
+.profile-panel{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:20px;margin-bottom:14px;}
+.profile-header{display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap;padding-bottom:16px;margin-bottom:16px;border-bottom:1px solid var(--border);}
+.profile-header img{width:80px;height:80px;border-radius:50%;border:3px solid var(--card);box-shadow:0 0 0 1px var(--border);background:var(--card);object-fit:cover;}
+.profile-info{flex:1;min-width:180px;}
+.profile-info h2{font-family:'Fraunces',serif;font-size:24px;margin:0 0 6px;font-weight:600;}
+.badge{display:inline-block;font-size:10px;letter-spacing:.05em;text-transform:uppercase;background:rgba(62,142,99,0.1);color:var(--blue);padding:3px 10px;border-radius:999px;margin:0 4px 8px 0;font-weight:600;}
+.profile-info p.bio{color:var(--ink-soft);font-size:14px;max-width:500px;line-height:1.6;margin:0;}
+.profile-idbox{min-width:170px;text-align:left;}
+.profile-idbox .id-box{padding:14px 16px;}
+.profile-idbox .id-name{font-size:15px;}
+.profile-idbox .id-line{font-size:12px;}
+#screen-profile .container,#screen-myprofile .container{max-width:min(1180px,94vw);padding:24px clamp(16px,4vw,28px) 48px;}
+.story-list{display:flex;flex-direction:column;gap:14px;}
+.story-card{background:var(--card);color:var(--ink);border-radius:16px;padding:16px 20px;cursor:pointer;position:relative;border:1px solid var(--border);border-left:4px solid var(--orange);transition:box-shadow .18s ease,transform .18s ease;}
+.story-card:hover{transform:translateY(-2px);box-shadow:0 12px 26px rgba(0,0,0,0.08);}
+.story-card .quote-mark{font-family:'Fraunces',serif;font-size:30px;color:var(--blue);line-height:1;position:absolute;top:12px;right:16px;opacity:.35;}
+.story-card h4{font-family:'Fraunces',serif;font-size:16px;margin:0 0 6px;padding-right:28px;}
+.story-card .fak-tag{display:inline-block;font-size:10px;font-weight:600;letter-spacing:.03em;text-transform:uppercase;background:rgba(242,153,74,0.14);color:#B5651D;padding:2px 8px;border-radius:999px;margin-bottom:8px;}
+.story-card .snippet{font-size:13px;font-style:italic;color:var(--ink-soft);margin:0 0 4px;line-height:1.6;}
+.story-card .toggle{font-size:12px;color:var(--blue);font-weight:600;letter-spacing:.02em;}
+.story-card .by-line{font-size:11px;color:var(--ink-soft);margin-top:6px;}
+.empty{color:var(--ink-soft);font-size:14px;padding:16px 0;}
+.write-box{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px 18px;margin-bottom:16px;}
+.write-box h4{font-family:'Fraunces',serif;font-size:15px;margin:0 0 12px;}
+.write-box input,.write-box textarea,.write-box select{width:100%;padding:10px 14px;border-radius:10px;border:1px solid var(--border);font-size:14px;margin-bottom:10px;font-family:'Inter',sans-serif;resize:vertical;background:var(--card);color:var(--ink);}
+.write-box textarea{min-height:100px;}
+.write-box input:focus,.write-box textarea:focus{outline:none;border-color:var(--blue);}
+.write-box .hint{font-size:11px;color:var(--ink-soft);margin:-4px 0 10px;}
+.write-box button{background:var(--grad);color:#fff;border:none;padding:10px 20px;border-radius:10px;font-weight:600;font-size:13px;cursor:pointer;}
+.overlay{position:fixed;inset:0;background:rgba(20,25,40,0.45);backdrop-filter:blur(2px);display:none;align-items:center;justify-content:center;z-index:100;padding:20px;overflow-y:auto;}
+.overlay.open{display:flex;}
+.register-box{background:var(--card);border-radius:18px;padding:28px;width:100%;max-width:420px;box-shadow:0 24px 60px rgba(0,0,0,0.25);max-height:88vh;overflow-y:auto;}
+.register-box h3{font-family:'Fraunces',serif;margin:0 0 6px;font-size:20px;}
+.register-box p.sub{font-size:13px;color:var(--ink-soft);margin:0 0 18px;}
+.field{margin-bottom:12px;}
+.field label{display:block;font-size:12px;font-weight:600;color:var(--ink-soft);margin-bottom:5px;}
+.field input{width:100%;padding:10px 14px;border-radius:10px;border:1px solid var(--border);font-size:14px;font-family:'Inter',sans-serif;}
+.field input:focus{outline:none;border-color:var(--blue);}
+.photo-upload{display:flex;align-items:center;gap:12px;margin-bottom:4px;}
+.photo-preview{width:56px;height:56px;border-radius:50%;background:var(--soft);border:1px dashed var(--border);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;font-size:20px;color:var(--ink-soft);}
+.photo-preview img{width:100%;height:100%;object-fit:cover;}
+.photo-upload label.upload-btn{border:1px solid var(--border);padding:8px 14px;border-radius:999px;font-size:12px;cursor:pointer;color:var(--ink);}
+.photo-upload label.upload-btn:hover{border-color:var(--blue);color:var(--blue);}
+.photo-upload input[type=file]{display:none;}
+.register-box button.submit{width:100%;background:var(--grad);color:#fff;border:none;padding:12px;border-radius:10px;font-weight:600;font-size:14px;cursor:pointer;margin-top:4px;}
+.register-box .close-link{display:inline-block;margin-top:12px;font-size:12px;color:var(--ink-soft);cursor:pointer;text-align:center;width:100%;}
+.error-text{color:#D6432E;font-size:12px;margin:-4px 0 10px;}
+.cropper-box{background:var(--card);border-radius:18px;padding:24px;width:100%;max-width:340px;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,0.25);}
+.cropper-box h3{font-family:'Fraunces',serif;margin:0 0 14px;font-size:17px;}
+.cropper-stage{position:relative;width:240px;height:240px;margin:0 auto 14px;overflow:hidden;border-radius:16px;background:var(--bg);cursor:grab;touch-action:none;}
+.cropper-stage:active{cursor:grabbing;}
+.cropper-stage img{position:absolute;top:50%;left:50%;max-width:none;user-select:none;pointer-events:none;}
+.cropper-circle{position:absolute;inset:0;border-radius:50%;box-shadow:0 0 0 9999px rgba(27,35,51,0.55);border:2px dashed #fff;pointer-events:none;}
+.cropper-hint{font-size:11px;color:var(--ink-soft);margin:0 0 12px;}
+.cropper-zoom{width:100%;margin-bottom:14px;accent-color:var(--blue);}
+.cropper-actions{display:flex;gap:8px;}
+.cropper-actions button{flex:1;padding:10px;border-radius:10px;font-weight:600;font-size:12px;cursor:pointer;border:none;}
+.cropper-actions .submit{background:var(--grad);color:#fff;}
+.cropper-actions .cancel{background:var(--bg);color:var(--ink-soft);border:1px solid var(--border) !important;}
+.notepad{background:#fdfdfa;width:100%;max-width:520px;border-radius:20px;overflow:hidden;box-shadow:0 30px 70px rgba(0,0,0,0.35);border:1px solid #d8d8d0;}
+.notepad-titlebar{background:#ececE4;padding:8px 12px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #d8d8d0;position:relative;}
+.notepad-titlebar .close-x{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;font-size:16px;cursor:pointer;color:#5b5b52;padding:4px 8px;border-radius:12px;}
+.notepad-titlebar .close-x:hover{background:rgba(0,0,0,0.05);}
+.notepad-titlebar .filename{margin-left:6px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#5b5b52;}
+.notepad-body{padding:22px 24px 6px;max-height:55vh;overflow-y:auto;}
+.notepad-body .fak-tag{display:inline-block;font-size:10px;font-weight:600;letter-spacing:.03em;text-transform:uppercase;background:rgba(242,153,74,0.14);color:#B5651D;padding:2px 8px;border-radius:999px;margin-bottom:10px;font-family:'Inter',sans-serif;}
+.notepad-body .panduan-label{font-size:12px;font-weight:600;color:var(--blue);font-family:'Inter',sans-serif;margin-bottom:10px;display:block;}
+.notepad-body h4{font-family:'JetBrains Mono',monospace;font-size:14px;margin:0 0 14px;color:var(--ink);border-bottom:1px dashed #d8d8d0;padding-bottom:10px;}
+.notepad-body p{font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.8;color:#2b2b26;margin:0;white-space:pre-wrap;}
+.notepad-footer{padding:12px 24px 16px;display:flex;justify-content:space-between;align-items:center;}
+.notepad-footer .by{font-family:'JetBrains Mono',monospace;font-size:11px;color:#8a8a7d;}
+.notepad-footer .by b{color:var(--blue);}
+.notepad-footer .close-btn{background:none;border:1px solid #d8d8d0;padding:6px 14px;border-radius:12px;font-family:'Inter',sans-serif;font-size:12px;cursor:pointer;color:var(--ink-soft);}
+.notepad-footer .close-btn:hover{border-color:var(--blue);color:var(--blue);}
+.notepad-footer .close-btn.cta{background:var(--grad);color:#fff;border:none;border-radius:999px;font-weight:700;box-shadow:0 4px 14px rgba(62,142,99,0.25);padding:7px 18px;}
+.notepad-footer .close-btn.cta:hover{color:#fff;opacity:.9;}
+@media (max-width:520px){.profile-header{flex-direction:column;text-align:left;}}
+@media (min-width:1440px){.container,#screen-profile .container,#screen-myprofile .container{max-width:1320px;}.hero h1{font-size:50px;}}
+@media (min-width:1800px){.container,#screen-profile .container,#screen-myprofile .container{max-width:1480px;}}
+@media (max-width:900px){.topnav{padding:14px 16px;}.hero{margin:8px 10px 0;padding:28px 18px;}}
+input,textarea,select,button{border-radius:14px !important;}
+#topic-list{display:flex;flex-direction:column;gap:10px;}
+.topic-card{border-radius:16px;}
+.topic-card + .topic-card{border-top:1px solid var(--border);}
+
+.guide-hero{position:relative;margin:0 0 18px 0;border-radius:22px;padding:32px 28px;background:var(--card);color:var(--ink);overflow:hidden;border:1px solid var(--border);}
+.guide-hero::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 15% 20%,rgba(242,153,74,0.10),transparent 55%),radial-gradient(circle at 85% 80%,rgba(62,142,99,0.10),transparent 55%);}
+.guide-hero .guide-eyebrow{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-soft);font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:8px;position:relative;}
+.guide-hero .guide-eyebrow .dot{width:4px;height:4px;background:var(--orange);border-radius:50%;display:inline-block;opacity:.8;}
+.guide-hero h1{font-family:'Fraunces',serif;font-weight:600;font-size:clamp(22px,4vw,36px);margin:0 0 12px;position:relative;color:var(--ink);line-height:1.25;}
+.guide-hero .guide-desc{color:var(--ink-soft);max-width:520px;margin:0 auto 16px;font-size:14px;line-height:1.6;position:relative;}
+.guide-hero .guide-content-box{background:var(--bg);border:1px solid var(--border);border-radius:14px;padding:18px 20px;margin-top:14px;position:relative;text-align:left;}
+.guide-hero .guide-content-box p{font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.8;color:#2b2b26;margin:0;white-space:pre-wrap;}
+.guide-hero .guide-cta{display:inline-flex;align-items:center;gap:8px;margin-top:16px;background:var(--grad);color:#fff;border:none;padding:10px 22px;border-radius:999px;font-family:'Inter',sans-serif;font-weight:600;font-size:13px;cursor:pointer;position:relative;box-shadow:0 4px 14px rgba(62,142,99,0.25);transition:transform .15s ease,box-shadow .15s ease;}
+.guide-hero .guide-cta:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(62,142,99,0.32);}
+.guide-btn-major{display:inline-flex;align-items:center;gap:8px;background:var(--card);border:2px solid var(--border);color:var(--ink);padding:10px 20px;border-radius:999px;font-family:'Inter',sans-serif;font-weight:600;font-size:13px;cursor:pointer;margin-bottom:16px;transition:all .15s ease;}
+.guide-btn-major:hover{border-color:var(--blue);background:var(--soft);transform:translateY(-2px);}
+
+.guide-info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-top:14px;}
+.guide-info-card{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:10px 12px;text-align:center;}
+.guide-info-card .gi-icon{font-size:22px;display:block;margin-bottom:3px;}
+.guide-info-card .gi-label{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-soft);}
+.guide-info-card .gi-value{font-family:'Fraunces',serif;font-size:13px;font-weight:600;color:var(--ink);margin-top:2px;}
+
+/* Search & Filter */
+.search-major{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px;}
+.search-major input{flex:1;min-width:200px;padding:12px 18px;border:1px solid var(--border);border-radius:14px;font-size:14px;font-family:'Inter',sans-serif;background:var(--card);}
+.search-major input:focus{outline:none;border-color:var(--blue);}
+.search-major select{padding:12px 18px;border:1px solid var(--border);border-radius:14px;font-size:14px;font-family:'Inter',sans-serif;background:var(--card);cursor:pointer;}
+.major-count-label{font-size:13px;color:var(--ink-soft);margin-bottom:12px;display:block;}
+</style>
+</head>
+<body>
+<div class="topnav">
+<div class="brand" onclick="goHome()"><span class="mark"></span>Tinggalkan Jejak</div>
+<div id="auth-area"><button class="btn-masuk" onclick="openRegister()">Masuk</button></div>
+</div>
+
+<div class="screen active" id="screen-home">
+<div class="container">
+<div class="hero" style="margin:0 0 18px 0;">
+<div class="eyebrow"><span class="dot"></span>Ruang berbagi cerita mahasiswa<span class="dot"></span></div>
+<h1>Selamat datang di <em>Tinggalkan Jejak</em></h1>
+<p class="tag">100+ jurusan siap menunggu ceritamu. Pilih jurusan, temui orangnya, dan tinggalkan jejak pertamamu.</p>
+<span class="total-badge">🎓 100 Jurusan Tersedia</span>
+<div class="footprints"><span style="--r:-8deg">👣</span><span style="--r:6deg">👣</span><span style="--r:-4deg">👣</span><span style="--r:10deg">👣</span><span style="--r:-6deg">👣</span><span style="--r:12deg">👣</span></div>
+</div>
+
+<div class="section-label">Pilih jurusan</div>
+<div class="search-major">
+<input type="text" id="search-major-input" placeholder="🔍 Cari jurusan..." oninput="filterMajors()">
+<select id="filter-major-category" onchange="filterMajors()">
+<option value="all">Semua kategori</option>
+<option value="teknologi">💻 Teknologi & Informatika</option>
+<option value="teknik">⚙️ Teknik</option>
+<option value="kesehatan">🩺 Kesehatan & Kedokteran</option>
+<option value="sains">🔬 Sains & Matematika</option>
+<option value="sosial">🧑‍🤝‍🧑 Sosial & Humaniora</option>
+<option value="bisnis">📊 Bisnis & Ekonomi</option>
+<option value="pertanian">🌱 Pertanian & Lingkungan</option>
+<option value="seni">🎨 Seni, Desain & Media</option>
+<option value="pendidikan">📚 Pendidikan & Olahraga</option>
+<option value="pangan">🍲 Pangan & Perikanan</option>
+<option value="lainnya">🌍 Lainnya</option>
+</select>
+</div>
+<span class="major-count-label" id="major-count-label">Menampilkan <strong>100</strong> jurusan</span>
+<div class="major-grid" id="major-grid"></div>
+
+<div id="community-section" style="display:none;margin-top:48px;">
+<div class="section-label">Cerita terbaru dari komunitas</div>
+<div class="story-list" id="community-list"></div>
+</div>
+
+<div style="margin-top:48px;">
+<div class="section-label">📘 Akademik</div>
+<p class="major-sub" style="margin-top:-8px;">Materi SMA per mata pelajaran, lengkap dengan topik-topiknya.</p>
+<div class="subject-grid" id="subject-grid"></div>
+</div>
+</div>
+</div>
+
+<div class="screen" id="screen-major-guide">
+<div class="container">
+<div class="page-header">
+<button class="back-btn" id="guide-back-btn">← Kembali</button>
+<button class="exit-btn" id="guide-exit-btn" title="Tutup panduan">✕</button>
+</div>
+<div class="guide-hero">
+<div class="guide-eyebrow"><span class="dot"></span>Halaman Panduan<span class="dot"></span></div>
+<h1 id="guide-title"></h1>
+<p class="guide-desc" id="guide-desc"></p>
+<div class="guide-info-grid" id="guide-info-grid"></div>
+<div class="guide-content-box"><p id="guide-content"></p></div>
+<button class="guide-cta" id="guide-cta-btn">Lihat mahasiswa di jurusan ini →</button>
+</div>
+</div>
+</div>
+
+<div class="screen" id="screen-subject">
+<div class="container">
+<div class="page-header">
+<button class="back-btn" onclick="returnToPrevious()">← Semua mata pelajaran</button>
+<button class="exit-btn" onclick="returnToPrevious()">✕</button>
+</div>
+<div class="major-title"><span class="icon" id="subject-icon"></span><h2 id="subject-name"></h2></div>
+<p class="major-sub" id="subject-sub"></p>
+<div id="topic-list"></div>
+</div>
+</div>
+
+<div class="screen" id="screen-topic-detail">
+<div class="container">
+<div class="page-header">
+<button class="back-btn" onclick="goBackToSubject()">← Kembali ke topik</button>
+<button class="exit-btn" onclick="returnToPrevious()">✕</button>
+</div>
+<div class="major-title"><span class="icon" id="detail-topic-icon"></span><h2 id="detail-topic-name"></h2></div>
+<p class="major-sub" id="detail-topic-sub">Apa yang harus dipelajari di sini:</p>
+<div class="detail-list" id="detail-list"></div>
+</div>
+</div>
+
+<div class="screen" id="screen-major">
+<div class="container">
+<div class="page-header">
+<button class="back-btn" onclick="returnToPrevious()">← Semua jurusan</button>
+<button class="exit-btn" onclick="returnToPrevious()">✕</button>
+</div>
+<button class="guide-btn-major" onclick="openMajorGuide()">📖 Panduan Jurusan</button>
+<div class="major-title"><span class="icon" id="major-icon"></span><h2 id="major-name"></h2></div>
+<p class="major-sub" id="major-sub"></p>
+<div class="user-grid" id="user-grid"></div>
+</div>
+</div>
+
+<div class="screen" id="screen-profile">
+<div class="container">
+<div class="page-header">
+<button class="back-btn" id="back-to-major">← Kembali</button>
+<button class="exit-btn" onclick="returnToPrevious()">✕</button>
+</div>
+<div class="profile-panel">
+<div class="profile-header">
+<img id="profile-img" src="" alt="">
+<div class="profile-info">
+<span class="badge" id="profile-major"></span>
+<h2 id="profile-name"></h2>
+<p class="bio" id="profile-bio"></p>
+</div>
+<div class="profile-idbox">
+<div class="id-box">
+<div class="id-name" id="profile-id-name"></div>
+<div class="id-line" id="profile-id-angkatan"></div>
+<div class="id-line" id="profile-id-pondok"></div>
+</div>
+</div>
+</div>
+<div class="section-label">Jejak yang ditinggalkan</div>
+<div class="story-list" id="story-list"></div>
+</div>
+</div>
+</div>
+
+<div class="screen" id="screen-myprofile">
+<div class="container">
+<div class="page-header">
+<button class="back-btn" onclick="goHome()">← Beranda</button>
+<button class="exit-btn" onclick="returnToPrevious()">✕</button>
+</div>
+<div class="profile-panel">
+<div class="profile-header">
+<img id="my-img" src="" alt="">
+<div class="profile-info">
+<span class="badge" id="my-univ"></span><span class="badge" id="my-fakultas"></span>
+<h2 id="my-name"></h2>
+<p class="bio">Email: <span id="my-email"></span></p>
+</div>
+<div class="profile-idbox">
+<div class="id-box">
+<div class="id-name" id="my-id-name"></div>
+<div class="id-line" id="my-id-angkatan"></div>
+<div class="id-line" id="my-id-pondok"></div>
+</div>
+</div>
+</div>
+<div class="section-label">Tulis cerita</div>
+<div class="write-box">
+<h4>Bagikan jejakmu — orang lain bisa melihat cerita ini</h4>
+<input type="text" id="new-story-title" placeholder="Judul cerita, misal: Hari pertama jadi maba">
+<textarea id="new-story-content" placeholder="Tulis ceritanya di sini..."></textarea>
+<select id="new-story-fakultas" onchange="handleFakultasSelectChange()">
+<option value="">Tidak ditujukan ke jurusan tertentu (opsional)</option>
+</select>
+<input type="text" id="new-story-fakultas-other" placeholder="Tulis nama jurusannya" style="display:none;margin-top:8px;">
+<div class="hint">Kolom jurusan ini opsional, isi kalau ceritamu relevan buat jurusan tertentu.</div>
+<div class="hint">Cerita akan tampil ke publik setelah dikonfirmasi admin.</div>
+<button onclick="submitMyStory()">Simpan &amp; kirim cerita</button>
+</div>
+<div class="section-label">Cerita yang sudah kamu tulis</div>
+<div class="story-list" id="my-story-list"></div>
+</div>
+</div>
+</div>
+
+<div class="overlay" id="overlay-register">
+<div class="register-box">
+<h3>Buat akun</h3>
+<p class="sub">Lengkapi datamu buat mulai nulis dan baca jejak orang lain.</p>
+<div class="photo-upload">
+<div class="photo-preview" id="reg-photo-preview">📷</div>
+<label class="upload-btn">Unggah foto<input type="file" accept="image/*" id="reg-photo" onchange="handlePhotoSelect(event,'reg')"></label>
+</div>
+<div class="field"><label>Email</label><input type="email" id="reg-email" placeholder="nama@email.com"></div>
+<div class="field"><label>Nama lengkap</label><input type="text" id="reg-nama" placeholder="Nama lengkap kamu"></div>
+<div class="field"><label>Nama angkatan</label><input type="text" id="reg-angkatan" placeholder="misal: Angkatan 22"></div>
+<div class="field"><label>Kapan lulus</label><input type="text" id="reg-pondok" placeholder="misal: Juni 2022"></div>
+<div class="field"><label>Fakultas/Jurusan</label><input type="text" id="reg-fakultas" placeholder="misal: Teknik Informatika"></div>
+<div class="field"><label>Universitas</label><input type="text" id="reg-univ" placeholder="misal: Universitas Indonesia"></div>
+<div class="error-text" id="reg-error" style="display:none;"></div>
+<button class="submit" onclick="submitRegister()">Buat akun</button>
+<div class="close-link" onclick="closeRegister()">Batal</div>
+</div>
+</div>
+
+<div class="overlay" id="overlay-edit">
+<div class="register-box">
+<h3>Edit profil</h3>
+<p class="sub">Perbarui data akunmu.</p>
+<div class="photo-upload">
+<div class="photo-preview" id="edit-photo-preview">📷</div>
+<label class="upload-btn">Ganti foto<input type="file" accept="image/*" id="edit-photo" onchange="handlePhotoSelect(event,'edit')"></label>
+</div>
+<div class="field"><label>Email</label><input type="email" id="edit-email" placeholder="nama@email.com"></div>
+<div class="field"><label>Nama lengkap</label><input type="text" id="edit-nama" placeholder="Nama lengkap kamu"></div>
+<div class="field"><label>Nama angkatan</label><input type="text" id="edit-angkatan" placeholder="misal: Angkatan 22"></div>
+<div class="field"><label>Kapan lulus</label><input type="text" id="edit-pondok" placeholder="misal: Juni 2022"></div>
+<div class="field"><label>Fakultas/Jurusan</label><input type="text" id="edit-fakultas" placeholder="misal: Teknik Informatika"></div>
+<div class="field"><label>Universitas</label><input type="text" id="edit-univ" placeholder="misal: Universitas Indonesia"></div>
+<div class="error-text" id="edit-error" style="display:none;"></div>
+<button class="submit" onclick="submitEditProfile()">Simpan perubahan</button>
+<div class="close-link" onclick="closeEdit()">Batal</div>
+</div>
+</div>
+
+<div class="overlay" id="overlay-cropper">
+<div class="cropper-box">
+<h3>🎯 Atur foto profil</h3>
+<div class="cropper-stage" id="cropper-stage">
+<img id="cropper-img" src="" alt="">
+<div class="cropper-circle"></div>
+</div>
+<p class="cropper-hint">Geser gambarnya, dan pakai slider buat zoom sampai pas di bulatan.</p>
+<input type="range" class="cropper-zoom" id="cropper-zoom" min="100" max="300" value="100">
+<div class="cropper-actions">
+<button class="submit" onclick="confirmCrop()">Gunakan foto ini</button>
+<button class="cancel" onclick="closeCropper()">Batal</button>
+</div>
+</div>
+</div>
+
+<div class="overlay" id="overlay-notepad">
+<div class="notepad">
+<div class="notepad-titlebar">
+<span class="filename" id="notepad-filename">kisah.txt</span>
+<button class="close-x" onclick="closeNotepad()">✕</button>
+</div>
+<div class="notepad-body">
+<span class="fak-tag" id="notepad-fak" style="display:none;"></span>
+<span class="panduan-label" id="notepad-panduan-label" style="display:none;">📘 panduan (sesuai jurusan)</span>
+<h4 id="notepad-title"></h4>
+<p id="notepad-content"></p>
+</div>
+<div class="notepad-footer">
+<span class="by">by <b id="notepad-by"></b></span>
+<button class="close-btn" id="notepad-close-btn" onclick="closeNotepad()">Tutup</button>
+</div>
+</div>
+</div>
+
+<script>
+// =============================================
+// 100 JURUSAN - DATA LENGKAP
+// =============================================
+const MAJORS_DATA = {
+// === TEKNOLOGI & INFORMATIKA (12) ===
+ti:{name:"Teknik Informatika",icon:"💻",category:"teknologi",users:[],guide:{title:"Teknik Informatika: Fondasi Logika dan Kreativitas Digital",desc:"Jurusan yang mempelajari pemrograman, algoritma, dan pengembangan sistem digital.",durasi:"4 tahun",gelar:"S.Kom",kampus:"UI, ITB, UGM, ITS",biaya:"~7-15 jt/thn",content:"📘 MATERI INTI:\n• Dasar pemrograman (Python/Java/C++)\n• Struktur data & algoritma\n• Matematika diskrit & logika\n• Basis data (SQL & NoSQL)\n• Jaringan komputer & keamanan\n• Sistem operasi\n• Rekayasa perangkat lunak\n\n🛠️ KETERAMPILAN:\n• Problem solving dengan kode\n• Analisis sistem & desain\n• Manajemen proyek IT\n• Debugging & testing\n• Komunikasi teknis\n\n💼 PROSPEK KARIR:\n• Software engineer\n• Data scientist\n• DevOps engineer\n• IT consultant\n• Startup founder\n\n💡 TIPS SUKSES:\n• Kuasai logika pemrograman dari awal\n• Ikuti kompetisi coding\n• Bangun portofolio proyek\n• Jangan takut bug, itu guru terbaik"}},
+sisfo:{name:"Sistem Informasi",icon:"🗄️",category:"teknologi",users:[],guide:{title:"Sistem Informasi: Menjembatani Teknologi dan Bisnis",desc:"Jurusan yang mempelajari analisis, desain, dan implementasi sistem informasi.",durasi:"4 tahun",gelar:"S.Kom",kampus:"UI, BINUS, UGM",biaya:"~6-12 jt/thn",content:"📘 MATERI INTI:\n• Analisis & desain sistem\n• Basis data & SQL\n• Pemrograman web\n• Manajemen proyek IT\n• UX/UI design\n• Business intelligence\n\n🛠️ KETERAMPILAN:\n• Business process modeling\n• Sistem analisis\n• Manajemen proyek\n• Komunikasi bisnis-teknis\n\n💼 PROSPEK KARIR:\n• IT business analyst\n• System analyst\n• ERP consultant\n• Product manager\n\n💡 TIPS SUKSES:\n• Pahami proses bisnis\n• Kuasai SQL & data modeling\n• Belajar agile methodology"}},
+teknologiinformasi:{name:"Teknologi Informasi",icon:"🖥️",category:"teknologi",users:[],guide:{title:"Teknologi Informasi: Mengelola Infrastruktur Digital",desc:"Jurusan yang mempelajari manajemen sistem IT, jaringan, dan infrastruktur digital.",durasi:"4 tahun",gelar:"S.T.",kampus:"UI, ITB, ITS",biaya:"~6-12 jt/thn",content:"📘 MATERI INTI:\n• Administrasi server & cloud\n• Jaringan komputer & keamanan\n• Database management\n• IT support & troubleshooting\n• Virtualisasi & containerization\n\n🛠️ KETERAMPILAN:\n• Network configuration\n• Server administration\n• Cloud computing\n• Troubleshooting sistematis\n\n💼 PROSPEK KARIR:\n• Network engineer\n• System administrator\n• Cloud engineer\n• IT support specialist\n\n💡 TIPS SUKSES:\n• Kuasai Linux & command line\n• Pahami jaringan dari dasar\n• Ikuti perkembangan cloud"}},
+cybersecurity:{name:"Cyber Security",icon:"🔐",category:"teknologi",users:[],guide:{title:"Cyber Security: Menjaga Dunia Digital",desc:"Jurusan yang mempelajari keamanan sistem, proteksi data, dan etika hacking.",durasi:"4 tahun",gelar:"S.T.",kampus:"UI, ITB, ITS",biaya:"~7-14 jt/thn",content:"📘 MATERI INTI:\n• Jaringan & protokol keamanan\n• Kriptografi & enkripsi\n• Ethical hacking & pentesting\n• Analisis malware\n• Forensik digital\n\n🛠️ KETERAMPILAN:\n• Vulnerability assessment\n• Security auditing\n• Incident response\n• Cryptography implementation\n\n💼 PROSPEK KARIR:\n• Security analyst\n• Penetration tester\n• Security engineer\n• CISO\n\n💡 TIPS SUKSES:\n• Mulai dengan CTF\n• Kuasai Linux & jaringan\n• Ikuti ethical hacking course"}},
+sainsdata:{name:"Sains Data",icon:"💽",category:"teknologi",users:[],guide:{title:"Sains Data: Menemukan Cerita di Balik Angka",desc:"Jurusan yang mempelajari analisis data, machine learning, dan visualisasi informasi.",durasi:"4 tahun",gelar:"S.Si",kampus:"UI, ITB, IPB",biaya:"~7-15 jt/thn",content:"📘 MATERI INTI:\n• Statistika & probabilitas\n• Pemrograman Python & R\n• Machine learning dasar\n• Data visualization\n• Big data & cloud\n\n🛠️ KETERAMPILAN:\n• Data wrangling\n• Model building\n• Data storytelling\n• SQL querying\n\n💼 PROSPEK KARIR:\n• Data scientist\n• Data analyst\n• BI developer\n• ML engineer\n\n💡 TIPS SUKSES:\n• Kuasai Python & pandas\n• Pahami statistika\n• Ikuti kompetisi Kaggle"}},
+ai:{name:"Kecerdasan Buatan",icon:"🤖",category:"teknologi",users:[],guide:{title:"Kecerdasan Buatan: Membangun Mesin yang Berpikir",desc:"Jurusan yang mempelajari AI, machine learning, dan pengembangan sistem cerdas.",durasi:"4 tahun",gelar:"S.T.",kampus:"UI, ITB, UGM",biaya:"~7-15 jt/thn",content:"📘 MATERI INTI:\n• Linear algebra & kalkulus\n• Machine & deep learning\n• Neural networks & CNN\n• Natural Language Processing\n• Computer vision\n\n🛠️ KETERAMPILAN:\n• Model training & deployment\n• Data preprocessing\n• Algorithm design\n• Model evaluation\n\n💼 PROSPEK KARIR:\n• AI engineer\n• ML engineer\n• Data scientist\n• NLP specialist\n\n💡 TIPS SUKSES:\n• Kuasai matematika\n• Pahami Python & TensorFlow\n• Baca paper AI"}},
+gamedev:{name:"Game Development",icon:"🎮",category:"teknologi",users:[],guide:{title:"Game Development: Menciptakan Dunia Virtual",desc:"Jurusan yang mempelajari pengembangan game, desain interaktif, dan produksi media.",durasi:"4 tahun",gelar:"S.Kom",kampus:"BINUS, ITB, UI",biaya:"~8-18 jt/thn",content:"📘 MATERI INTI:\n• Pemrograman game (C#, C++)\n• Game engine (Unity, Unreal)\n• Game design & mechanics\n• 3D modeling & animasi\n• Level design\n\n🛠️ KETERAMPILAN:\n• Game programming\n• Game testing\n• UI/UX game design\n• Team collaboration\n\n💼 PROSPEK KARIR:\n• Game developer\n• Game designer\n• Unity/Unreal developer\n• Indie game creator\n\n💡 TIPS SUKSES:\n• Kuasai C# & Unity\n• Ikuti game jams\n• Bangun portofolio game"}},
+cloudcomputing:{name:"Cloud Computing",icon:"☁️",category:"teknologi",users:[],guide:{title:"Cloud Computing: Arsitektur Digital Modern",desc:"Jurusan yang mempelajari arsitektur cloud, layanan, dan infrastruktur digital modern.",durasi:"4 tahun",gelar:"S.T.",kampus:"UI, ITB, BINUS",biaya:"~7-14 jt/thn",content:"📘 MATERI INTI:\n• Arsitektur cloud (AWS/Azure/GCP)\n• Virtualisasi & container\n• Cloud security\n• DevOps & CI/CD\n• Infrastructure as Code\n\n🛠️ KETERAMPILAN:\n• Cloud deployment\n• Infrastructure management\n• Security compliance\n• Cost optimization\n\n💼 PROSPEK KARIR:\n• Cloud engineer\n• DevOps engineer\n• Cloud architect\n• SRE\n\n💡 TIPS SUKSES:\n• Kuasai Linux & networking\n• Pahami layanan cloud utama\n• Dapatkan sertifikasi cloud"}},
+iot:{name:"Internet of Things",icon:"📶",category:"teknologi",users:[],guide:{title:"Internet of Things: Menghubungkan Dunia",desc:"Jurusan yang mempelajari perangkat terhubung, sensor, dan sistem IoT.",durasi:"4 tahun",gelar:"S.T.",kampus:"ITB, UI, ITS",biaya:"~6-14 jt/thn",content:"📘 MATERI INTI:\n• Sensor & aktuator\n• Mikrokontroler (Arduino/ESP)\n• Jaringan IoT (LoRa, MQTT)\n• Cloud IoT\n• Embedded systems\n\n🛠️ KETERAMPILAN:\n• Hardware programming\n• Sensor integration\n• Data collection\n• System design\n\n💼 PROSPEK KARIR:\n• IoT engineer\n• Embedded developer\n• Smart city specialist\n• Industrial IoT engineer\n\n💡 TIPS SUKSES:\n• Kuasai Arduino & ESP\n• Pahami protokol IoT\n• Bangun proyek IoT sederhana"}},
+blockchain:{name:"Blockchain",icon:"⛓️",category:"teknologi",users:[],guide:{title:"Blockchain: Teknologi Desentralisasi",desc:"Jurusan yang mempelajari teknologi blockchain, kriptografi, dan aplikasi terdesentralisasi.",durasi:"4 tahun",gelar:"S.T.",kampus:"UI, ITB, BINUS",biaya:"~7-15 jt/thn",content:"📘 MATERI INTI:\n• Dasar blockchain\n• Kriptografi & hashing\n• Smart contracts\n• Ethereum & Solidity\n• Web3 & dApps\n\n🛠️ KETERAMPILAN:\n• Smart contract development\n• Solidity programming\n• DApp architecture\n• Cryptography understanding\n\n💼 PROSPEK KARIR:\n• Blockchain developer\n• Smart contract engineer\n• Web3 developer\n• Crypto analyst\n\n💡 TIPS SUKSES:\n• Pahami kriptografi dasar\n• Kuasai Solidity\n• Ikuti perkembangan DeFi"}},
+devops:{name:"DevOps",icon:"🔄",category:"teknologi",users:[],guide:{title:"DevOps: Otomatisasi dan Kolaborasi",desc:"Jurusan yang mempelajari praktik DevOps, CI/CD, dan otomatisasi infrastruktur.",durasi:"4 tahun",gelar:"S.T.",kampus:"UI, ITB, BINUS",biaya:"~6-14 jt/thn",content:"📘 MATERI INTI:\n• Version control (Git)\n• CI/CD pipelines\n• Containerization (Docker)\n• Orchestration (Kubernetes)\n• Infrastructure as Code\n• Monitoring & logging\n\n🛠️ KETERAMPILAN:\n• Pipeline automation\n• Container management\n• Cloud deployment\n• Monitoring setup\n\n💼 PROSPEK KARIR:\n• DevOps engineer\n• SRE\n• Cloud engineer\n• Automation engineer\n\n💡 TIPS SUKSES:\n• Kuasai Git & Docker\n• Pahami CI/CD tools\n• Belajar Kubernetes"}},
+uiux:{name:"UI/UX Design",icon:"🎨",category:"teknologi",users:[],guide:{title:"UI/UX Design: Merancang Pengalaman Digital",desc:"Jurusan yang mempelajari desain antarmuka dan pengalaman pengguna.",durasi:"4 tahun",gelar:"S.Ds",kampus:"BINUS, ITB, UI",biaya:"~6-16 jt/thn",content:"📘 MATERI INTI:\n• Dasar desain & estetika\n• User research\n• Wireframing & prototyping\n• Usability testing\n• Design thinking\n• Tools (Figma, Adobe XD)\n\n🛠️ KETERAMPILAN:\n• User research\n• Prototyping\n• Visual design\n• Design thinking\n• Usability testing\n\n💼 PROSPEK KARIR:\n• UI/UX designer\n• Product designer\n• UX researcher\n• Interaction designer\n\n💡 TIPS SUKSES:\n• Kuasai Figma\n• Pelajari design thinking\n• Bangun portofolio"}},
+
+// === TEKNIK (18) ===
+elektro:{name:"Teknik Elektro",icon:"🔌",category:"teknik",users:[],guide:{title:"Teknik Elektro: Mengalirkan Energi dan Informasi",desc:"Jurusan yang mempelajari kelistrikan, elektronika, sistem kendali, dan telekomunikasi.",durasi:"4 tahun",gelar:"S.T.",kampus:"ITB, UI, UGM, ITS",biaya:"~5-12 jt/thn",content:"📘 MATERI INTI:\n• Rangkaian listrik\n• Elektronika analog & digital\n• Sistem tenaga listrik\n• Teknik kendali\n• Pemrograman mikrokontroler\n• Sinyal & sistem\n\n🛠️ KETERAMPILAN:\n• Circuit design\n• Embedded system\n• Power system analysis\n• Control system design\n\n💼 PROSPEK KARIR:\n• Power engineer\n• Electronics engineer\n• Control system engineer\n• Telecom engineer\n\n💡 TIPS SUKSES:\n• Kuasai matematika\n• Pahami rangkaian listrik\n• Belajar Arduino"}},
+mesin:{name:"Teknik Mesin",icon:"⚙️",category:"teknik",users:[],guide:{title:"Teknik Mesin: Merancang Mesin Penggerak Dunia",desc:"Jurusan yang mempelajari desain, analisis, dan manufaktur sistem mekanik.",durasi:"4 tahun",gelar:"S.T.",kampus:"ITB, UI, UGM, ITS",biaya:"~5-12 jt/thn",content:"📘 MATERI INTI:\n• Mekanika teknik & statika\n• Termodinamika\n• Mekanika fluida\n• Desain mesin & CAD\n• Material teknik\n• Manufaktur & produksi\n\n🛠️ KETERAMPILAN:\n• Mechanical design\n• Thermal analysis\n• CAD & CAM\n• Material selection\n\n💼 PROSPEK KARIR:\n• Mechanical engineer\n• Manufacturing engineer\n• Automotive engineer\n• Energy engineer\n\n💡 TIPS SUKSES:\n• Kuasai AutoCAD & SolidWorks\n• Pahami termodinamika\n• Internship di pabrik"}},
+sipil:{name:"Teknik Sipil",icon:"🏗️",category:"teknik",users:[],guide:{title:"Teknik Sipil: Membangun Peradaban",desc:"Jurusan yang mempelajari perencanaan, desain, dan konstruksi infrastruktur.",durasi:"4 tahun",gelar:"S.T.",kampus:"ITB, UI, UGM, ITS",biaya:"~5-12 jt/thn",content:"📘 MATERI INTI:\n• Mekanika teknik & statika\n• Mekanika fluida & hidrolika\n• Ilmu bahan bangunan\n• Gambar teknik & CAD\n• Geologi teknik\n• Manajemen proyek\n\n🛠️ KETERAMPILAN:\n• Structural design\n• Project planning\n• Construction supervision\n• Material testing\n\n💼 PROSPEK KARIR:\n• Civil engineer\n• Construction manager\n• Structural consultant\n• Project planner\n\n💡 TIPS SUKSES:\n• Kuasai mekanika struktur\n• Belajar SAP2000/ETABS\n• Ikuti proyek infrastruktur"}},
+robotika:{name:"Robotika & Mekatronika",icon:"🦾",category:"teknik",users:[],guide:{title:"Robotika & Mekatronika: Menggabungkan Mesin dan Otak",desc:"Jurusan yang mempelajari desain robot, sistem otomasi, dan mekatronika.",durasi:"4 tahun",gelar:"S.T.",kampus:"ITB, UI, ITS",biaya:"~7-15 jt/thn",content:"📘 MATERI INTI:\n• Mekanika & kinematika robot\n• Elektronika & mikrokontroler\n• Pemrograman robot (ROS)\n• Sensor & aktuator\n• Computer vision\n• Sistem kendali\n\n🛠️ KETERAMPILAN:\n• Robot design\n• Sensor integration\n• Control programming\n• Prototyping\n\n💼 PROSPEK KARIR:\n• Robotics engineer\n• Automation engineer\n• IoT developer\n• Industrial automation\n\n💡 TIPS SUKSES:\n• Kuasai Arduino & ROS\n• Ikuti kompetisi robotika\n• Pahami mekanika dasar"}},
+geodesi:{name:"Teknik Geodesi",icon:"🛰️",category:"teknik",users:[],guide:{title:"Teknik Geodesi: Memetakan Dunia dengan Presisi",desc:"Jurusan yang mempelajari pengukuran, pemetaan, dan pemrosesan data kebumian.",durasi:"4 tahun",gelar:"S.T.",kampus:"ITB, UGM, ITS",biaya:"~5-12 jt/thn",content:"📘 MATERI INTI:\n• Pengukuran tanah & survei\n• Sistem Informasi Geografis (SIG)\n• Penginderaan jauh\n• GPS & GNSS\n• Kartografi digital\n• Pemetaan 3D\n\n🛠️ KETERAMPILAN:\n• Surveying & mapping\n• GIS analysis\n• Remote sensing\n• Spatial data processing\n\n💼 PROSPEK KARIR:\n• Geodetic engineer\n• GIS analyst\n• Remote sensing specialist\n• Land surveyor\n\n💡 TIPS SUKSES:\n• Kuasai ArcGIS/QGIS\n• Pahami penginderaan jauh\n• Ikuti praktik lapangan"}},
+arsitektur:{name:"Arsitektur",icon:"🏛️",category:"teknik",users:[],guide:{title:"Arsitektur: Merancang Ruang untuk Kehidupan",desc:"Jurusan yang mempelajari desain bangunan, perencanaan ruang, dan estetika arsitektur.",durasi:"4-5 tahun",gelar:"S.Ars",kampus:"ITB, UI, UGM, UNPAR",biaya:"~7-18 jt/thn",content:"📘 MATERI INTI:\n• Dasar desain & estetika\n• Gambar teknik & CAD\n• Sejarah arsitektur\n• Struktur bangunan\n• Teori ruang & kota\n• Material & konstruksi\n\n🛠️ KETERAMPILAN:\n• Architectural design\n• 3D modeling (SketchUp/Revit)\n• Render visualisasi\n• Model making\n\n💼 PROSPEK KARIR:\n• Architect\n• Urban planner\n• Interior architect\n• Landscape architect\n\n💡 TIPS SUKSES:\n• Kuasai desain manual & digital\n• Ikuti studio arsitektur\n• Bangun portofolio desain"}},
+teknikkimia:{name:"Teknik Kimia",icon:"🧪",category:"teknik",users:[],guide:{title:"Teknik Kimia: Mengubah Bahan Menjadi Produk Bernilai",desc:"Jurusan yang mempelajari proses kimia, reaktor, dan desain pabrik.",durasi:"4 tahun",gelar:"S.T.",kampus:"ITB, UI, UGM, ITS",biaya:"~5-12 jt/thn",content:"📘 MATERI INTI:\n• Proses & reaktor kimia\n• Termodinamika\n• Transport phenomena\n• Desain pabrik\n• Proses pemisahan\n• Keselamatan\n\n🛠️ KETERAMPILAN:\n• Process design\n• Plant operation\n• Quality control\n• Safety management\n\n💼 PROSPEK KARIR:\n• Proses engineer\n• Plant manager\n• Quality engineer\n• Consultant\n\n💡 TIPS SUKSES:\n• Kuasai matematika & fisika\n• Pahami termodinamika\n• Pelajari safety"}},
+teknikindustri:{name:"Teknik Industri",icon:"🏭",category:"teknik",users:[],guide:{title:"Teknik Industri: Optimasi Sistem Produksi",desc:"Jurusan yang mempelajari optimasi proses, manajemen operasi, dan supply chain.",durasi:"4 tahun",gelar:"S.T.",kampus:"ITB, UI, UGM, ITS",biaya:"~5-12 jt/thn",content:"📘 MATERI INTI:\n• Analisis sistem kerja\n• Manajemen operasi\n• Supply chain\n• Pengendalian kualitas\n• Riset operasi\n• Ergonomi\n\n🛠️ KETERAMPILAN:\n• Process improvement\n• Data analysis\n• Supply chain\n• Quality control\n\n💼 PROSPEK KARIR:\n• Industrial engineer\n• Quality manager\n• Supply chain analyst\n• Consultant\n\n💡 TIPS SUKSES:\n• Kuasai statistik & data\n• Pelajari sistem kerja\n• Ikuti magang industri"}},
+tekniklingkungan:{name:"Teknik Lingkungan",icon:"♻️",category:"teknik",users:[],guide:{title:"Teknik Lingkungan: Solusi untuk Bumi yang Lebih Hijau",desc:"Jurusan yang mempelajari pengolahan limbah, konservasi air, dan teknologi ramah lingkungan.",durasi:"4 tahun",gelar:"S.T.",kampus:"ITB, UI, UGM, ITS",biaya:"~5-12 jt/thn",content:"📘 MATERI INTI:\n• Pengolahan air & limbah\n• Manajemen sampah\n• Kualitas udara\n• Konservasi air\n• Analisis dampak\n• Energi terbarukan\n\n🛠️ KETERAMPILAN:\n• Water treatment\n• Waste management\n• Environmental impact\n• Sustainability\n\n💼 PROSPEK KARIR:\n• Environmental engineer\n• Water treatment specialist\n• Waste manager\n• Sustainability consultant\n\n💡 TIPS SUKSES:\n• Pahami siklus air & limbah\n• Kuasai teknologi pengolahan\n• Ikuti proyek lingkungan"}},
+tekniknuklir:{name:"Teknik Nuklir",icon:"☢️",category:"teknik",users:[],guide:{title:"Teknik Nuklir: Energi dan Medis dari Atom",desc:"Jurusan yang mempelajari reaktor nuklir, radiasi, dan aplikasinya.",durasi:"4 tahun",gelar:"S.T.",kampus:"ITB, UI, UGM",biaya:"~5-12 jt/thn",content:"📘 MATERI INTI:\n• Fisika nuklir & radiasi\n• Reaktor nuklir\n• Proteksi radiasi\n• Aplikasi medis\n• Manajemen limbah\n• Keselamatan\n\n🛠️ KETERAMPILAN:\n• Radiation safety\n• Nuclear analysis\n• Medical application\n• Reactor operation\n\n💼 PROSPEK KARIR:\n• Nuclear engineer\n• Health physicist\n• Medical physicist\n• Researcher\n\n💡 TIPS SUKSES:\n• Kuasai fisika & matematika\n• Pahami proteksi radiasi\n• Ikuti pelatihan keselamatan"}},
+teknikmaterial:{name:"Teknik Material",icon:"🔩",category:"teknik",users:[],guide:{title:"Teknik Material: Menciptakan Material Masa Depan",desc:"Jurusan yang mempelajari struktur, sifat, dan aplikasi material.",durasi:"4 tahun",gelar:"S.T.",kampus:"ITB, UI, UGM",biaya:"~5-12 jt/thn",content:"📘 MATERI INTI:\n• Struktur kristal & atomik\n• Sifat mekanik material\n• Metalurgi & keramik\n• Polimer & komposit\n• Korosi & perlindungan\n• Karakterisasi material\n\n🛠️ KETERAMPILAN:\n• Material analysis\n• Mechanical testing\n• Microscopy\n• Quality control\n\n💼 PROSPEK KARIR:\n• Material engineer\n• Metallurgist\n• Quality engineer\n• Researcher\n\n💡 TIPS SUKSES:\n• Kuasai struktur & sifat material\n• Pelajari teknik karakterisasi\n• Ikuti riset material"}},
+teknikbiomedis:{name:"Teknik Biomedis",icon:"🫀",category:"teknik",users:[],guide:{title:"Teknik Biomedis: Teknologi untuk Kesehatan",desc:"Jurusan yang mempelajari alat kesehatan, image processing, dan biomekanika.",durasi:"4 tahun",gelar:"S.T.",kampus:"UI, ITB, UGM",biaya:"~5-12 jt/thn",content:"📘 MATERI INTI:\n• Dasar biologi & fisiologi\n• Alat kesehatan (diagnostik)\n• Instrumentasi medis\n• Image processing\n• Biomekanika\n• Biomaterial\n\n🛠️ KETERAMPILAN:\n• Medical device design\n• Signal processing\n• Image analysis\n• Research\n\n💼 PROSPEK KARIR:\n• Biomedical engineer\n• Medical device developer\n• Clinical engineer\n• Researcher\n\n💡 TIPS SUKSES:\n• Kuasai elektronika & programming\n• Pahami fisiologi manusia\n• Ikuti magang RS"}},
+teknikpangan:{name:"Teknik Pangan",icon:"🍲",category:"teknik",users:[],guide:{title:"Teknik Pangan: Teknologi untuk Makanan Sehat",desc:"Jurusan yang mempelajari pengolahan, pengawetan, dan distribusi pangan.",durasi:"4 tahun",gelar:"S.T.",kampus:"IPB, UGM, UI, UNPAD",biaya:"~5-12 jt/thn",content:"📘 MATERI INTI:\n• Kimia & mikrobiologi pangan\n• Proses pengawetan\n• Enzim & fermentasi\n• Teknologi produksi\n• Pengemasan\n• Keamanan pangan\n\n🛠️ KETERAMPILAN:\n• Food processing\n• Quality control\n• Microbiological analysis\n• Food safety\n\n💼 PROSPEK KARIR:\n• Food engineer\n• Quality control specialist\n• Product developer\n• Food safety officer\n\n💡 TIPS SUKSES:\n• Kuasai kimia & mikrobiologi\n• Pelajari teknologi pengawetan\n• Ikuti magang industri"}},
+teknikbioenergi:{name:"Teknik Bioenergi",icon:"⚡",category:"teknik",users:[],guide:{title:"Teknik Bioenergi: Energi dari Biomassa",desc:"Jurusan yang mempelajari konversi biomassa menjadi energi dan bahan bakar.",durasi:"4 tahun",gelar:"S.T.",kampus:"ITB, UI, UGM",biaya:"~5-12 jt/thn",content:"📘 MATERI INTI:\n• Biomassa & sumber energi\n• Proses termokimia\n• Fermentasi & biokonversi\n• Biodiesel & bioetanol\n• Biogas & gasifikasi\n• Teknologi hijau\n\n🛠️ KETERAMPILAN:\n• Energy conversion\n• Fermentation\n• Gasification\n• Process design\n\n💼 PROSPEK KARIR:\n• Bioenergy engineer\n• Renewable energy specialist\n• Researcher\n• Policy advisor\n\n💡 TIPS SUKSES:\n• Kuasai kimia & proses\n• Pahami fermentasi\n• Ikuti riset energi terbarukan"}},
+tekniktelekomunikasi:{name:"Teknik Telekomunikasi",icon:"📡",category:"teknik",users:[],guide:{title:"Teknik Telekomunikasi: Jaringan untuk Dunia Digital",desc:"Jurusan yang mempelajari sistem komunikasi, jaringan, dan gelombang.",durasi:"4 tahun",gelar:"S.T.",kampus:"ITB, UI, UGM",biaya:"~5-12 jt/thn",content:"📘 MATERI INTI:\n• Gelombang & sistem komunikasi\n• Jaringan digital\n• Fiber optik\n• Telekomunikasi nirkabel\n• 5G & IoT\n• Pemrosesan sinyal\n\n🛠️ KETERAMPILAN:\n• Network design\n• Communication analysis\n• Signal processing\n• Wireless engineering\n\n💼 PROSPEK KARIR:\n• Telecommunication engineer\n• Network engineer\n• RAN engineer\n• IoT specialist\n\n💡 TIPS SUKSES:\n• Kuasai matematika & sinyal\n• Pahami jaringan dasar\n• Ikuti perkembangan 5G"}},
+teknikperkapalan:{name:"Teknik Perkapalan",icon:"🚢",category:"teknik",users:[],guide:{title:"Teknik Perkapalan: Merancang Kapal dan Struktur Laut",desc:"Jurusan yang mempelajari desain, konstruksi, dan perawatan kapal.",durasi:"4 tahun",gelar:"S.T.",kampus:"ITS, UI, ITB",biaya:"~5-12 jt/thn",content:"📘 MATERI INTI:\n• Desain kapal\n• Struktur kapal\n• Hidrodinamika\n• Sistem propulsi\n• Material kapal\n• Keselamatan laut\n\n🛠️ KETERAMPILAN:\n• Ship design\n• Hydrodynamics\n• Structural analysis\n• Marine engineering\n\n💼 PROSPEK KARIR:\n• Naval architect\n• Marine engineer\n• Shipyard manager\n• Offshore engineer\n\n💡 TIPS SUKSES:\n• Kuasai hidrodinamika\n• Pahami struktur kapal\n• Ikuti magang di galangan kapal"}},
+teknikdirgantara:{name:"Teknik Dirgantara",icon:"✈️",category:"teknik",users:[],guide:{title:"Teknik Dirgantara: Merancang Pesawat dan Sistem Penerbangan",desc:"Jurusan yang mempelajari desain, analisis, dan manufaktur pesawat terbang.",durasi:"4 tahun",gelar:"S.T.",kampus:"ITB, UI, UGM",biaya:"~6-14 jt/thn",content:"📘 MATERI INTI:\n• Aerodinamika\n• Mekanika penerbangan\n• Propulsi pesawat\n• Struktur pesawat\n• Avionik\n• Sistem kendali penerbangan\n\n🛠️ KETERAMPILAN:\n• Aerodynamics analysis\n• Aircraft design\n• Propulsion system\n• Flight mechanics\n\n💼 PROSPEK KARIR:\n• Aerospace engineer\n• Aircraft designer\n• Propulsion engineer\n• Aviation consultant\n\n💡 TIPS SUKSES:\n• Kuasai aerodinamika\n• Pahami mekanika penerbangan\n• Ikuti proyek pesawat"}},
+
+// === KEDOKTERAN & KESEHATAN (10) ===
+kedokteran:{name:"Kedokteran",icon:"🩺",category:"kesehatan",users:[],guide:{title:"Kedokteran: Perjalanan Menuju Profesi Penyembuh",desc:"Jurusan yang mempelajari ilmu kesehatan, diagnosis, dan pengobatan penyakit manusia.",durasi:"6 tahun",gelar:"dr.",kampus:"UI, UGM, UNPAD, UNAIR",biaya:"~10-30 jt/thn",content:"📘 MATERI INTI:\n• Anatomi & fisiologi\n• Kimia dasar & organik\n• Patologi & farmakologi\n• Diagnosis & terapi\n• Etika kedokteran\n• Komunikasi pasien\n\n🛠️ KETERAMPILAN:\n• Clinical diagnosis\n• Medical communication\n• Emergency response\n• Surgical skills\n\n💼 PROSPEK KARIR:\n• Dokter umum\n• Dokter spesialis\n• Peneliti medis\n• Dosen\n• Healthcare administrator\n\n💡 TIPS SUKSES:\n• Persiapkan mental & fisik\n• Kuasai biologi & kimia\n• Latih komunikasi pasien"}},
+kedgigi:{name:"Kedokteran Gigi",icon:"🦷",category:"kesehatan",users:[],guide:{title:"Kedokteran Gigi: Senyum Sehat untuk Semua",desc:"Jurusan yang mempelajari kesehatan mulut, gigi, dan rahang manusia.",durasi:"5 tahun",gelar:"drg.",kampus:"UI, UGM, UNPAD, UNAIR",biaya:"~10-25 jt/thn",content:"📘 MATERI INTI:\n• Anatomi kepala & leher\n• Biologi oral\n• Material kedokteran gigi\n• Konservasi gigi\n• Ortodonti\n• Bedah mulut dasar\n\n🛠️ KETERAMPILAN:\n• Dental examination\n• Patient management\n• Dental procedures\n• Communication\n\n💼 PROSPEK KARIR:\n• Dokter gigi umum\n• Dokter gigi spesialis\n• Peneliti\n• Dosen\n\n💡 TIPS SUKSES:\n• Latih motorik halus\n• Kuasai anatomi kepala & leher\n• Bangun sikap sabar"}},
+keperawatan:{name:"Keperawatan",icon:"💉",category:"kesehatan",users:[],guide:{title:"Keperawatan: Sentuhan Penyembuhan yang Tulus",desc:"Jurusan yang mempelajari asuhan keperawatan, pelayanan pasien, dan kesehatan holistik.",durasi:"4 tahun",gelar:"S.Kep",kampus:"UI, UGM, UNPAD, UNAIR",biaya:"~5-15 jt/thn",content:"📘 MATERI INTI:\n• Anatomi & fisiologi\n• Kebutuhan dasar manusia\n• Keperawatan medis-bedah\n• Keperawatan anak & maternitas\n• Keperawatan jiwa\n• Farmakologi\n\n🛠️ KETERAMPILAN:\n• Nursing assessment\n• Patient care planning\n• Medication administration\n• Emergency response\n\n💼 PROSPEK KARIR:\n• Perawat klinis\n• Perawat spesialis\n• Perawat pendidik\n• Peneliti\n\n💡 TIPS SUKSES:\n• Kembangkan empati\n• Latih komunikasi\n• Persiapkan fisik"}},
+farmasi:{name:"Farmasi",icon:"💊",category:"kesehatan",users:[],guide:{title:"Farmasi: Meracik Kesehatan untuk Masyarakat",desc:"Jurusan yang mempelajari obat-obatan, formulasi, dan pelayanan kefarmasian.",durasi:"4 tahun",gelar:"S.Farm",kampus:"UI, UGM, UNPAD, ITB",biaya:"~6-15 jt/thn",content:"📘 MATERI INTI:\n• Kimia dasar & organik\n• Biologi sel & anatomi\n• Farmakologi dasar\n• Farmakognosi (obat alam)\n• Teknologi farmasi\n• Etika apoteker\n\n🛠️ KETERAMPILAN:\n• Drug compounding\n• Prescription dispensing\n• Patient counseling\n• Quality control\n\n💼 PROSPEK KARIR:\n• Apoteker\n• Peneliti farmasi\n• Analis farmasi\n• Regulatory affairs\n\n💡 TIPS SUKSES:\n• Kuasai kimia & biologi\n• Latih ketelitian\n• Ikuti magang di apotek"}},
+kebidanan:{name:"Kebidanan",icon:"🤰",category:"kesehatan",users:[],guide:{title:"Kebidanan: Pendamping Awal Kehidupan",desc:"Jurusan yang mempelajari asuhan kehamilan, persalinan, dan kesehatan ibu-anak.",durasi:"4 tahun",gelar:"S.Keb",kampus:"UI, UNPAD, UNAIR",biaya:"~5-12 jt/thn",content:"📘 MATERI INTI:\n• Anatomi fisiologi wanita\n• Asuhan kehamilan\n• Pertolongan persalinan\n• Asuhan nifas & menyusui\n• Perawatan bayi baru lahir\n• Kesehatan reproduksi\n\n🛠️ KETERAMPILAN:\n• Antenatal care\n• Delivery assistance\n• Postnatal care\n• Breastfeeding support\n\n💼 PROSPEK KARIR:\n• Bidan klinik\n• Bidan praktik mandiri\n• Pendidik\n• Konselor\n\n💡 TIPS SUKSES:\n• Kembangkan empati\n• Latih keterampilan persalinan\n• Kuasai gizi ibu & bayi"}},
+gizi:{name:"Ilmu Gizi",icon:"🥗",category:"kesehatan",users:[],guide:{title:"Ilmu Gizi: Nutrisi untuk Kehidupan Sehat",desc:"Jurusan yang mempelajari ilmu makanan, nutrisi, dan kesehatan masyarakat.",durasi:"4 tahun",gelar:"S.Gz",kampus:"UI, IPB, UGM, UNPAD",biaya:"~4-12 jt/thn",content:"📘 MATERI INTI:\n• Ilmu gizi dasar\n• Biokimia & fisiologi\n• Gizi klinik\n• Gizi masyarakat\n• Teknologi pangan\n• Dietetika\n\n🛠️ KETERAMPILAN:\n• Nutritional assessment\n• Diet planning\n• Community nutrition\n• Nutrition counseling\n\n💼 PROSPEK KARIR:\n• Dietisien\n• Ahli gizi klinik\n• Food service manager\n• Peneliti\n\n💡 TIPS SUKSES:\n• Kuasai biologi & kimia\n• Praktik di RS/puskesmas\n• Ikuti program gizi"}},
+kesmas:{name:"Kesehatan Masyarakat",icon:"🏥",category:"kesehatan",users:[],guide:{title:"Kesehatan Masyarakat: Melindungi Komunitas",desc:"Jurusan yang mempelajari pencegahan penyakit dan promosi kesehatan populasi.",durasi:"4 tahun",gelar:"S.Kesmas",kampus:"UI, UGM, UNPAD, UNAIR",biaya:"~4-12 jt/thn",content:"📘 MATERI INTI:\n• Epidemiologi\n• Biostatistika\n• Kesehatan lingkungan\n• Promosi kesehatan\n• Administrasi kebijakan\n• Kesehatan kerja\n\n🛠️ KETERAMPILAN:\n• Public health analysis\n• Health program planning\n• Data interpretation\n• Policy development\n\n💼 PROSPEK KARIR:\n• Epidemiolog\n• Health policy analyst\n• Health promotion specialist\n• Environmental health officer\n\n💡 TIPS SUKSES:\n• Kuasai statistik & epidemiologi\n• Pahami isu kesehatan\n• Ikuti riset lapangan"}},
+kesehatanlingkungan:{name:"Kesehatan Lingkungan",icon:"🌍",category:"kesehatan",users:[],guide:{title:"Kesehatan Lingkungan: Lindungi Kesehatan dari Lingkungan",desc:"Jurusan yang mempelajari faktor lingkungan terhadap kesehatan masyarakat.",durasi:"4 tahun",gelar:"S.KesMas",kampus:"UI, UGM, UNPAD",biaya:"~4-10 jt/thn",content:"📘 MATERI INTI:\n• Sanitasi & air bersih\n• Polusi udara\n• Pengolahan limbah\n• Kesehatan kerja\n• Epidemiologi lingkungan\n• Toksikologi\n\n🛠️ KETERAMPILAN:\n• Environmental monitoring\n• Sanitation planning\n• Pollution control\n• Risk assessment\n\n💼 PROSPEK KARIR:\n• Sanitarian\n• Environmental health officer\n• Policy advisor\n• Consultant\n\n💡 TIPS SUKSES:\n• Kuasai sanitasi & air bersih\n• Ikuti riset lapangan\n• Pahami kebijakan lingkungan"}},
+psikologiklinis:{name:"Psikologi Klinis",icon:"🧠",category:"kesehatan",users:[],guide:{title:"Psikologi Klinis: Kesehatan Mental dan Terapi",desc:"Jurusan yang mempelajari diagnosis dan terapi gangguan mental.",durasi:"4 tahun",gelar:"S.Psi",kampus:"UI, UGM, UNPAD",biaya:"~6-15 jt/thn",content:"📘 MATERI INTI:\n• Psikopatologi\n• Psikodiagnostik\n• Psikoterapi\n• Psikologi perkembangan\n• Metode penelitian\n• Etika klinis\n\n🛠️ KETERAMPILAN:\n• Clinical assessment\n• Therapy techniques\n• Counseling\n• Case management\n\n💼 PROSPEK KARIR:\n• Psikolog klinis\n• Terapis\n• Konselor\n• Peneliti\n\n💡 TIPS SUKSES:\n• Kembangkan empati\n• Kuasai teknik terapi\n• Ikuti praktik klinis"}},
+kesehatanreproduksi:{name:"Kesehatan Reproduksi",icon:"👶",category:"kesehatan",users:[],guide:{title:"Kesehatan Reproduksi: Kesehatan Ibu dan Anak",desc:"Jurusan yang mempelajari kesehatan reproduksi dan keluarga berencana.",durasi:"4 tahun",gelar:"S.Kes",kampus:"UI, UGM, UNPAD",biaya:"~4-12 jt/thn",content:"📘 MATERI INTI:\n• Anatomi reproduksi\n• KB & kontrasepsi\n• Kesehatan ibu hamil\n• Kesehatan anak\n• STI & HIV\n• Kebijakan reproduksi\n\n🛠️ KETERAMPILAN:\n• Reproductive health counseling\n• Family planning\n• Maternal health\n• Health education\n\n💼 PROSPEK KARIR:\n• Reproductive health specialist\n• Family planning consultant\n• Health educator\n• NGO worker\n\n💡 TIPS SUKSES:\n• Pahami anatomi reproduksi\n• Kuasai kontrasepsi\n• Bangun komunikasi yang baik"}},
+
+// === SAINS & MATEMATIKA (8) ===
+matematika:{name:"Matematika",icon:"📐",category:"sains",users:[],guide:{title:"Matematika: Bahasa Semesta yang Abstrak",desc:"Jurusan yang mempelajari logika, pola, struktur abstrak, dan aplikasi matematika.",durasi:"4 tahun",gelar:"S.Si",kampus:"ITB, UI, UGM, IPB",biaya:"~4-10 jt/thn",content:"📘 MATERI INTI:\n• Kalkulus (diferensial & integral)\n• Aljabar linear\n• Matematika diskrit\n• Analisis real\n• Statistika & probabilitas\n• Teori bilangan\n\n🛠️ KETERAMPILAN:\n• Mathematical reasoning\n• Problem solving\n• Logical thinking\n• Proof writing\n\n💼 PROSPEK KARIR:\n• Data scientist\n• Actuary\n• Statistician\n• Peneliti\n\n💡 TIPS SUKSES:\n• Latih cara berpikir logis\n• Kuasai kalkulus & aljabar\n• Ikuti olimpiade"}},
+fisika:{name:"Fisika",icon:"⚛️",category:"sains",users:[],guide:{title:"Fisika: Menguak Hukum Alam Semesta",desc:"Jurusan yang mempelajari materi, energi, dan interaksi fundamental alam.",durasi:"4 tahun",gelar:"S.Si",kampus:"ITB, UI, UGM, IPB",biaya:"~4-10 jt/thn",content:"📘 MATERI INTI:\n• Mekanika klasik\n• Termodinamika\n• Elektromagnetisme\n• Optika\n• Fisika kuantum\n• Fisika nuklir\n\n🛠️ KETERAMPILAN:\n• Experimental design\n• Data analysis\n• Modeling & simulation\n• Problem solving\n\n💼 PROSPEK KARIR:\n• Peneliti fisika\n• Data scientist\n• Engineer\n• Dosen\n\n💡 TIPS SUKSES:\n• Kuasai kalkulus & aljabar\n• Pahami fisika dari fenomena\n• Ikuti praktikum lab"}},
+kimia:{name:"Kimia",icon:"🧪",category:"sains",users:[],guide:{title:"Kimia: Ilmu tentang Perubahan Materi",desc:"Jurusan yang mempelajari komposisi, struktur, reaksi, dan aplikasi zat.",durasi:"4 tahun",gelar:"S.Si",kampus:"ITB, UI, UGM, IPB",biaya:"~4-10 jt/thn",content:"📘 MATERI INTI:\n• Kimia analitik\n• Kimia organik\n• Kimia anorganik\n• Kimia fisika\n• Biokimia\n• Kimia lingkungan\n\n🛠️ KETERAMPILAN:\n• Laboratory skills\n• Analytical techniques\n• Synthesis\n• Data interpretation\n\n💼 PROSPEK KARIR:\n• Analis kimia\n• Peneliti kimia\n• Quality control\n• Dosen\n\n💡 TIPS SUKSES:\n• Kuasai kimia organik/anorganik\n• Latih teknik laboratorium\n• Perhatikan keselamatan"}},
+biologi:{name:"Biologi",icon:"🔬",category:"sains",users:[],guide:{title:"Biologi: Menyelami Rahasia Kehidupan",desc:"Jurusan yang mempelajari makhluk hidup dan interaksinya dengan lingkungan.",durasi:"4 tahun",gelar:"S.Si",kampus:"UI, ITB, IPB, UGM",biaya:"~4-10 jt/thn",content:"📘 MATERI INTI:\n• Biologi sel & molekuler\n• Genetika\n• Ekologi\n• Taksonomi & biodiversitas\n• Fisiologi\n• Mikrobiologi\n\n🛠️ KETERAMPILAN:\n• Microscope skills\n• Laboratory techniques\n• Field observation\n• Data analysis\n\n💼 PROSPEK KARIR:\n• Peneliti biologi\n• Bioteknolog\n• Ecologist\n• Conservationist\n\n💡 TIPS SUKSES:\n• Kuasai mikroskopi\n• Ikuti praktikum lapangan\n• Pahami evolusi"}},
+statistika:{name:"Statistika",icon:"📊",category:"sains",users:[],guide:{title:"Statistika: Ilmu di Balik Keputusan",desc:"Jurusan yang mempelajari metode pengumpulan, analisis, dan interpretasi data.",durasi:"4 tahun",gelar:"S.Si",kampus:"ITB, UI, IPB, UGM",biaya:"~4-10 jt/thn",content:"📘 MATERI INTI:\n• Statistika deskriptif & inferensial\n• Probabilitas & distribusi\n• Regresi & korelasi\n• Desain eksperimen\n• Sampling & survei\n• Statistika multivariat\n\n🛠️ KETERAMPILAN:\n• Statistical modeling\n• Data analysis\n• Survey design\n• Hypothesis testing\n\n💼 PROSPEK KARIR:\n• Statistician\n• Data analyst\n• Researcher\n• Actuary\n\n💡 TIPS SUKSES:\n• Kuasai probabilitas & statistika\n• Belajar R/Python\n• Ikuti proyek penelitian"}},
+astronomi:{name:"Astronomi",icon:"🌌",category:"sains",users:[],guide:{title:"Astronomi: Menjelajahi Alam Semesta",desc:"Jurusan yang mempelajari benda-benda langit, kosmologi, dan fisika luar angkasa.",durasi:"4 tahun",gelar:"S.Si",kampus:"ITB, UI, UGM",biaya:"~4-10 jt/thn",content:"📘 MATERI INTI:\n• Mekanika langit\n• Astrofisika\n• Kosmologi\n• Observasi astronomi\n• Spektroskopi\n• Sistem tata surya\n\n🛠️ KETERAMPILAN:\n• Observational skills\n• Data analysis (astronomi)\n• Computational astrophysics\n• Telescope operation\n\n💼 PROSPEK KARIR:\n• Astronom\n• Peneliti astrofisika\n• Data scientist\n• Dosen\n\n💡 TIPS SUKSES:\n• Kuasai fisika & matematika\n• Ikuti observasi malam\n• Bergabung dengan klub astronomi"}},
+geofisika:{name:"Geofisika",icon:"🌋",category:"sains",users:[],guide:{title:"Geofisika: Memahami Bumi dari Dalam",desc:"Jurusan yang mempelajari struktur bumi, gempa, dan fenomena geofisika.",durasi:"4 tahun",gelar:"S.Si",kampus:"ITB, UI, UGM",biaya:"~4-10 jt/thn",content:"📘 MATERI INTI:\n• Fisika bumi\n• Seismologi\n• Gravimetri\n• Magnetometri\n• Geotermik\n• Eksplorasi geofisika\n\n🛠️ KETERAMPILAN:\n• Seismic analysis\n• Geophysical survey\n• Data interpretation\n• Modeling\n\n💼 PROSPEK KARIR:\n• Geophysicist\n• Seismologist\n• Exploration geophysicist\n• Researcher\n\n💡 TIPS SUKSES:\n• Kuasai fisika & matematika\n• Pahami seismologi\n• Ikuti praktik lapangan"}},
+meteorologi:{name:"Meteorologi",icon:"🌤️",category:"sains",users:[],guide:{title:"Meteorologi: Memahami Cuaca dan Iklim",desc:"Jurusan yang mempelajari cuaca, iklim, dan atmosfer bumi.",durasi:"4 tahun",gelar:"S.Si",kampus:"ITB, UI, IPB",biaya:"~4-10 jt/thn",content:"📘 MATERI INTI:\n• Fisika atmosfer\n• Dinamika cuaca\n• Klimatologi\n• Prediksi cuaca\n• Penginderaan jauh\n• Perubahan iklim\n\n🛠️ KETERAMPILAN:\n• Weather prediction\n• Climate modeling\n• Data analysis\n• Radar interpretation\n\n💼 PROSPEK KARIR:\n• Meteorolog\n• Climate analyst\n• Weather forecaster\n• Researcher\n\n💡 TIPS SUKSES:\n• Kuasai fisika & matematika\n• Pahami dinamika atmosfer\n• Ikuti magang BMKG"}},
+
+// === SOSIAL & HUMANIORA (14) ===
+psikologi:{name:"Psikologi",icon:"🧠",category:"sosial",users:[],guide:{title:"Psikologi: Memahami Pikiran dan Perilaku Manusia",desc:"Jurusan yang mempelajari perilaku manusia, proses mental, dan dinamika sosial.",durasi:"4 tahun",gelar:"S.Psi",kampus:"UI, UGM, UNPAD, UNAIR",biaya:"~6-15 jt/thn",content:"📘 MATERI INTI:\n• Psikologi umum & perkembangan\n• Statistika & metode penelitian\n• Biopsikologi\n• Psikologi sosial\n• Psikologi klinis\n• Komunikasi & konseling\n\n🛠️ KETERAMPILAN:\n• Active listening\n• Psychological assessment\n• Counseling skills\n• Critical thinking\n\n💼 PROSPEK KARIR:\n• Psikolog\n• Konselor\n• HR specialist\n• Peneliti\n\n💡 TIPS SUKSES:\n• Kembangkan empati\n• Kuasai statistika\n• Ikuti praktikum konseling"}},
+hukum:{name:"Hukum",icon:"⚖️",category:"sosial",users:[],guide:{title:"Hukum: Membela Keadilan dengan Pengetahuan",desc:"Jurusan yang mempelajari sistem hukum, peraturan, dan peradilan di masyarakat.",durasi:"4 tahun",gelar:"S.H.",kampus:"UI, UGM, UNPAD, UNAIR",biaya:"~5-15 jt/thn",content:"📘 MATERI INTI:\n• Pengantar ilmu hukum\n• Hukum tata negara\n• Hukum perdata & pidana\n• Hukum internasional\n• Logika & argumentasi\n• Etika profesi\n\n🛠️ KETERAMPILAN:\n• Legal analysis\n• Argumentation\n• Contract drafting\n• Negotiation\n\n💼 PROSPEK KARIR:\n• Advokat\n• Notaris\n• Legal corporate\n• Jaksa/hakim\n\n💡 TIPS SUKSES:\n• Latih argumentasi\n• Baca putusan pengadilan\n• Ikuti praktik di LBH"}},
+sastra:{name:"Sastra Inggris",icon:"📖",category:"sosial",users:[],guide:{title:"Sastra Inggris: Jendela Dunia Melalui Bahasa",desc:"Jurusan yang mempelajari bahasa, sastra, dan budaya negara berbahasa Inggris.",durasi:"4 tahun",gelar:"S.S.",kampus:"UI, UGM, UNPAD, UNAIR",biaya:"~4-10 jt/thn",content:"📘 MATERI INTI:\n• Grammar & structure\n• Reading comprehension\n• Sastra klasik & modern\n• Linguistik dasar\n• Translation\n• Public speaking\n\n🛠️ KETERAMPILAN:\n• Literary analysis\n• Translation\n• Creative writing\n• Academic writing\n\n💼 PROSPEK KARIR:\n• Penerjemah\n• Editor\n• Copywriter\n• Dosen\n\n💡 TIPS SUKSES:\n• Baca banyak buku sastra\n• Latih writing & speaking\n• Ikuti kelas translation"}},
+ilkom:{name:"Ilmu Komunikasi",icon:"🎙️",category:"sosial",users:[],guide:{title:"Ilmu Komunikasi: Menyampaikan Pesan dengan Dampak",desc:"Jurusan yang mempelajari komunikasi massa, media, dan hubungan masyarakat.",durasi:"4 tahun",gelar:"S.I.Kom",kampus:"UI, UGM, UNPAD, UNAIR",biaya:"~5-14 jt/thn",content:"📘 MATERI INTI:\n• Teori komunikasi massa\n• Jurnalistik dasar\n• Public relations\n• Produksi media\n• Komunikasi interpersonal\n• Media digital\n\n🛠️ KETERAMPILAN:\n• Media production\n• Public speaking\n• Content writing\n• Crisis communication\n\n💼 PROSPEK KARIR:\n• PR specialist\n• Jurnalis\n• Marketing communicator\n• Media planner\n\n💡 TIPS SUKSES:\n• Latih menulis & berbicara\n• Kuasai media sosial\n• Ikuti produksi media"}},
+hi:{name:"Hubungan Internasional",icon:"🌐",category:"sosial",users:[],guide:{title:"Hubungan Internasional: Diplomasi dan Politik Global",desc:"Jurusan yang mempelajari hubungan antar negara, politik global, dan diplomasi.",durasi:"4 tahun",gelar:"S.I.P.",kampus:"UI, UGM, UNPAD, UNAIR",biaya:"~5-14 jt/thn",content:"📘 MATERI INTI:\n• Teori HI\n• Politik global & geopolitik\n• Hukum internasional\n• Diplomasi & negosiasi\n• Ekonomi politik\n• Bahasa asing\n\n🛠️ KETERAMPILAN:\n• Diplomatic negotiation\n• Policy analysis\n• Strategic thinking\n• Cross-cultural communication\n\n💼 PROSPEK KARIR:\n• Diplomat\n• HI analyst\n• International organization staff\n• Consultant\n\n💡 TIPS SUKSES:\n• Kuasai bahasa asing\n• Ikuti simulasi PBB\n• Baca berita internasional"}},
+dkv:{name:"Desain Komunikasi Visual",icon:"🎨",category:"sosial",users:[],guide:{title:"DKV: Berkreasi Tanpa Batas",desc:"Jurusan yang mempelajari desain grafis, ilustrasi, dan komunikasi visual.",durasi:"4 tahun",gelar:"S.Ds",kampus:"ITB, UI, BINUS, UNPAR",biaya:"~6-18 jt/thn",content:"📘 MATERI INTI:\n• Dasar desain (warna, tipografi)\n• Software desain (PS, AI)\n• Sejarah seni & desain\n• Fotografi dasar\n• Ilustrasi digital\n• Branding & UI/UX\n\n🛠️ KETERAMPILAN:\n• Adobe Creative Suite\n• Creative thinking\n• Visual storytelling\n• Brand strategy\n\n💼 PROSPEK KARIR:\n• Graphic designer\n• UI/UX designer\n• Art director\n• Illustrator\n\n💡 TIPS SUKSES:\n• Kuasai tools desain\n• Bangun portofolio\n• Ikuti tren desain"}},
+sosiologi:{name:"Sosiologi",icon:"🏙️",category:"sosial",users:[],guide:{title:"Sosiologi: Membaca Struktur dan Perubahan Sosial",desc:"Jurusan yang mempelajari masyarakat, interaksi sosial, dan perubahan sosial.",durasi:"4 tahun",gelar:"S.Sos",kampus:"UI, UGM, UNPAD",biaya:"~4-10 jt/thn",content:"📘 MATERI INTI:\n• Teori sosiologi klasik & modern\n• Metode penelitian\n• Stratifikasi sosial\n• Sosiologi perkotaan\n• Perubahan sosial\n• Gender & kelas\n\n🛠️ KETERAMPILAN:\n• Social analysis\n• Research methods\n• Interviewing\n• Data interpretation\n\n💼 PROSPEK KARIR:\n• Sosiolog\n• Policy analyst\n• Market researcher\n• NGO worker\n\n💡 TIPS SUKSES:\n• Baca teori sosiologi\n• Ikuti riset sosial\n• Pahami isu sosial kontemporer"}},
+antropologi:{name:"Antropologi",icon:"🧑‍🤝‍🧑",category:"sosial",users:[],guide:{title:"Antropologi: Memahami Manusia dan Budayanya",desc:"Jurusan yang mempelajari manusia dan kebudayaannya dari berbagai perspektif.",durasi:"4 tahun",gelar:"S.Ant",kampus:"UI, UGM, UNPAD",biaya:"~4-10 jt/thn",content:"📘 MATERI INTI:\n• Antropologi fisik & budaya\n• Etnografi & etnologi\n• Teori antropologi\n• Bahasa & simbol\n• Gender & identitas\n• Antropologi perkotaan\n\n🛠️ KETERAMPILAN:\n• Ethnographic fieldwork\n• Cultural analysis\n• Participant observation\n• Interviewing\n\n💼 PROSPEK KARIR:\n• Antropolog\n• Peneliti\n• HR\n• NGO worker\n\n💡 TIPS SUKSES:\n• Kembangkan rasa ingin tahu budaya\n• Kuasai metode etnografi\n• Ikuti riset lapangan"}},
+filsafat:{name:"Filsafat",icon:"🤔",category:"sosial",users:[],guide:{title:"Filsafat: Berpikir Radikal dan Analitis",desc:"Jurusan yang mempelajari pertanyaan dasar tentang eksistensi, pengetahuan, dan etika.",durasi:"4 tahun",gelar:"S.Fil",kampus:"UI, UGM, UNPAD",biaya:"~4-10 jt/thn",content:"📘 MATERI INTI:\n• Logika & epistemologi\n• Metafisika & ontologi\n• Etika & estetika\n• Sejarah filsafat\n• Filsafat ilmu\n• Filsafat politik\n\n🛠️ KETERAMPILAN:\n• Critical thinking\n• Argumentation\n• Analytical reading\n• Philosophical writing\n\n💼 PROSPEK KARIR:\n• Peneliti filsafat\n• Dosen\n• Columnist\n• Policy analyst\n\n💡 TIPS SUKSES:\n• Baca buku filsafat klasik\n• Latih argumen logis\n• Ikuti diskusi filsafat"}},
+sejarah:{name:"Ilmu Sejarah",icon:"🏛️",category:"sosial",users:[],guide:{title:"Ilmu Sejarah: Membaca Jejak Peradaban",desc:"Jurusan yang mempelajari peristiwa masa lalu dan interpretasinya.",durasi:"4 tahun",gelar:"S.S.",kampus:"UI, UGM, UNPAD",biaya:"~4-10 jt/thn",content:"📘 MATERI INTI:\n• Sejarah Indonesia\n• Sejarah Asia & Eropa\n• Historiografi\n• Metodologi sejarah\n• Sejarah lisan\n• Sejarah lokal\n\n🛠️ KETERAMPILAN:\n• Research skills\n• Archival analysis\n• Historical writing\n• Oral history\n\n💼 PROSPEK KARIR:\n• Sejarawan\n• Peneliti\n• Kurator museum\n• Dosen\n\n💡 TIPS SUKSES:\n• Baca banyak sumber sejarah\n• Kunjungi museum & arsip\n• Pelajari historiografi"}},
+ilmuagama:{name:"Ilmu Agama",icon:"🕊️",category:"sosial",users:[],guide:{title:"Ilmu Agama: Memahami Iman dan Tradisi Spiritual",desc:"Jurusan yang mempelajari teologi, sejarah agama, dan dialog antariman.",durasi:"4 tahun",gelar:"S.Ag",kampus:"UIN, UGM, UNPAD",biaya:"~3-10 jt/thn",content:"📘 MATERI INTI:\n• Teologi & filsafat agama\n• Sejarah agama-agama\n• Kitab suci & tafsir\n• Etika agama\n• Dialog antariman\n• Studi kebudayaan\n\n🛠️ KETERAMPILAN:\n• Theology analysis\n• Interfaith dialogue\n• Text interpretation\n• Cultural sensitivity\n\n💼 PROSPEK KARIR:\n• Peneliti agama\n• Dosen\n• Konselor spiritual\n• Peace advocate\n\n💡 TIPS SUKSES:\n• Kuasai kitab suci & tradisi\n• Buka wawasan lintas agama\n• Ikuti dialog antariman"}},
+perpustakaan:{name:"Ilmu Perpustakaan",icon:"📚",category:"sosial",users:[],guide:{title:"Ilmu Perpustakaan: Arsitektur Pengetahuan",desc:"Jurusan yang mempelajari pengelolaan perpustakaan, arsip, dan informasi.",durasi:"4 tahun",gelar:"S.IP",kampus:"UI, UNPAD, UGM",biaya:"~4-10 jt/thn",content:"📘 MATERI INTI:\n• Klasifikasi & katalogisasi\n• Manajemen perpustakaan\n• Digitalisasi arsip\n• Preservasi\n• Layanan pemustaka\n• Literasi informasi\n\n🛠️ KETERAMPILAN:\n• Cataloging\n• Archive management\n• Digital library\n• Information literacy\n\n💼 PROSPEK KARIR:\n• Pustakawan\n• Arsiparis\n• Library manager\n• Digital librarian\n\n💡 TIPS SUKSES:\n• Kuasai sistem klasifikasi\n• Pahami digitalisasi\n• Ikuti pengabdian di perpustakaan"}},
+hubunganmasyarakat:{name:"Hubungan Masyarakat",icon:"📢",category:"sosial",users:[],guide:{title:"Hubungan Masyarakat: Jaga Reputasi dan Kepercayaan Publik",desc:"Jurusan yang mempelajari manajemen reputasi, hubungan media, dan komunikasi strategis.",durasi:"4 tahun",gelar:"S.I.Kom",kampus:"UI, UGM, UNPAD, BINUS",biaya:"~6-14 jt/thn",content:"📘 MATERI INTI:\n• Teori PR\n• Hubungan media\n• Manajemen reputasi\n• Krisis komunikasi\n• Event & publikasi\n• Content strategy\n\n🛠️ KETERAMPILAN:\n• Media relations\n• Crisis communication\n• Event management\n• Content creation\n\n💼 PROSPEK KARIR:\n• PR officer\n• Corporate communicator\n• PR consultant\n• Media strategist\n\n💡 TIPS SUKSES:\n• Latih menulis\n• Kuasai media monitoring\n• Ikuti magang PR"}},
+broadcasting:{name:"Broadcasting",icon:"📺",category:"sosial",users:[],guide:{title:"Broadcasting: Menyampaikan Informasi Lewat Udara",desc:"Jurusan yang mempelajari produksi siaran televisi, radio, dan media digital.",durasi:"4 tahun",gelar:"S.I.Kom",kampus:"UI, UGM, UNPAD, BINUS",biaya:"~6-15 jt/thn",content:"📘 MATERI INTI:\n• Dasar produksi TV/Radio\n• Jurnalistik broadcast\n• Penyiar & MC\n• Produksi program\n• Scriptwriting\n• Teknik kamera\n\n🛠️ KETERAMPILAN:\n• Broadcast production\n• On-air performance\n• Scriptwriting\n• News reporting\n\n💼 PROSPEK KARIR:\n• Presenter\n• Reporter\n• Producer\n• News director\n\n💡 TIPS SUKSES:\n• Latih artikulasi & diksi\n• Kuasai teknik kamera\n• Ikuti produksi siaran"}},
+
+// === BISNIS & EKONOMI (8) ===
+manajemen:{name:"Manajemen",icon:"📊",category:"bisnis",users:[],guide:{title:"Manajemen: Memimpin dengan Strategi",desc:"Jurusan yang mempelajari pengelolaan organisasi, bisnis, dan sumber daya manusia.",durasi:"4 tahun",gelar:"S.E./S.M.",kampus:"UI, UGM, ITB, BINUS",biaya:"~6-15 jt/thn",content:"📘 MATERI INTI:\n• Manajemen dasar\n• Akuntansi dasar\n• Pemasaran\n• Manajemen keuangan\n• Manajemen SDM\n• Kewirausahaan\n\n🛠️ KETERAMPILAN:\n• Strategic thinking\n• Leadership\n• Financial analysis\n• Marketing strategy\n\n💼 PROSPEK KARIR:\n• Manager\n• Marketing specialist\n• Business analyst\n• Entrepreneur\n\n💡 TIPS SUKSES:\n• Bangun soft skills\n• Kuasai akuntansi & keuangan\n• Ikuti organisasi"}},
+akuntansi:{name:"Akuntansi",icon:"🧮",category:"bisnis",users:[],guide:{title:"Akuntansi: Bahasa Bisnis yang Universal",desc:"Jurusan yang mempelajari pencatatan, pelaporan, dan analisis keuangan.",durasi:"4 tahun",gelar:"S.Ak",kampus:"UI, UGM, UNPAD, UNAIR",biaya:"~5-14 jt/thn",content:"📘 MATERI INTI:\n• Pengantar akuntansi\n• Akuntansi keuangan\n• Akuntansi biaya\n• Auditing\n• Perpajakan\n• Sistem informasi akuntansi\n\n🛠️ KETERAMPILAN:\n• Financial reporting\n• Auditing\n• Tax calculation\n• Data analysis\n\n💼 PROSPEK KARIR:\n• Akuntan\n• Auditor\n• Tax consultant\n• Financial analyst\n\n💡 TIPS SUKSES:\n• Kuasai dasar akuntansi\n• Ikuti magang di KAP\n• Pahami perpajakan"}},
+ekonomi:{name:"Ekonomi",icon:"💰",category:"bisnis",users:[],guide:{title:"Ekonomi: Memahami Perekonomian dan Kebijakan",desc:"Jurusan yang mempelajari perilaku ekonomi, kebijakan, dan pembangunan.",durasi:"4 tahun",gelar:"S.E.",kampus:"UI, UGM, ITB, UNPAD",biaya:"~5-12 jt/thn",content:"📘 MATERI INTI:\n• Ekonomi mikro & makro\n• Statistika & ekonometrika\n• Ekonomi pembangunan\n• Ekonomi moneter\n• Ekonomi publik\n• Ekonomi internasional\n\n🛠️ KETERAMPILAN:\n• Economic analysis\n• Policy evaluation\n• Data interpretation\n• Forecasting\n\n💼 PROSPEK KARIR:\n• Economic analyst\n• Policy advisor\n• Banker\n• Consultant\n\n💡 TIPS SUKSES:\n• Kuasai matematika & statistika\n• Baca berita ekonomi\n• Ikuti riset dosen"}},
+pariwisata:{name:"Pariwisata",icon:"✈️",category:"bisnis",users:[],guide:{title:"Pariwisata: Menghubungkan Dunia Melalui Perjalanan",desc:"Jurusan yang mempelajari industri pariwisata, destinasi, dan pengalaman wisata.",durasi:"4 tahun",gelar:"S.Par",kampus:"UNPAD, ITB, UGM, BINUS",biaya:"~5-14 jt/thn",content:"📘 MATERI INTI:\n• Manajemen destinasi\n• Pemasaran pariwisata\n• Budaya & warisan\n• Ekowisata\n• Event management\n• Bahasa asing\n\n🛠️ KETERAMPILAN:\n• Tourism planning\n• Event organizing\n• Cultural interpretation\n• Customer service\n\n💼 PROSPEK KARIR:\n• Tourism manager\n• Travel consultant\n• Event organizer\n• Destination marketer\n\n💡 TIPS SUKSES:\n• Kuasai bahasa asing\n• Pahami budaya lokal\n• Ikuti praktik pariwisata"}},
+perhotelan:{name:"Manajemen Perhotelan",icon:"🛎️",category:"bisnis",users:[],guide:{title:"Manajemen Perhotelan: Seni Melayani dengan Hati",desc:"Jurusan yang mempelajari manajemen hotel, hospitality, dan pelayanan tamu.",durasi:"4 tahun",gelar:"S.Par",kampus:"BINUS, UNPAD, ITB",biaya:"~7-18 jt/thn",content:"📘 MATERI INTI:\n• Front office & housekeeping\n• Food & beverage service\n• Revenue management\n• Customer service\n• Event management\n• Hospitality marketing\n\n🛠️ KETERAMPILAN:\n• Service excellence\n• Operation management\n• Event planning\n• Revenue optimization\n\n💼 PROSPEK KARIR:\n• Hotel manager\n• F&B manager\n• Event manager\n• Hotel owner\n\n💡 TIPS SUKSES:\n• Bangun karakter ramah\n• Kuasai bahasa asing\n• Ikuti magang di hotel"}},
+bisnisdigital:{name:"Bisnis Digital",icon:"📱",category:"bisnis",users:[],guide:{title:"Bisnis Digital: Strategi Bisnis Era Digital",desc:"Jurusan yang mempelajari strategi bisnis berbasis teknologi digital dan e-commerce.",durasi:"4 tahun",gelar:"S.E.",kampus:"UI, BINUS, UGM",biaya:"~6-15 jt/thn",content:"📘 MATERI INTI:\n• E-commerce & marketplace\n• Digital marketing\n• Data analytics bisnis\n• UX design bisnis\n• Startup management\n• Fintech dasar\n\n🛠️ KETERAMPILAN:\n• Digital strategy\n• Online marketing\n• Business analytics\n• Product management\n\n💼 PROSPEK KARIR:\n• Digital business analyst\n• E-commerce manager\n• Digital marketing specialist\n• Startup founder\n\n💡 TIPS SUKSES:\n• Kuasai digital marketing\n• Pahami e-commerce\n• Ikuti perkembangan fintech"}},
+kewirausahaan:{name:"Kewirausahaan",icon:"🚀",category:"bisnis",users:[],guide:{title:"Kewirausahaan: Membangun Bisnis dari Nol",desc:"Jurusan yang mempelajari cara memulai dan mengembangkan bisnis.",durasi:"4 tahun",gelar:"S.E.",kampus:"UI, UGM, ITB, BINUS",biaya:"~5-14 jt/thn",content:"📘 MATERI INTI:\n• Dasar kewirausahaan\n• Business model canvas\n• Marketing & branding\n• Keuangan bisnis\n• Legalitas usaha\n• Scaling business\n\n🛠️ KETERAMPILAN:\n• Business planning\n• Financial management\n• Marketing strategy\n• Leadership\n\n💼 PROSPEK KARIR:\n• Entrepreneur\n• Business consultant\n• Startup founder\n• Business coach\n\n💡 TIPS SUKSES:\n• Mulai bisnis kecil\n• Pelajari kegagalan\n• Bangun network"}},
+manajemenkeuangan:{name:"Manajemen Keuangan",icon:"🏦",category:"bisnis",users:[],guide:{title:"Manajemen Keuangan: Mengelola Aset dan Risiko",desc:"Jurusan yang mempelajari pengelolaan keuangan perusahaan dan investasi.",durasi:"4 tahun",gelar:"S.E.",kampus:"UI, UGM, ITB, UNPAD",biaya:"~5-14 jt/thn",content:"📘 MATERI INTI:\n• Analisis laporan keuangan\n• Manajemen investasi\n• Manajemen risiko\n• Corporate finance\n• Pasar modal\n• Perbankan\n\n🛠️ KETERAMPILAN:\n• Financial analysis\n• Investment planning\n• Risk management\n• Portfolio management\n\n💼 PROSPEK KARIR:\n• Financial analyst\n• Investment banker\n• Risk manager\n• Corporate treasurer\n\n💡 TIPS SUKSES:\n• Kuasai analisis keuangan\n• Pahami pasar modal\n• Ikuti sertifikasi"}},
+
+// === PERTANIAN & LINGKUNGAN (8) ===
+pertanian:{name:"Agroteknologi",icon:"🌱",category:"pertanian",users:[],guide:{title:"Agroteknologi: Menghidupi Bumi",desc:"Jurusan yang mempelajari budidaya tanaman dan pengelolaan lahan pertanian.",durasi:"4 tahun",gelar:"S.T.P.",kampus:"IPB, UGM, UNPAD",biaya:"~4-10 jt/thn",content:"📘 MATERI INTI:\n• Ilmu tanah\n• Budidaya tanaman\n• Pemuliaan tanaman\n• Proteksi tanaman\n• Agronomi\n• Pertanian berkelanjutan\n\n🛠️ KETERAMPILAN:\n• Crop cultivation\n• Soil management\n• Plant breeding\n• Pest control\n\n💼 PROSPEK KARIR:\n• Agronomist\n• Plant breeder\n• Agricultural consultant\n• Researcher\n\n💡 TIPS SUKSES:\n• Pahami ilmu tanah\n• Kuasai budidaya\n• Ikuti praktik lapangan"}},
+peternakan:{name:"Peternakan",icon:"🐄",category:"pertanian",users:[],guide:{title:"Peternakan: Mengelola Sumber Protein",desc:"Jurusan yang mempelajari budidaya dan manajemen hewan ternak.",durasi:"4 tahun",gelar:"S.T.P.",kampus:"IPB, UGM, UNPAD",biaya:"~4-10 jt/thn",content:"📘 MATERI INTI:\n• Nutrisi & pakan ternak\n• Reproduksi ternak\n• Kesehatan hewan\n• Manajemen kandang\n• Teknologi hasil ternak\n• Kesejahteraan hewan\n\n🛠️ KETERAMPILAN:\n• Animal nutrition\n• Breeding management\n• Animal health\n• Farm management\n\n💼 PROSPEK KARIR:\n• Peternak\n• Farm manager\n• Animal nutritionist\n• Researcher\n\n💡 TIPS SUKSES:\n• Kuasai nutrisi ternak\n• Pelajari reproduksi\n• Ikuti magang di farm"}},
+perikanan:{name:"Perikanan",icon:"🐟",category:"pertanian",users:[],guide:{title:"Perikanan: Menjaga Kekayaan Laut",desc:"Jurusan yang mempelajari budidaya dan pengelolaan sumber daya perairan.",durasi:"4 tahun",gelar:"S.T.P.",kampus:"IPB, UGM, UNPAD",biaya:"~4-10 jt/thn",content:"📘 MATERI INTI:\n• Budidaya perairan\n• Manajemen sumber daya ikan\n• Biologi perikanan\n• Teknologi hasil perikanan\n• Oseanografi\n• Konservasi\n\n🛠️ KETERAMPILAN:\n• Aquaculture\n• Fish management\n• Water quality\n• Conservation\n\n💼 PROSPEK KARIR:\n• Aquaculturist\n• Fishery manager\n• Researcher\n• Consultant\n\n💡 TIPS SUKSES:\n• Kuasai budidaya perairan\n• Pahami kualitas air\n• Ikuti magang tambak"}},
+kehutanan:{name:"Kehutanan",icon:"🌳",category:"pertanian",users:[],guide:{title:"Kehutanan: Menjaga Paru-Paru Dunia",desc:"Jurusan yang mempelajari pengelolaan hutan dan konservasi alam.",durasi:"4 tahun",gelar:"S.T.P.",kampus:"IPB, UGM, UNPAD",biaya:"~4-10 jt/thn",content:"📘 MATERI INTI:\n• Silvikultur\n• Manajemen hutan\n• Konservasi\n• Ekologi hutan\n• Pengukuran hutan\n• Kebijakan kehutanan\n\n🛠️ KETERAMPILAN:\n• Forest management\n• Conservation\n• Silviculture\n• Mapping\n\n💼 PROSPEK KARIR:\n• Forest manager\n• Conservationist\n• Researcher\n• Policy advisor\n\n💡 TIPS SUKSES:\n• Kuasai silvikultur\n• Pahami ekologi hutan\n• Ikuti praktik lapangan"}},
+geografi:{name:"Geografi",icon:"🗺️",category:"pertanian",users:[],guide:{title:"Geografi: Memahami Bumi dan Isinya",desc:"Jurusan yang mempelajari permukaan bumi, lingkungan, dan hubungan manusia-alam.",durasi:"4 tahun",gelar:"S.Si",kampus:"UI, UGM, UNPAD",biaya:"~4-10 jt/thn",content:"📘 MATERI INTI:\n• Geografi fisik\n• Geografi manusia\n• Kartografi & SIG\n• Penginderaan jauh\n• Geografi regional\n• Mitigasi bencana\n\n🛠️ KETERAMPILAN:\n• GIS analysis\n• Remote sensing\n• Mapping\n• Spatial analysis\n\n💼 PROSPEK KARIR:\n• Geographer\n• GIS analyst\n• Urban planner\n• Remote sensing specialist\n\n💡 TIPS SUKSES:\n• Kuasai GIS (ArcGIS/QGIS)\n• Pahami penginderaan jauh\n• Ikuti praktik lapangan"}},
+agribisnis:{name:"Agribisnis",icon:"🌾",category:"pertanian",users:[],guide:{title:"Agribisnis: Bisnis Pertanian Modern",desc:"Jurusan yang mempelajari bisnis pertanian, rantai pasok, dan agroindustri.",durasi:"4 tahun",gelar:"S.T.P.",kampus:"IPB, UGM, UNPAD",biaya:"~4-10 jt/thn",content:"📘 MATERI INTI:\n• Manajemen agribisnis\n• Pemasaran hasil pertanian\n• Rantai pasok\n• Agroindustri\n• Keuangan pertanian\n• Kewirausahaan pertanian\n\n🛠️ KETERAMPILAN:\n• Business planning\n• Supply chain\n• Marketing\n• Financial management\n\n💼 PROSPEK KARIR:\n• Agribusiness manager\n• Supply chain analyst\n• Marketing specialist\n• Entrepreneur\n\n💡 TIPS SUKSES:\n• Kuasai manajemen bisnis\n• Pahami rantai pasok\n• Ikuti magang agroindustri"}},
+konservasi:{name:"Konservasi Sumber Daya",icon:"🦏",category:"pertanian",users:[],guide:{title:"Konservasi Sumber Daya: Pelestarian Alam",desc:"Jurusan yang mempelajari pelestarian keanekaragaman hayati dan ekosistem.",durasi:"4 tahun",gelar:"S.Si",kampus:"IPB, UGM, UI",biaya:"~4-10 jt/thn",content:"📘 MATERI INTI:\n• Ekologi konservasi\n• Keanekaragaman hayati\n• Manajemen kawasan\n• Restorasi ekosistem\n• Kebijakan konservasi\n• Spesies terancam\n\n🛠️ KETERAMPILAN:\n• Conservation planning\n• Biodiversity assessment\n• Ecosystem restoration\n• Policy analysis\n\n💼 PROSPEK KARIR:\n• Conservationist\n• Park manager\n• NGO worker\n• Researcher\n\n💡 TIPS SUKSES:\n• Kuasai ekologi\n• Ikuti riset lapangan\n• Pelajari kebijakan konservasi"}},
+arsitekturlandskap:{name:"Arsitektur Lanskap",icon:"🌿",category:"pertanian",users:[],guide:{title:"Arsitektur Lanskap: Merancang Ruang Terbuka",desc:"Jurusan yang mempelajari perencanaan dan desain ruang terbuka dan lingkungan.",durasi:"4 tahun",gelar:"S.Ars",kampus:"ITB, UGM, UNPAD",biaya:"~5-14 jt/thn",content:"📘 MATERI INTI:\n• Dasar arsitektur lanskap\n• Perencanaan ruang terbuka\n• Ekologi lanskap\n• Desain taman\n• Konservasi lanskap\n• Material lanskap\n\n🛠️ KETERAMPILAN:\n• Landscape design\n• Site planning\n• Ecological analysis\n• Plant selection\n\n💼 PROSPEK KARIR:\n• Landscape architect\n• Urban planner\n• Environmental designer\n• Consultant\n\n💡 TIPS SUKSES:\n• Kuasai CAD & SketchUp\n• Pahami ekologi\n• Ikuti studio desain"}},
+
+// === SENI, DESAIN & MEDIA (10) ===
+animasi:{name:"Animasi",icon:"🎬",category:"seni",users:[],guide:{title:"Animasi: Menghidupkan Imajinasi",desc:"Jurusan yang mempelajari pembuatan animasi 2D/3D, storyboard, dan produksi animasi.",durasi:"4 tahun",gelar:"S.Sn",kampus:"ITB, ISI, BINUS",biaya:"~7-18 jt/thn",content:"📘 MATERI INTI:\n• Dasar menggambar\n• Animasi 2D & 3D\n• Storyboard\n• Character design\n• Motion graphics\n• Produksi animasi\n\n🛠️ KETERAMPILAN:\n• Drawing & sketching\n• 2D/3D animation\n• Storyboarding\n• Character creation\n\n💼 PROSPEK KARIR:\n• Animator\n• Storyboard artist\n• Character designer\n• 3D modeler\n\n💡 TIPS SUKSES:\n• Latih menggambar\n• Kuasai Blender/Toon Boom\n• Pelajari 12 prinsip animasi"}},
+desaininterior:{name:"Desain Interior",icon:"🛋️",category:"seni",users:[],guide:{title:"Desain Interior: Merancang Ruang yang Hidup",desc:"Jurusan yang mempelajari perencanaan dan desain interior bangunan.",durasi:"4 tahun",gelar:"S.Ds",kampus:"ITB, UGM, UNPAR, BINUS",biaya:"~7-18 jt/thn",content:"📘 MATERI INTI:\n• Dasar desain & estetika\n• Gambar teknik & CAD\n• Sejarah desain\n• Material & finishing\n• Furniture design\n• Pencahayaan\n\n🛠️ KETERAMPILAN:\n• Interior design\n• AutoCAD & SketchUp\n• Rendering (3ds Max)\n• Space planning\n\n💼 PROSPEK KARIR:\n• Interior designer\n• Furniture designer\n• Exhibition designer\n• Lighting designer\n\n💡 TIPS SUKSES:\n• Kuasai gambar teknik\n• Ikuti pameran desain\n• Pelajari tren desain"}},
+produksimedia:{name:"Produksi Media",icon:"📹",category:"seni",users:[],guide:{title:"Produksi Media: Membuat Konten yang Menginspirasi",desc:"Jurusan yang mempelajari produksi konten video, audio, dan multimedia.",durasi:"4 tahun",gelar:"S.I.Kom",kampus:"UI, UNPAD, BINUS",biaya:"~6-15 jt/thn",content:"📘 MATERI INTI:\n• Dasar produksi video\n• Penulisan naskah\n• Sinematografi\n• Editing video & audio\n• Produksi podcast\n• Multimedia design\n\n🛠️ KETERAMPILAN:\n• Video production\n• Scriptwriting\n• Cinematography\n• Editing (Premiere)\n\n💼 PROSPEK KARIR:\n• Video producer\n• Editor video\n• Podcast producer\n• Content creator\n\n💡 TIPS SUKSES:\n• Kuasai software editing\n• Latih storytelling visual\n• Ikuti proyek produksi"}},
+teater:{name:"Teater",icon:"🎭",category:"seni",users:[],guide:{title:"Teater: Mengekspresikan Jiwa di Atas Panggung",desc:"Jurusan yang mempelajari seni peran, pementasan, dan dramaturgi.",durasi:"4 tahun",gelar:"S.Sn",kampus:"ISI, UGM, UNPAD",biaya:"~4-10 jt/thn",content:"📘 MATERI INTI:\n• Dasar akting & improvisasi\n• Sejarah teater\n• Analisis naskah\n• Acting metode\n• Produksi pementasan\n• Tata panggung\n\n🛠️ KETERAMPILAN:\n• Acting\n• Character development\n• Stage presence\n• Script analysis\n\n💼 PROSPEK KARIR:\n• Aktor/aktris\n• Sutradara teater\n• Penulis naskah\n• Dramaturge\n\n💡 TIPS SUKSES:\n• Latih ekspresi & vokal\n• Kuasai teknik akting\n• Baca naskah teater"}},
+musik:{name:"Musik",icon:"🎵",category:"seni",users:[],guide:{title:"Musik: Menciptakan Harmoni",desc:"Jurusan yang mempelajari teori musik, komposisi, dan pertunjukan musik.",durasi:"4 tahun",gelar:"S.Sn",kampus:"ISI, UGM, UNPAD",biaya:"~5-12 jt/thn",content:"📘 MATERI INTI:\n• Teori musik\n• Sejarah musik\n• Komposisi & aransemen\n• Alat musik\n• Teknik vokal\n• Produksi audio\n\n🛠️ KETERAMPILAN:\n• Instrument mastery\n• Music composition\n• Arrangement\n• Performance\n\n💼 PROSPEK KARIR:\n• Komponis\n• Musisi\n• Arranger\n• Music teacher\n\n💡 TIPS SUKSES:\n• Latih alat musik rutin\n• Pelajari teori musik\n• Ikuti kompetisi musik"}},
+senirupa:{name:"Seni Rupa",icon:"🎨",category:"seni",users:[],guide:{title:"Seni Rupa: Mengekspresikan Dunia Melalui Seni",desc:"Jurusan yang mempelajari seni lukis, patung, dan karya seni visual.",durasi:"4 tahun",gelar:"S.Sn",kampus:"ISI, ITB, UGM",biaya:"~5-12 jt/thn",content:"📘 MATERI INTI:\n• Dasar menggambar\n• Lukis & warna\n• Patung & instalasi\n• Sejarah seni\n• Estetika\n• Produksi karya\n\n🛠️ KETERAMPILAN:\n• Drawing & painting\n• Sculpting\n• Art technique\n• Creative expression\n\n💼 PROSPEK KARIR:\n• Pelukis\n• Seniman instalasi\n• Kurator seni\n• Art educator\n\n💡 TIPS SUKSES:\n• Eksplorasi gaya & medium\n• Ikuti pameran\n• Pelajari sejarah seni"}},
+kriya:{name:"Seni Kriya",icon:"🏺",category:"seni",users:[],guide:{title:"Seni Kriya: Kerajinan Tangan Bernilai Seni Tinggi",desc:"Jurusan yang mempelajari kerajinan berbahan alami seperti kayu, logam, tanah liat.",durasi:"4 tahun",gelar:"S.Sn",kampus:"ISI, ITB, UGM",biaya:"~4-10 jt/thn",content:"📘 MATERI INTI:\n• Material & alat kriya\n• Teknik pahat & ukir\n• Teknik anyaman\n• Gerabah & tembikar\n• Logam & perhiasan\n• Desain produk\n\n🛠️ KETERAMPILAN:\n• Craftsmanship\n• Material knowledge\n• Handcraft skills\n• Product design\n\n💼 PROSPEK KARIR:\n• Pengrajin\n• Product designer\n• Entrepreneur kriya\n• Artisan\n\n💡 TIPS SUKSES:\n• Kuasai teknik dasar\n• Eksplorasi material\n• Bangun brand produk"}},
+fotografi:{name:"Fotografi",icon:"📷",category:"seni",users:[],guide:{title:"Fotografi: Mengabadikan Momen",desc:"Jurusan yang mempelajari teknik fotografi, komposisi, dan pengolahan foto.",durasi:"4 tahun",gelar:"S.Sn",kampus:"ISI, ITB, UGM",biaya:"~5-12 jt/thn",content:"📘 MATERI INTI:\n• Dasar fotografi\n• Teknik kamera\n• Fotografi studio\n• Fotografi jurnalistik\n• Pengolahan digital\n• Bisnis fotografi\n\n🛠️ KETERAMPILAN:\n• Photography skills\n• Lighting & composition\n• Photo editing\n• Visual storytelling\n\n💼 PROSPEK KARIR:\n• Fotografer\n• Photo editor\n• Wedding photographer\n• Photojournalist\n\n💡 TIPS SUKSES:\n• Kuasai teknik kamera\n• Latih komposisi\n• Bangun portofolio"}},
+desainproduk:{name:"Desain Produk",icon:"🪑",category:"seni",users:[],guide:{title:"Desain Produk: Menciptakan Produk Fungsional dan Estetis",desc:"Jurusan yang mempelajari desain produk industri dan furnitur.",durasi:"4 tahun",gelar:"S.Ds",kampus:"ITB, UGM, BINUS",biaya:"~6-15 jt/thn",content:"📘 MATERI INTI:\n• Dasar desain produk\n• Material & manufaktur\n• Ergonomi\n• 3D modeling\n• Prototyping\n• Produk furnitur\n\n🛠️ KETERAMPILAN:\n• Product design\n• 3D modeling (SolidWorks)\n• Prototyping\n• Material selection\n\n💼 PROSPEK KARIR:\n• Product designer\n• Industrial designer\n• Furniture designer\n• Design consultant\n\n💡 TIPS SUKSES:\n• Kuasai 3D modeling\n• Pahami material\n• Ikuti studio desain"}},
+multimedia:{name:"Multimedia",icon:"💿",category:"seni",users:[],guide:{title:"Multimedia: Menggabungkan Seni dan Teknologi",desc:"Jurusan yang mempelajari produksi konten interaktif dan multimedia.",durasi:"4 tahun",gelar:"S.Ds",kampus:"BINUS, ITB, UI",biaya:"~6-15 jt/thn",content:"📘 MATERI INTI:\n• Dasar multimedia\n• Desain grafis\n• Animasi\n• Video editing\n• Web design\n• Interactive media\n\n🛠️ KETERAMPILAN:\n• Multimedia production\n• Graphic design\n• Video editing\n• Interactive design\n\n💼 PROSPEK KARIR:\n• Multimedia designer\n• Motion graphic artist\n• Video editor\n• Interactive developer\n\n💡 TIPS SUKSES:\n• Kuasai Adobe Creative Suite\n• Pelajari video editing\n• Bangun portofolio"}},
+
+// === PENDIDIKAN & OLAHRAGA (6) ===
+pendidikan:{name:"Pendidikan",icon:"👨‍🏫",category:"pendidikan",users:[],guide:{title:"Pendidikan: Membentuk Generasi Cerdas dan Berkarakter",desc:"Jurusan yang mempelajari teori, metode, dan manajemen pendidikan.",durasi:"4 tahun",gelar:"S.Pd",kampus:"UPI, UNJ, UNY, UGM",biaya:"~4-10 jt/thn",content:"📘 MATERI INTI:\n• Filsafat & teori pendidikan\n• Psikologi pendidikan\n• Metode mengajar\n• Kurikulum & evaluasi\n• Manajemen sekolah\n• Teknologi pendidikan\n\n🛠️ KETERAMPILAN:\n• Teaching skills\n• Classroom management\n• Curriculum development\n• Student assessment\n\n💼 PROSPEK KARIR:\n• Guru\n• Kepala sekolah\n• Dosen\n• Education consultant\n\n💡 TIPS SUKSES:\n• Kembangkan empati\n• Kuasai metode mengajar\n• Ikuti PPL"}},
+bimbingankonseling:{name:"Bimbingan Konseling",icon:"💬",category:"pendidikan",users:[],guide:{title:"Bimbingan Konseling: Membantu Siswa Menemukan Jalan",desc:"Jurusan yang mempelajari konseling, psikologi pendidikan, dan bimbingan karier.",durasi:"4 tahun",gelar:"S.Pd",kampus:"UPI, UNJ, UGM, UNPAD",biaya:"~4-10 jt/thn",content:"📘 MATERI INTI:\n• Teori konseling\n• Psikologi pendidikan\n• Bimbingan karier\n• Konseling individual\n• Konseling kelompok\n• Tes psikologi\n\n🛠️ KETERAMPILAN:\n• Counseling skills\n• Assessment\n• Career guidance\n• Communication\n\n💼 PROSPEK KARIR:\n• Konselor sekolah\n• Psikolog pendidikan\n• HR specialist\n• Career counselor\n\n💡 TIPS SUKSES:\n• Kembangkan mendengar\n• Kuasai teori konseling\n• Ikuti praktik konseling"}},
+olahraga:{name:"Ilmu Keolahragaan",icon:"🏋️",category:"pendidikan",users:[],guide:{title:"Ilmu Keolahragaan: Sport Science dan Kebugaran",desc:"Jurusan yang mempelajari biomekanika, psikologi olahraga, dan manajemen olahraga.",durasi:"4 tahun",gelar:"S.Si",kampus:"UNJ, UNY, UPI",biaya:"~4-10 jt/thn",content:"📘 MATERI INTI:\n• Biomekanika & fisiologi\n• Psikologi olahraga\n• Metode latihan\n• Manajemen olahraga\n• Gizi olahraga\n• Injury prevention\n\n🛠️ KETERAMPILAN:\n• Coaching\n• Sports analysis\n• Fitness training\n• Injury management\n\n💼 PROSPEK KARIR:\n• Pelatih\n• Sports scientist\n• Physiotherapist\n• Sports manager\n\n💡 TIPS SUKSES:\n• Kuasai fisiologi\n• Ikuti pelatihan\n• Pahami psikologi atlet"}},
+pgsd:{name:"PGSD",icon:"📚",category:"pendidikan",users:[],guide:{title:"PGSD: Pendidik untuk Generasi Emas",desc:"Jurusan yang mempersiapkan guru untuk pendidikan dasar (SD/MI).",durasi:"4 tahun",gelar:"S.Pd",kampus:"UPI, UNJ, UNY, UGM",biaya:"~4-10 jt/thn",content:"📘 MATERI INTI:\n• Dasar pendidikan\n• Psikologi anak\n• Metode pembelajaran SD\n• Kurikulum SD\n• Manajemen kelas\n• Media pembelajaran\n\n🛠️ KETERAMPILAN:\n• Teaching\n• Classroom management\n• Child psychology\n• Curriculum planning\n\n💼 PROSPEK KARIR:\n• Guru SD\n• Kepala sekolah SD\n• Pengawas sekolah\n• Dosen\n\n💡 TIPS SUKSES:\n• Kembangkan kesabaran\n• Kuasai metode mengajar anak\n• Ikuti PPL di SD"}},
+pendidikananak:{name:"Pendidikan Anak Usia Dini",icon:"🧸",category:"pendidikan",users:[],guide:{title:"PAUD: Pendidikan untuk Anak Usia Dini",desc:"Jurusan yang mempelajari metode pendidikan dan pengasuhan anak usia dini.",durasi:"4 tahun",gelar:"S.Pd",kampus:"UPI, UNJ, UNY",biaya:"~4-10 jt/thn",content:"📘 MATERI INTI:\n• Teori perkembangan anak\n• Metode pembelajaran PAUD\n• Psikologi anak\n• Bermain & kreativitas\n• Manajemen PAUD\n• Kesehatan anak\n\n🛠️ KETERAMPILAN:\n• Early childhood education\n• Creative teaching\n• Child development\n• Classroom management\n\n💼 PROSPEK KARIR:\n• Guru PAUD\n• Kepala sekolah PAUD\n• Konselor anak\n• Dosen\n\n💡 TIPS SUKSES:\n• Kembangkan kreativitas\n• Kuasai psikologi anak\n• Ikuti praktik PAUD"}},
+pendidikanluarkelas:{name:"Pendidikan Luar Kelas",icon:"🏕️",category:"pendidikan",users:[],guide:{title:"Pendidikan Luar Kelas: Belajar di Alam Terbuka",desc:"Jurusan yang mempelajari metode pendidikan di luar ruangan dan alam terbuka.",durasi:"4 tahun",gelar:"S.Pd",kampus:"UPI, UNJ, UNY",biaya:"~4-10 jt/thn",content:"📘 MATERI INTI:\n• Metode outdoor learning\n• Manajemen kegiatan luar\n• Keselamatan & risiko\n• Pendidikan lingkungan\n• Petualangan & ekspedisi\n• Kepemimpinan\n\n🛠️ KETERAMPILAN:\n• Outdoor education\n• Risk management\n• Leadership\n• Environmental education\n\n💼 PROSPEK KARIR:\n• Outdoor educator\n• Konselor kegiatan luar\n• Trainer petualangan\n• Konsultan pendidikan\n\n💡 TIPS SUKSES:\n• Kuasai teknik survival\n• Pahami keselamatan\n• Ikuti pelatihan outdoor"}},
+
+// === PANGAN & PERIKANAN (6) ===
+teknologipangan:{name:"Teknologi Pangan",icon:"🥫",category:"pangan",users:[],guide:{title:"Teknologi Pangan: Inovasi Produk Pangan",desc:"Jurusan yang mempelajari produksi, pengawetan, dan pengembangan produk pangan.",durasi:"4 tahun",gelar:"S.T.P.",kampus:"IPB, UGM, UNPAD",biaya:"~5-12 jt/thn",content:"📘 MATERI INTI:\n• Kimia & mikrobiologi\n• Pengolahan pangan\n• Pengawetan\n• Pengembangan produk\n• Quality assurance\n• Sensorik\n\n🛠️ KETERAMPILAN:\n• Food processing\n• Product development\n• Quality control\n• Sensory evaluation\n\n💼 PROSPEK KARIR:\n• Food technologist\n• Product developer\n• Quality manager\n• Researcher\n\n💡 TIPS SUKSES:\n• Kuasai kimia pangan\n• Pelajari teknik pengawetan\n• Ikuti riset pengembangan"}},
+teknologihasilkanternak:{name:"Teknologi Hasil Ternak",icon:"🥩",category:"pangan",users:[],guide:{title:"Teknologi Hasil Ternak: Olahan Protein Hewani",desc:"Jurusan yang mempelajari pengolahan daging, susu, dan produk ternak.",durasi:"4 tahun",gelar:"S.T.P.",kampus:"IPB, UGM, UNPAD",biaya:"~5-12 jt/thn",content:"📘 MATERI INTI:\n• Kimia & mikrobiologi\n• Pengolahan daging\n• Pengolahan susu\n• Telur & produk\n• Pengawetan\n• Quality control\n\n🛠️ KETERAMPILAN:\n• Meat processing\n• Dairy processing\n• Quality control\n• Product innovation\n\n💼 PROSPEK KARIR:\n• Food technologist\n• Meat processing supervisor\n• Dairy specialist\n• QA officer\n\n💡 TIPS SUKSES:\n• Kuasai kimia & mikrobiologi\n• Pelajari pengolahan\n• Ikuti magang industri"}},
+teknologihasilperikanan:{name:"Teknologi Hasil Perikanan",icon:"🦐",category:"pangan",users:[],guide:{title:"Teknologi Hasil Perikanan: Olahan Laut Bernilai Tinggi",desc:"Jurusan yang mempelajari pengolahan ikan dan produk perikanan.",durasi:"4 tahun",gelar:"S.T.P.",kampus:"IPB, UGM, UNPAD",biaya:"~5-12 jt/thn",content:"📘 MATERI INTI:\n• Kimia & mikrobiologi\n• Pengolahan ikan\n• Pengawetan & pengemasan\n• Produk fermentasi\n• Quality control\n• Distribusi\n\n🛠️ KETERAMPILAN:\n• Fish processing\n• Quality control\n• Preservation\n• Cold chain management\n\n💼 PROSPEK KARIR:\n• Food technologist\n• Fish processing supervisor\n• QA officer\n• Researcher\n\n💡 TIPS SUKSES:\n• Kuasai pengolahan ikan\n• Pelajari rantai dingin\n• Ikuti magang industri"}},
+teknologisidat:{name:"Teknologi Sidat",icon:"🐍",category:"pangan",users:[],guide:{title:"Teknologi Sidat: Budidaya Sidat Modern",desc:"Jurusan yang mempelajari budidaya, pengolahan, dan pemasaran sidat.",durasi:"4 tahun",gelar:"S.T.P.",kampus:"IPB, UGM, UNPAD",biaya:"~5-12 jt/thn",content:"📘 MATERI INTI:\n• Biologi sidat\n• Budidaya sidat\n• Nutrisi sidat\n• Kesehatan sidat\n• Pengolahan sidat\n• Pemasaran\n\n🛠️ KETERAMPILAN:\n• Eel farming\n• Water quality management\n• Feeding\n• Health management\n\n💼 PROSPEK KARIR:\n• Aquaculturist\n• Sidat farm manager\n• Researcher\n• Product developer\n\n💡 TIPS SUKSES:\n• Kuasai biologi sidat\n• Pelajari budidaya\n• Ikuti magang di farm"}},
+teknologibudidayaperairan:{name:"Budidaya Perairan",icon:"🐠",category:"pangan",users:[],guide:{title:"Budidaya Perairan: Masa Depan Protein dari Air",desc:"Jurusan yang mempelajari budidaya ikan, udang, dan organisme air lainnya.",durasi:"4 tahun",gelar:"S.T.P.",kampus:"IPB, UGM, UNPAD",biaya:"~5-12 jt/thn",content:"📘 MATERI INTI:\n• Biologi perairan\n• Teknologi budidaya\n• Nutrisi & pakan\n• Kesehatan & penyakit\n• Manajemen kualitas air\n• Pemasaran\n\n🛠️ KETERAMPILAN:\n• Aquaculture\n• Water quality\n• Feeding\n• Disease control\n\n💼 PROSPEK KARIR:\n• Aquaculturist\n• Farm manager\n• Researcher\n• Consultant\n\n💡 TIPS SUKSES:\n• Kuasai biologi perairan\n• Pelajari kualitas air\n• Ikuti magang tambak"}},
+oseanografi:{name:"Oseanografi",icon:"🌊",category:"pangan",users:[],guide:{title:"Oseanografi: Memahami Laut dan Samudera",desc:"Jurusan yang mempelajari laut, arus, dan ekosistem perairan.",durasi:"4 tahun",gelar:"S.Si",kampus:"ITB, UI, IPB, UGM",biaya:"~4-10 jt/thn",content:"📘 MATERI INTI:\n• Fisika laut\n• Kimia laut\n• Biologi laut\n• Oseanografi\n• Arus & gelombang\n• Ekosistem pesisir\n\n🛠️ KETERAMPILAN:\n• Ocean observation\n• Data analysis\n• Marine research\n• Coastal management\n\n💼 PROSPEK KARIR:\n• Oceanographer\n• Marine biologist\n• Coastal manager\n• Researcher\n\n💡 TIPS SUKSES:\n• Kuasai fisika & biologi laut\n• Ikuti riset lapangan\n• Pelajari ekosistem pesisir"}},
+
+// === LAINNYA (8) ===
+geologi:{name:"Geologi",icon:"🪨",category:"lainnya",users:[],guide:{title:"Geologi: Memahami Bumi dan Prosesnya",desc:"Jurusan yang mempelajari bumi, batuan, dan proses geologi.",durasi:"4 tahun",gelar:"S.Si",kampus:"ITB, UI, UGM, UNPAD",biaya:"~4-10 jt/thn",content:"📘 MATERI INTI:\n• Mineralogi & petrologi\n• Geologi struktur\n• Sedimentologi\n• Paleontologi\n• Geofisika\n• Geologi lingkungan\n\n🛠️ KETERAMPILAN:\n• Field mapping\n• Rock & mineral analysis\n• Structural analysis\n• Geochemical analysis\n\n💼 PROSPEK KARIR:\n• Geolog\n• Petroleum geologist\n• Mining engineer\n• Environmental geologist\n\n💡 TIPS SUKSES:\n• Kuasai mineralogi & batuan\n• Ikuti praktik lapangan\n• Pelajari geologi struktur"}},
+arkeologi:{name:"Arkeologi",icon:"🏺",category:"lainnya",users:[],guide:{title:"Arkeologi: Mengungkap Jejak Peradaban",desc:"Jurusan yang mempelajari masa lalu manusia melalui peninggalan material.",durasi:"4 tahun",gelar:"S.S.",kampus:"UI, UGM, UNPAD",biaya:"~4-10 jt/thn",content:"📘 MATERI INTI:\n• Metode arkeologi\n• Paleontologi\n• Sejarah peradaban\n• Konservasi artefak\n• Arkeologi Indonesia\n• Arkeologi maritim\n\n🛠️ KETERAMPILAN:\n• Excavation skills\n• Artifact analysis\n• Conservation\n• Field research\n\n💼 PROSPEK KARIR:\n• Arkeolog\n• Kurator museum\n• Peneliti\n• Dosen\n\n💡 TIPS SUKSES:\n• Kuasai metode ekskavasi\n• Ikuti penelitian lapangan\n• Pelajari konservasi"}},
+perencanaanwilayah:{name:"Perencanaan Wilayah & Kota",icon:"🏙️",category:"lainnya",users:[],guide:{title:"Perencanaan Wilayah: Merancang Kota Masa Depan",desc:"Jurusan yang mempelajari perencanaan dan pengembangan wilayah dan kota.",durasi:"4 tahun",gelar:"S.T.",kampus:"ITB, UI, UGM",biaya:"~5-12 jt/thn",content:"📘 MATERI INTI:\n• Teori perencanaan\n• Perencanaan kota\n• Perencanaan transportasi\n• Ekonomi regional\n• GIS & pemetaan\n• Kebijakan tata ruang\n\n🛠️ KETERAMPILAN:\n• Urban planning\n• Spatial analysis\n• Policy development\n• GIS mapping\n\n💼 PROSPEK KARIR:\n• Urban planner\n• Regional planner\n• Policy analyst\n• Consultant\n\n💡 TIPS SUKSES:\n• Kuasai GIS\n• Pahami kebijakan tata ruang\n• Ikuti praktik perencanaan"}},
+ilmulingkungan:{name:"Ilmu Lingkungan",icon:"🌎",category:"lainnya",users:[],guide:{title:"Ilmu Lingkungan: Memahami dan Melindungi Alam",desc:"Jurusan yang mempelajari interaksi manusia dengan lingkungan alam.",durasi:"4 tahun",gelar:"S.Si",kampus:"UI, IPB, UGM, UNPAD",biaya:"~4-10 jt/thn",content:"📘 MATERI INTI:\n• Ekologi\n• Perubahan iklim\n• Manajemen sumber daya\n• Polusi & remediasi\n• Kebijakan lingkungan\n• Konservasi\n\n🛠️ KETERAMPILAN:\n• Environmental analysis\n• Resource management\n• Policy advocacy\n• Research\n\n💼 PROSPEK KARIR:\n• Environmental scientist\n• Policy advisor\n• NGO worker\n• Consultant\n\n💡 TIPS SUKSES:\n• Pahami ekologi\n• Ikuti riset lingkungan\n• Advokasi kebijakan"}},
+komunikasipolitik:{name:"Komunikasi Politik",icon:"🗳️",category:"lainnya",users:[],guide:{title:"Komunikasi Politik: Strategi dan Pengaruh",desc:"Jurusan yang mempelajari komunikasi dalam konteks politik dan pemerintahan.",durasi:"4 tahun",gelar:"S.I.Kom",kampus:"UI, UGM, UNPAD",biaya:"~5-14 jt/thn",content:"📘 MATERI INTI:\n• Teori komunikasi politik\n• Kampanye politik\n• Opini publik\n• Media & politik\n• Strategi komunikasi\n• Isu kontemporer\n\n🛠️ KETERAMPILAN:\n• Political communication\n• Campaign strategy\n• Media relations\n• Speech writing\n\n💼 PROSPEK KARIR:\n• Political consultant\n• Campaign strategist\n• Lobbyist\n• Policy advisor\n\n💡 TIPS SUKSES:\n• Pahami politik kontemporer\n• Kuasai strategi komunikasi\n• Ikuti kampanye"}},
+ilmuhadis:{name:"Ilmu Hadis",icon:"📜",category:"lainnya",users:[],guide:{title:"Ilmu Hadis: Studi Tradisi Islam",desc:"Jurusan yang mempelajari hadis, periwayatan, dan kritik hadis.",durasi:"4 tahun",gelar:"S.Ag",kampus:"UIN, UGM, UNPAD",biaya:"~3-10 jt/thn",content:"📘 MATERI INTI:\n• Ulumul hadis\n• Periwayatan hadis\n• Kritik hadis\n• Ilmu jarh wa ta'dil\n• Hadis tematik\n• Metodologi hadis\n\n🛠️ KETERAMPILAN:\n• Hadith analysis\n• Critical study\n• Research\n• Academic writing\n\n💼 PROSPEK KARIR:\n• Peneliti hadis\n• Dosen\n• Pendakwah\n• Konselor\n\n💡 TIPS SUKSES:\n• Kuasai bahasa Arab\n• Pelajari metodologi\n• Ikuti kajian hadis"}},
+ilmutafsir:{name:"Ilmu Tafsir",icon:"📖",category:"lainnya",users:[],guide:{title:"Ilmu Tafsir: Memahami Al-Quran",desc:"Jurusan yang mempelajari interpretasi dan pemahaman Al-Quran.",durasi:"4 tahun",gelar:"S.Ag",kampus:"UIN, UGM, UNPAD",biaya:"~3-10 jt/thn",content:"📘 MATERI INTI:\n• Ulumul quran\n• Metode tafsir\n• Sejarah tafsir\n• Tafsir tematik\n• Tafsir kontemporer\n• Studi Quran\n\n🛠️ KETERAMPILAN:\n• Quranic analysis\n• Interpretation\n• Academic research\n• Critical reading\n\n💼 PROSPEK KARIR:\n• Peneliti tafsir\n• Dosen\n• Pendakwah\n• Konselor\n\n💡 TIPS SUKSES:\n• Kuasai bahasa Arab\n• Baca kitab tafsir klasik\n• Ikuti kajian tafsir"}},
+risetoperasi:{name:"Riset Operasi",icon:"📈",category:"lainnya",users:[],guide:{title:"Riset Operasi: Optimalisasi Keputusan",desc:"Jurusan yang mempelajari metode optimasi dan pengambilan keputusan.",durasi:"4 tahun",gelar:"S.Si",kampus:"ITB, UI, UGM",biaya:"~4-10 jt/thn",content:"📘 MATERI INTI:\n• Pemrograman linear\n• Teori graf\n• Optimasi jaringan\n• Simulasi\n• Analisis keputusan\n• Supply chain\n\n🛠️ KETERAMPILAN:\n• Optimization modeling\n• Data analysis\n• Decision support\n• Simulation\n\n💼 PROSPEK KARIR:\n• Operations researcher\n• Data analyst\n• Supply chain manager\n• Consultant\n\n💡 TIPS SUKSES:\n• Kuasai matematika\n• Pahami optimasi\n• Pelajari software simulasi"}}
+};
+
+// =============================================
+// APLIKASI LOGIC
+// =============================================
+let currentUser = null;
+let regPhotoData = null;
+let editPhotoData = null;
+let lastSubjectKey = null;
+let currentMajorKey = null;
+const STORAGE_KEY_STORIES = 'jejak_stories';
+const STORAGE_KEY_USERS = 'jejak_pengguna';
+let communityStories = [];
+let filteredMajors = [];
+
+// Helper functions
+function getMajorList() {
+    return Object.keys(MAJORS_DATA);
+}
+
+function getMajorByKey(key) {
+    return MAJORS_DATA[key];
+}
+
+function getGuideByKey(key) {
+    const major = MAJORS_DATA[key];
+    return major ? major.guide : null;
+}
+
+// Render Home
+function renderHome() {
+    const grid = document.getElementById('major-grid');
+    const keys = Object.keys(MAJORS_DATA);
+    filteredMajors = keys;
+    
+    renderMajorGrid(filteredMajors);
+    renderCommunitySection();
+}
+
+function renderMajorGrid(keys) {
+    const grid = document.getElementById('major-grid');
+    const countLabel = document.getElementById('major-count-label');
+    
+    countLabel.innerHTML = `Menampilkan <strong>${keys.length}</strong> dari <strong>${Object.keys(MAJORS_DATA).length}</strong> jurusan`;
+    
+    grid.innerHTML = keys.map(key => {
+        const m = MAJORS_DATA[key];
+        const count = m.users ? m.users.length : 0;
+        return `
+            <div class="major-card" onclick="openMajor('${key}')">
+                <span class="corner"></span>
+                <span class="icon">${m.icon || '📌'}</span>
+                <h3>${m.name}</h3>
+                <span class="count">${count} cerita <span class="empty-story-badge">Kosong</span></span>
+            </div>
+        `;
+    }).join('');
+}
+
+function filterMajors() {
+    const search = document.getElementById('search-major-input').value.toLowerCase();
+    const category = document.getElementById('filter-major-category').value;
+    
+    const keys = Object.keys(MAJORS_DATA).filter(key => {
+        const m = MAJORS_DATA[key];
+        const matchName = m.name.toLowerCase().includes(search);
+        const matchCategory = category === 'all' || m.category === category;
+        return matchName && matchCategory;
+    });
+    
+    renderMajorGrid(keys);
+}
+
+function renderCommunitySection() {
+    const section = document.getElementById('community-section');
+    const list = document.getElementById('community-list');
+    
+    // Try to load from localStorage
+    try {
+        const data = localStorage.getItem(STORAGE_KEY_STORIES);
+        communityStories = data ? JSON.parse(data) : [];
+    } catch(e) {
+        communityStories = [];
+    }
+    
+    const published = communityStories.filter(s => s.status === 'published');
+    if (!published.length) {
+        section.style.display = 'none';
+        return;
+    }
+    section.style.display = 'block';
+    list.innerHTML = published.map(s => `
+        <div class="story-card" onclick='openNotepad(${JSON.stringify(s.title)},${JSON.stringify(s.content)},${JSON.stringify(s.authorName)},${JSON.stringify(s.fakultasTag||"")},false)'>
+            <span class="quote-mark">"</span>
+            ${s.fakultasTag ? `<div class="fak-tag">Buat ${s.fakultasTag}</div>` : ''}
+            <h4>${s.title}</h4>
+            <p class="snippet">${s.snippet}</p>
+            <span class="toggle">Buka catatan →</span>
+            <div class="by-line">oleh ${s.authorName} · ${s.angkatan || 'Mahasiswa'}</div>
+        </div>
+    `).join('');
+}
+
+// Open Major
+function openMajor(key) {
+    currentMajorKey = key;
+    const major = MAJORS_DATA[key];
+    const guide = major.guide;
+    
+    if (guide) {
+        document.getElementById('guide-title').textContent = guide.title;
+        document.getElementById('guide-desc').textContent = guide.desc;
+        
+        const infoGrid = document.getElementById('guide-info-grid');
+        const infoData = {
+            'Durasi': guide.durasi || '4 tahun',
+            'Gelar': guide.gelar || 'S.Si',
+            'Kampus': guide.kampus || 'UI, ITB, UGM',
+            'Biaya': guide.biaya || '~4-10 jt/thn'
+        };
+        infoGrid.innerHTML = Object.entries(infoData).map(([k,v]) => `
+            <div class="guide-info-card">
+                <span class="gi-icon">${k==='Durasi'?'⏱️':k==='Gelar'?'🎓':k==='Kampus'?'🏫':k==='Biaya'?'💰':'📌'}</span>
+                <div class="gi-label">${k}</div>
+                <div class="gi-value">${v}</div>
+            </div>
+        `).join('');
+        
+        document.getElementById('guide-content').textContent = guide.content || 'Panduan sedang disiapkan.';
+        document.getElementById('guide-back-btn').onclick = function() { goHome(); };
+        document.getElementById('guide-exit-btn').onclick = function() { dismissGuide(); };
+        document.getElementById('guide-cta-btn').onclick = function() { dismissGuide(); };
+        showScreen('major-guide');
+    } else {
+        showMajorUsers(key);
+    }
+}
+
+function dismissGuide() {
+    if (currentMajorKey) showMajorUsers(currentMajorKey);
+}
+
+function showMajorUsers(key) {
+    const m = MAJORS_DATA[key];
+    document.getElementById('major-icon').textContent = m.icon || '📌';
+    document.getElementById('major-name').textContent = m.name;
+    document.getElementById('major-sub').textContent = '✨ Belum ada mahasiswa yang mendaftar. Jadilah yang pertama!';
+    document.getElementById('user-grid').innerHTML = `
+        <div class="empty" style="padding:40px 20px;text-align:center;grid-column:1/-1;background:var(--bg);border-radius:18px;border:2px dashed var(--border);">
+            <span style="font-size:48px;display:block;margin-bottom:12px;">👤</span>
+            <h3 style="font-family:'Fraunces',serif;font-size:20px;margin:0 0 8px;">Belum ada mahasiswa</h3>
+            <p style="color:var(--ink-soft);font-size:14px;margin:0;">Jadilah orang pertama yang mendaftar di jurusan ini!</p>
+            <button class="btn-masuk" style="margin-top:12px;" onclick="openRegister()">Daftar Sekarang</button>
+        </div>
+    `;
+    showScreen('major');
+}
+
+function openMajorGuide() {
+    if (!currentMajorKey) return;
+    const guide = MAJORS_DATA[currentMajorKey]?.guide;
+    if (!guide) return;
+    
+    document.getElementById('guide-title').textContent = guide.title;
+    document.getElementById('guide-desc').textContent = guide.desc;
+    
+    const infoGrid = document.getElementById('guide-info-grid');
+    const infoData = {
+        'Durasi': guide.durasi || '4 tahun',
+        'Gelar': guide.gelar || 'S.Si',
+        'Kampus': guide.kampus || 'UI, ITB, UGM',
+        'Biaya': guide.biaya || '~4-10 jt/thn'
+    };
+    infoGrid.innerHTML = Object.entries(infoData).map(([k,v]) => `
+        <div class="guide-info-card">
+            <span class="gi-icon">${k==='Durasi'?'⏱️':k==='Gelar'?'🎓':k==='Kampus'?'🏫':k==='Biaya'?'💰':'📌'}</span>
+            <div class="gi-label">${k}</div>
+            <div class="gi-value">${v}</div>
+        </div>
+    `).join('');
+    
+    document.getElementById('guide-content').textContent = guide.content || 'Panduan sedang disiapkan.';
+    document.getElementById('guide-back-btn').onclick = function() { showScreen('major'); };
+    document.getElementById('guide-exit-btn').onclick = function() { showScreen('major'); };
+    document.getElementById('guide-cta-btn').onclick = function() { showScreen('major'); };
+    showScreen('major-guide');
+}
+
+// Subject rendering
+const SUBJECTS = {
+
+    matematika_sma:{
+        name:"Matematika",
+        icon:"📐",
+        topics:[
+            {name:"Aljabar",silabus:[
+                "Persamaan linear",
+                "Pertidaksamaan",
+                "Matriks"
+            ]},
+            {name:"Trigonometri",silabus:[
+                "Sinus, cosinus, tangen",
+                "Identitas trigonometri",
+                "Aturan sinus dan cosinus"
+            ]},
+            {name:"Kalkulus",silabus:[
+                "Limit",
+                "Turunan",
+                "Integral"
+            ]},
+            {name:"Statistika",silabus:[
+                "Mean, median, modus",
+                "Penyajian data",
+                "Peluang"
+            ]}
+        ]
+    },
+
+    fisika_sma:{
+        name:"Fisika",
+        icon:"⚛️",
+        topics:[
+            {name:"Mekanika",silabus:[
+                "Gerak lurus",
+                "Hukum Newton",
+                "Gaya dan percepatan"
+            ]},
+            {name:"Usaha dan Energi",silabus:[
+                "Konsep usaha",
+                "Energi kinetik",
+                "Energi potensial"
+            ]},
+            {name:"Listrik",silabus:[
+                "Hukum Ohm",
+                "Rangkaian listrik",
+                "Daya listrik"
+            ]},
+            {name:"Gelombang",silabus:[
+                "Gelombang mekanik",
+                "Bunyi",
+                "Cahaya"
+            ]}
+        ]
+    },
+
+    kimia_sma:{
+        name:"Kimia",
+        icon:"🧪",
+        topics:[
+            {name:"Struktur Atom",silabus:[
+                "Proton, neutron, elektron",
+                "Nomor atom",
+                "Isotop"
+            ]},
+            {name:"Sistem Periodik",silabus:[
+                "Golongan",
+                "Periode",
+                "Sifat unsur"
+            ]},
+            {name:"Ikatan Kimia",silabus:[
+                "Ikatan ion",
+                "Ikatan kovalen",
+                "Struktur molekul"
+            ]},
+            {name:"Asam dan Basa",silabus:[
+                "Konsep pH",
+                "Reaksi asam basa",
+                "Netralisasi"
+            ]}
+        ]
+    },
+
+    biologi_sma:{
+        name:"Biologi",
+        icon:"🔬",
+        topics:[
+            {name:"Sel",silabus:[
+                "Struktur sel",
+                "Organel",
+                "Transport sel"
+            ]},
+            {name:"Sistem Organ",silabus:[
+                "Sistem pencernaan",
+                "Sistem pernapasan",
+                "Sistem peredaran darah"
+            ]},
+            {name:"Genetika",silabus:[
+                "DNA",
+                "RNA",
+                "Pewarisan sifat"
+            ]},
+            {name:"Ekosistem",silabus:[
+                "Rantai makanan",
+                "Jaring makanan",
+                "Lingkungan"
+            ]}
+        ]
+    },
+
+    bahasa_indonesia:{
+        name:"Bahasa Indonesia",
+        icon:"📚",
+        topics:[
+            {name:"Teks Eksposisi",silabus:[
+                "Struktur teks",
+                "Argumentasi",
+                "Kaidah kebahasaan"
+            ]},
+            {name:"Teks Argumentasi",silabus:[
+                "Pendapat",
+                "Fakta",
+                "Kesimpulan"
+            ]},
+            {name:"Puisi",silabus:[
+                "Unsur puisi",
+                "Majas",
+                "Makna puisi"
+            ]},
+            {name:"Menulis",silabus:[
+                "Paragraf",
+                "Artikel",
+                "Karya ilmiah"
+            ]}
+        ]
+    },
+
+    bahasa_inggris:{
+        name:"Bahasa Inggris",
+        icon:"🇬🇧",
+        topics:[
+            {name:"Grammar",silabus:[
+                "Tenses",
+                "Passive voice",
+                "Conditional sentence"
+            ]},
+            {name:"Vocabulary",silabus:[
+                "Daily vocabulary",
+                "Academic vocabulary",
+                "Synonym"
+            ]},
+            {name:"Reading",silabus:[
+                "Reading comprehension",
+                "Main idea",
+                "Inference"
+            ]},
+            {name:"Writing",silabus:[
+                "Essay",
+                "Paragraph",
+                "Formal writing"
+            ]}
+        ]
+    },
+
+    ekonomi:{
+        name:"Ekonomi",
+        icon:"📈",
+        topics:[
+            {name:"Dasar Ekonomi",silabus:[
+                "Kelangkaan",
+                "Kebutuhan",
+                "Prinsip ekonomi"
+            ]},
+            {name:"Permintaan dan Penawaran",silabus:[
+                "Hukum permintaan",
+                "Hukum penawaran",
+                "Harga keseimbangan"
+            ]},
+            {name:"Pasar",silabus:[
+                "Pasar persaingan",
+                "Monopoli",
+                "Oligopoli"
+            ]},
+            {name:"Akuntansi",silabus:[
+                "Debit kredit",
+                "Jurnal umum",
+                "Laporan keuangan"
+            ]}
+        ]
+    },
+
+    geografi:{
+        name:"Geografi",
+        icon:"🌍",
+        topics:[
+            {name:"Litosfer",silabus:[
+                "Batuan",
+                "Gunung api",
+                "Gempa bumi"
+            ]},
+            {name:"Atmosfer",silabus:[
+                "Cuaca",
+                "Iklim",
+                "Pemanasan global"
+            ]},
+            {name:"Peta",silabus:[
+                "Skala",
+                "Koordinat",
+                "Interpretasi peta"
+            ]},
+            {name:"Lingkungan",silabus:[
+                "Ekosistem",
+                "Bencana alam",
+                "Konservasi"
+            ]}
+        ]
+    },
+
+    sejarah:{
+        name:"Sejarah",
+        icon:"🏛️",
+        topics:[
+            {name:"Sejarah Indonesia",silabus:[
+                "Kerajaan Nusantara",
+                "Kolonialisme",
+                "Kemerdekaan Indonesia"
+            ]},
+            {name:"Pergerakan Nasional",silabus:[
+                "Budi Utomo",
+                "Sumpah Pemuda",
+                "Proklamasi"
+            ]},
+            {name:"Sejarah Dunia",silabus:[
+                "Revolusi Industri",
+                "Perang Dunia",
+                "Globalisasi"
+            ]}
+        ]
+    },
+
+    informatika:{
+        name:"Informatika",
+        icon:"💻",
+        topics:[
+            {name:"Dasar Pemrograman",silabus:[
+                "Variabel",
+                "Percabangan",
+                "Perulangan"
+            ]},
+            {name:"Algoritma",silabus:[
+                "Flowchart",
+                "Pseudocode",
+                "Problem solving"
+            ]},
+            {name:"Database",silabus:[
+                "Tabel",
+                "SQL",
+                "Relasi database"
+            ]},
+            {name:"Internet",silabus:[
+                "HTML",
+                "CSS",
+                "JavaScript"
+            ]}
+        ]
+    },
+
+    pendidikan_agama:{
+        name:"Pendidikan Agama",
+        icon:"🕌",
+        topics:[
+            {name:"Akidah",silabus:[
+                "Keimanan",
+                "Tauhid",
+                "Akhlak"
+            ]},
+            {name:"Ibadah",silabus:[
+                "Shalat",
+                "Puasa",
+                "Zakat"
+            ]},
+            {name:"Sejarah Islam",silabus:[
+                "Nabi Muhammad",
+                "Khulafaur Rasyidin",
+                "Peradaban Islam"
+            ]}
+        ]
+    }
+
+};
+
+function renderSubjects() {
+    const grid = document.getElementById('subject-grid');
+    grid.innerHTML = Object.entries(SUBJECTS).map(([key,s]) => `
+        <div class="subject-card" onclick="openSubject('${key}')">
+            <span class="icon">${s.icon}</span>
+            <h3>${s.name}</h3>
+            <span class="count">${s.topics.length} topik</span>
+        </div>
+    `).join('');
+}
+
+function openSubject(key) {
+    lastSubjectKey = key;
+    const s = SUBJECTS[key];
+    document.getElementById('subject-icon').textContent = s.icon;
+    document.getElementById('subject-name').textContent = s.name;
+    document.getElementById('subject-sub').textContent = `${s.topics.length} topik materi.`;
+    document.getElementById('topic-list').innerHTML = s.topics.map((t, idx) => `
+        <div class="topic-card" onclick="openTopicDetail('${key}',${idx})">${t.name}</div>
+    `).join('');
+    showScreen('subject');
+}
+
+function openTopicDetail(subjectKey, topicIdx) {
+    const s = SUBJECTS[subjectKey];
+    const t = s.topics[topicIdx];
+    document.getElementById('detail-topic-icon').textContent = s.icon;
+    document.getElementById('detail-topic-name').textContent = t.name;
+    document.getElementById('detail-topic-sub').textContent = `Apa yang harus dipelajari di ${t.name}:`;
+    document.getElementById('detail-list').innerHTML = t.silabus.map(item => `
+        <div class="detail-item"><span class="bullet">•</span><span class="text">${item}</span></div>
+    `).join('');
+    showScreen('topic-detail');
+}
+
+function goBackToSubject() {
+    if (lastSubjectKey) {
+        const key = lastSubjectKey;
+        const s = SUBJECTS[key];
+        document.getElementById('subject-icon').textContent = s.icon;
+        document.getElementById('subject-name').textContent = s.name;
+        document.getElementById('subject-sub').textContent = `${s.topics.length} topik materi.`;
+        document.getElementById('topic-list').innerHTML = s.topics.map((t, idx) => `
+            <div class="topic-card" onclick="openTopicDetail('${key}',${idx})">${t.name}</div>
+        `).join('');
+        showScreen('subject');
+    } else {
+        returnToPrevious();
+    }
+}
+
+// Navigation
+function showScreen(name) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    const el = document.getElementById(`screen-${name}`);
+    if (el) el.classList.add('active');
+}
+
+function goHome() {
+    showScreen('home');
+    currentMajorKey = null;
+    renderCommunitySection();
+}
+
+let navigationState = { screen: 'home', scrollY: 0 };
+
+function saveNavigationState() {
+    const active = document.querySelector('.screen.active');
+    navigationState = {
+        screen: active ? active.id.replace('screen-', '') : 'home',
+        scrollY: window.scrollY
+    };
+}
+
+function returnToPrevious() {
+    const target = navigationState.screen || 'home';
+    showScreen(target);
+    requestAnimationFrame(() => window.scrollTo({ top: navigationState.scrollY || 0, behavior: 'instant' }));
+}
+
+// Notepad
+function openNotepad(title, content, authorName, fakultasTag, isPanduan) {
+    document.getElementById('notepad-filename').textContent = title.toLowerCase().replace(/\s+/g, '-').slice(0, 30) + '.txt';
+    document.getElementById('notepad-title').textContent = title || 'Tanpa judul';
+    document.getElementById('notepad-content').textContent = content || 'Kosong';
+    document.getElementById('notepad-by').textContent = authorName || 'Anonim';
+    
+    const fak = document.getElementById('notepad-fak');
+    const panduanLabel = document.getElementById('notepad-panduan-label');
+    panduanLabel.style.display = 'none';
+    
+    if (fakultasTag) {
+        fak.style.display = 'inline-block';
+        fak.textContent = 'Buat ' + fakultasTag;
+    } else {
+        fak.style.display = 'none';
+    }
+    
+    if (isPanduan) {
+        panduanLabel.style.display = 'block';
+        fak.style.display = 'none';
+    }
+    
+    const closeBtn = document.getElementById('notepad-close-btn');
+    closeBtn.textContent = 'Tutup';
+    closeBtn.classList.remove('cta');
+    document.getElementById('overlay-notepad').classList.add('open');
+}
+
+function closeNotepad() {
+    document.getElementById('overlay-notepad').classList.remove('open');
+}
+
+// Register
+function openRegister() {
+    document.getElementById('overlay-register').classList.add('open');
+}
+
+function closeRegister() {
+    document.getElementById('overlay-register').classList.remove('open');
+}
+
+// Auth
+function renderAuthArea() {
+    const area = document.getElementById('auth-area');
+    if (currentUser) {
+        area.innerHTML = `
+            <div class="profile-chip" onclick="toggleChipDropdown()">
+                <img src="${currentUser.photo}" alt="${currentUser.nama}">
+                <span>${currentUser.nama}</span>
+            </div>
+            <div class="chip-dropdown" id="chip-dropdown">
+                <button onclick="openMyProfile()">Lihat profil</button>
+                <button onclick="openEditProfile()">Edit profil</button>
+                <button onclick="deleteAccount()">Hapus akun</button>
+                <button onclick="logout()">Keluar</button>
+            </div>
+        `;
+    } else {
+        area.innerHTML = `<button class="btn-masuk" onclick="openRegister()">Masuk</button>`;
+    }
+}
+
+function toggleChipDropdown() {
+    document.getElementById('chip-dropdown').classList.toggle('open');
+}
+
+document.addEventListener('click', e => {
+    const chip = document.getElementById('chip-dropdown');
+    if (chip && !e.target.closest('#auth-area')) {
+        chip.classList.remove('open');
+    }
+});
+
+// Register submit
+function submitRegister() {
+    const email = document.getElementById('reg-email').value.trim();
+    const nama = document.getElementById('reg-nama').value.trim();
+    const angkatan = document.getElementById('reg-angkatan').value.trim();
+    const pondok = document.getElementById('reg-pondok').value.trim();
+    const fakultas = document.getElementById('reg-fakultas').value.trim();
+    const univ = document.getElementById('reg-univ').value.trim();
+    const errBox = document.getElementById('reg-error');
+    
+    if (!email || !nama || !angkatan || !pondok || !fakultas || !univ) {
+        errBox.textContent = 'Semua kolom wajib diisi.';
+        errBox.style.display = 'block';
+        return;
+    }
+    
+    errBox.style.display = 'none';
+    currentUser = {
+        email,
+        nama,
+        angkatan,
+        pondok,
+        fakultas,
+        univ,
+        photo: regPhotoData || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(email)}`,
+        stories: []
+    };
+    
+    renderAuthArea();
+    closeRegister();
+    clearRegisterForm();
+    openMyProfile();
+}
+
+function clearRegisterForm() {
+    ['reg-email', 'reg-nama', 'reg-angkatan', 'reg-pondok', 'reg-fakultas', 'reg-univ'].forEach(id => {
+        document.getElementById(id).value = '';
+    });
+    regPhotoData = null;
+    document.getElementById('reg-photo-preview').innerHTML = '📷';
+}
+
+function openMyProfile() {
+    if (!currentUser) { openRegister(); return; }
+    
+    document.getElementById('my-img').src = currentUser.photo;
+    document.getElementById('my-name').textContent = currentUser.nama;
+    document.getElementById('my-univ').textContent = currentUser.univ;
+    document.getElementById('my-fakultas').textContent = currentUser.fakultas;
+    document.getElementById('my-email').textContent = currentUser.email;
+    document.getElementById('my-id-name').textContent = currentUser.nama;
+    document.getElementById('my-id-angkatan').textContent = currentUser.angkatan;
+    document.getElementById('my-id-pondok').textContent = `Lulus ${currentUser.pondok}`;
+    
+    showScreen('myprofile');
+    renderMyStories();
+}
+
+function renderMyStories() {
+    const list = document.getElementById('my-story-list');
+    if (!currentUser.stories.length) {
+        list.innerHTML = `<div class="empty">Belum ada cerita. Yuk tulis jejak pertamamu di atas.</div>`;
+        return;
+    }
+    list.innerHTML = currentUser.stories.map(s => `
+        <div class="story-card" onclick='openNotepad(${JSON.stringify(s.title)},${JSON.stringify(s.content)},${JSON.stringify(currentUser.nama)},${JSON.stringify(s.fakultasTag||"")},false)'>
+            <span class="quote-mark">"</span>
+            ${s.fakultasTag ? `<div class="fak-tag">Buat ${s.fakultasTag}</div>` : ''}
+            <h4>${s.title}</h4>
+            <p class="snippet">${s.snippet}</p>
+            <span class="toggle">Buka catatan →</span>
+        </div>
+    `).join('');
+}
+
+function submitMyStory() {
+    const title = document.getElementById('new-story-title').value.trim();
+    const content = document.getElementById('new-story-content').value.trim();
+    const selectEl = document.getElementById('new-story-fakultas');
+    const fakultasTag = selectEl.value === '__lainnya__' ? 
+        document.getElementById('new-story-fakultas-other').value.trim() : 
+        selectEl.value.trim();
+    
+    if (!title || !content) return;
+    
+    const snippet = content.length > 90 ? content.slice(0, 90).trim() + '…' : content;
+    const id = 'C-' + Date.now().toString(36).toUpperCase();
+    const story = {
+        id,
+        title,
+        content,
+        snippet,
+        fakultasTag: fakultasTag || null,
+        authorName: currentUser.nama,
+        angkatan: currentUser.angkatan,
+        status: 'pending'
+    };
+    
+    currentUser.stories.unshift(story);
+    
+    // Save to localStorage
+    try {
+        const existing = localStorage.getItem(STORAGE_KEY_STORIES);
+        const stories = existing ? JSON.parse(existing) : [];
+        stories.unshift(story);
+        localStorage.setItem(STORAGE_KEY_STORIES, JSON.stringify(stories));
+    } catch(e) {}
+    
+    document.getElementById('new-story-title').value = '';
+    document.getElementById('new-story-content').value = '';
+    document.getElementById('new-story-fakultas').value = '';
+    document.getElementById('new-story-fakultas-other').value = '';
+    document.getElementById('new-story-fakultas-other').style.display = 'none';
+    renderMyStories();
+}
+
+function populateFakultasSelect() {
+    const select = document.getElementById('new-story-fakultas');
+    const options = Object.values(MAJORS_DATA).map(m => 
+        `<option value="${m.name}">${m.icon || '📌'} ${m.name}</option>`
+    ).join('');
+    select.innerHTML = `
+        <option value="">Tidak ditujukan ke jurusan tertentu (opsional)</option>
+        ${options}
+        <option value="__lainnya__">Lainnya…</option>
+    `;
+}
+
+function handleFakultasSelectChange() {
+    const select = document.getElementById('new-story-fakultas');
+    const other = document.getElementById('new-story-fakultas-other');
+    if (select.value === '__lainnya__') {
+        other.style.display = 'block';
+        other.focus();
+    } else {
+        other.style.display = 'none';
+        other.value = '';
+    }
+}
+
+function logout() {
+    currentUser = null;
+    renderAuthArea();
+    goHome();
+}
+
+function openEditProfile() {
+    if (!currentUser) return;
+    document.getElementById('edit-email').value = currentUser.email;
+    document.getElementById('edit-nama').value = currentUser.nama;
+    document.getElementById('edit-angkatan').value = currentUser.angkatan;
+    document.getElementById('edit-pondok').value = currentUser.pondok;
+    document.getElementById('edit-fakultas').value = currentUser.fakultas;
+    document.getElementById('edit-univ').value = currentUser.univ;
+    document.getElementById('edit-photo-preview').innerHTML = `<img src="${currentUser.photo}" alt="foto">`;
+    editPhotoData = null;
+    document.getElementById('edit-error').style.display = 'none';
+    document.getElementById('overlay-edit').classList.add('open');
+    document.getElementById('chip-dropdown')?.classList.remove('open');
+}
+
+function closeEdit() {
+    document.getElementById('overlay-edit').classList.remove('open');
+}
+
+function submitEditProfile() {
+    const email = document.getElementById('edit-email').value.trim();
+    const nama = document.getElementById('edit-nama').value.trim();
+    const angkatan = document.getElementById('edit-angkatan').value.trim();
+    const pondok = document.getElementById('edit-pondok').value.trim();
+    const fakultas = document.getElementById('edit-fakultas').value.trim();
+    const univ = document.getElementById('edit-univ').value.trim();
+    const errBox = document.getElementById('edit-error');
+    
+    if (!email || !nama || !angkatan || !pondok || !fakultas || !univ) {
+        errBox.textContent = 'Semua kolom wajib diisi.';
+        errBox.style.display = 'block';
+        return;
+    }
+    
+    errBox.style.display = 'none';
+    currentUser.email = email;
+    currentUser.nama = nama;
+    currentUser.angkatan = angkatan;
+    currentUser.pondok = pondok;
+    currentUser.fakultas = fakultas;
+    currentUser.univ = univ;
+    if (editPhotoData) currentUser.photo = editPhotoData;
+    
+    renderAuthArea();
+    closeEdit();
+    if (document.getElementById('screen-myprofile').classList.contains('active')) {
+        openMyProfile();
+    }
+}
+
+function deleteAccount() {
+    if (!currentUser) return;
+    if (!confirm(`Yakin hapus akun "${currentUser.nama}"?`)) return;
+    currentUser = null;
+    renderAuthArea();
+    goHome();
+}
+
+// Cropper
+let cropperTarget = null;
+let cropperState = {
+    naturalW: 0, naturalH: 0, baseScale: 1, zoom: 1,
+    offsetX: 0, offsetY: 0,
+    dragging: false, startX: 0, startY: 0, startOffX: 0, startOffY: 0
+};
+const STAGE_SIZE = 240;
+
+function handlePhotoSelect(e, target) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(ev) {
+        openCropper(ev.target.result, target);
+    };
+    reader.readAsDataURL(file);
+}
+
+function openCropper(dataUrl, target) {
+    cropperTarget = target;
+    const img = document.getElementById('cropper-img');
+    img.onload = function() {
+        cropperState.naturalW = img.naturalWidth;
+        cropperState.naturalH = img.naturalHeight;
+        cropperState.baseScale = Math.max(STAGE_SIZE / img.naturalWidth, STAGE_SIZE / img.naturalHeight);
+        cropperState.zoom = 1;
+        cropperState.offsetX = 0;
+        cropperState.offsetY = 0;
+        document.getElementById('cropper-zoom').value = 100;
+        updateCropperTransform();
+    };
+    img.src = dataUrl;
+    document.getElementById('overlay-cropper').classList.add('open');
+}
+
+function updateCropperTransform() {
+    const img = document.getElementById('cropper-img');
+    const scale = cropperState.baseScale * cropperState.zoom;
+    img.style.transform = `translate(calc(-50% + ${cropperState.offsetX}px), calc(-50% + ${cropperState.offsetY}px)) scale(${scale})`;
+}
+
+// Setup cropper events
+(function setupCropperDrag() {
+    const stage = document.getElementById('cropper-stage');
+    if (!stage) return;
+    
+    const start = (x, y) => {
+        cropperState.dragging = true;
+        cropperState.startX = x;
+        cropperState.startY = y;
+        cropperState.startOffX = cropperState.offsetX;
+        cropperState.startOffY = cropperState.offsetY;
+    };
+    
+    const move = (x, y) => {
+        if (!cropperState.dragging) return;
+        cropperState.offsetX = cropperState.startOffX + (x - cropperState.startX);
+        cropperState.offsetY = cropperState.startOffY + (y - cropperState.startY);
+        updateCropperTransform();
+    };
+    
+    const end = () => { cropperState.dragging = false; };
+    
+    stage.addEventListener('mousedown', e => start(e.clientX, e.clientY));
+    window.addEventListener('mousemove', e => move(e.clientX, e.clientY));
+    window.addEventListener('mouseup', end);
+    stage.addEventListener('touchstart', e => {
+        const t = e.touches[0];
+        start(t.clientX, t.clientY);
+    }, { passive: true });
+    stage.addEventListener('touchmove', e => {
+        const t = e.touches[0];
+        move(t.clientX, t.clientY);
+    }, { passive: true });
+    stage.addEventListener('touchend', end);
+})();
+
+document.getElementById('cropper-zoom')?.addEventListener('input', e => {
+    cropperState.zoom = e.target.value / 100;
+    updateCropperTransform();
+});
+
+function confirmCrop() {
+    const img = document.getElementById('cropper-img');
+    const canvasSize = 280;
+    const factor = canvasSize / STAGE_SIZE;
+    const scale = cropperState.baseScale * cropperState.zoom;
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = canvasSize;
+    canvas.height = canvasSize;
+    
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(canvasSize / 2, canvasSize / 2, canvasSize / 2, 0, Math.PI * 2);
+    ctx.clip();
+    ctx.translate(
+        canvasSize / 2 + cropperState.offsetX * factor,
+        canvasSize / 2 + cropperState.offsetY * factor
+    );
+    ctx.scale(scale * factor, scale * factor);
+    ctx.drawImage(img, -cropperState.naturalW / 2, -cropperState.naturalH / 2);
+    ctx.restore();
+    
+    const dataUrl = canvas.toDataURL('image/png');
+    if (cropperTarget === 'reg') {
+        regPhotoData = dataUrl;
+        document.getElementById('reg-photo-preview').innerHTML = `<img src="${dataUrl}" alt="foto">`;
+    } else if (cropperTarget === 'edit') {
+        editPhotoData = dataUrl;
+        document.getElementById('edit-photo-preview').innerHTML = `<img src="${dataUrl}" alt="foto">`;
+    }
+    closeCropper();
+}
+
+function closeCropper() {
+    document.getElementById('overlay-cropper').classList.remove('open');
+}
+
+// =============================================
+// INIT
+// =============================================
+populateFakultasSelect();
+renderHome();
+renderSubjects();
+renderAuthArea();
+
+console.log('✅ 100 JURUSAN SIAP!');
+console.log(`📚 Total: ${Object.keys(MAJORS_DATA).length} jurusan`);
+console.log('💡 Semua jurusan memiliki 0 cerita - mari isi bersama!');
+</script>
+<script>
+
+let visitorId = localStorage.getItem("visitor_id");
+
+if (!visitorId) {
+
+    visitorId =
+        Date.now().toString(36) +
+        Math.random().toString(36).substring(2);
+
+    localStorage.setItem(
+        "visitor_id",
+        visitorId
+    );
+}
+
+fetch("api/track_pengunjung.php", {
+
+    method: "POST",
+
+    headers: {
+        "Content-Type": "application/json"
+    },
+
+    body: JSON.stringify({
+
+        visitor_id: visitorId,
+
+        halaman: window.location.pathname
+
+    })
+
+});
+
+</script>
+</body>
+</html>
