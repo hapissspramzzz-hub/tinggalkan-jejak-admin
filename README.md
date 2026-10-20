@@ -1,92 +1,37 @@
-# Tinggalkan Jejak - PHP + MySQL
+# Tinggalkan Jejak
 
-## Struktur Folder
+Aplikasi PHP dan MySQL untuk berbagi cerita mahasiswa dengan moderasi admin.
 
-```text
-tinggalkan-jejak/
-├── index.html
-├── README.md
-├── api/
-│   ├── register.php
-│   ├── login.php
-│   ├── logout.php
-│   ├── jurusan.php
-│   ├── cerita.php
-│   └── tambah_cerita.php
-├── config/
-│   └── koneksi.php
-├── database/
-│   └── tinggalkan_jejak.sql
-├── uploads/
-└── assets/
-    ├── css/
-    └── js/
-```
+## Persyaratan
 
-# Tutorial Instalasi
+- PHP 8.1+ dengan `mysqli` aktif
+- MySQL 8+ atau MariaDB yang mendukung InnoDB dan `utf8mb4`
+- Apache atau web server PHP lain
+- HTTPS untuk deployment publik
 
-## 1. Install XAMPP
-Jalankan Apache dan MySQL.
+## Instalasi lokal (Laragon)
 
-## 2. Pindahkan folder
-Copy folder `tinggalkan-jejak` ke:
+1. Letakkan folder proyek di `C:\laragon\www\tinggalkan-jejak-admin` lalu jalankan Apache dan MySQL.
+2. Buat database kosong bernama `tinggalkan_jejak` di phpMyAdmin, lalu impor `tinggalkan_jejak.sql`. Dump ini berisi skema dan data referensi yang digunakan aplikasi. Jangan impor ke database yang berisi data penting tanpa backup terlebih dahulu.
+3. Secara bawaan koneksi memakai `127.0.0.1`, database `tinggalkan_jejak`, user `root`, dan password kosong. Atur `DB_HOST`, `DB_NAME`, `DB_USER`, dan `DB_PASS` di environment bila nilai tersebut berbeda.
+4. Atur variabel environment `ADMIN_PASSWORD` ke kata sandi acak minimal 16 karakter sebelum menjalankan Apache. Di Windows, set sebagai System environment variable, lalu tutup dan buka kembali Laragon agar Apache mewarisinya. Kata sandi admin bawaan telah dihapus.
+5. Buka halaman utama melalui Laragon virtual host atau `http://localhost/tinggalkan-jejak-admin/`. Panel admin ada di `/admin.html`.
 
-Windows:
-`C:/xampp/htdocs/`
+## Fitur
 
-## 3. Import database
-Buka phpMyAdmin:
+- Pendaftaran dan login email/password dengan password hash dan sesi server
+- Profil pengguna, termasuk ubah profil dan hapus akun
+- Pengiriman cerita untuk antrean moderasi
+- Cerita yang disetujui tampil di beranda; cerita yang ditolak tetap terlihat di riwayat pemilik
+- Panel admin dengan pencarian, filter jurusan, statistik, setujui, tolak, dan hapus
+- Pencatatan pengunjung unik dan kunjungan harian
 
-`http://localhost/phpmyadmin`
+## Deployment publik
 
-Klik Import → pilih:
+1. Buat database baru, impor SQL, lalu atur kredensial `DB_*` pada environment PHP.
+2. Set `ADMIN_PASSWORD` yang kuat pada environment layanan web dan restart PHP/Apache.
+3. Sajikan situs hanya melalui HTTPS. Pastikan direktori `config/` tidak dapat diakses langsung dari web; jangan unggah file dump SQL ke document root publik pada hosting yang tidak memblokir file `.sql`.
+4. Batasi akses phpMyAdmin dan akun MySQL. Gunakan akun aplikasi dengan hak minimum pada database aplikasi, bukan akun root.
+5. Uji pendaftaran, login, pengiriman cerita, moderasi, dan penghapusan data pada staging sebelum membuka situs untuk umum.
 
-`database/tinggalkan_jejak.sql`
-
-Klik Import.
-
-## 4. Cek koneksi
-Buka:
-
-`http://localhost/tinggalkan-jejak/api/jurusan.php`
-
-Jika berhasil, akan muncul data JSON.
-
-## 5. Masukkan website utama
-Copy kode HTML lama kamu ke file:
-
-`index.html`
-
-## 6. Tambahkan password pada form register
-Tambahkan:
-
-```html
-<div class="field">
-  <label>Password</label>
-  <input type="password" id="reg-password" placeholder="Minimal 6 karakter">
-</div>
-```
-
-## 7. Hubungkan register dengan API
-
-```javascript
-async function registerUser() {
-    const response = await fetch('api/register.php', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-            nama: document.getElementById('reg-nama').value,
-            email: document.getElementById('reg-email').value,
-            password: document.getElementById('reg-password').value,
-            angkatan: document.getElementById('reg-angkatan').value,
-            tahun_lulus: document.getElementById('reg-pondok').value
-        })
-    });
-
-    const result = await response.json();
-    alert(result.message);
-}
-```
-
-## Catatan
-Database starter ini sudah berisi beberapa contoh jurusan. Data 100 jurusan dari JavaScript dapat dimigrasikan seluruhnya ke tabel `jurusan` dan `panduan_jurusan` pada tahap berikutnya.
+Foto profil disimpan sebagai data URL pada kolom `users.foto`; batas ukuran unggahan sebaiknya dibatasi di browser/server.

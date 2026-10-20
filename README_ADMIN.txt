@@ -1,14 +1,5 @@
-CARA PAKAI DI LARAGON
+PANEL ADMIN
 
-1. Pindahkan folder ini ke C:\laragon\www\
-2. Start All di Laragon.
-3. Import database/tinggalkan_jejak.sql di phpMyAdmin.
-4. Buka:
-   http://tinggalkan-jejak-admin.test/admin.html
+Password admin tidak lagi memiliki nilai bawaan. Set variabel lingkungan ADMIN_PASSWORD dengan kata sandi acak minimal 16 karakter, lalu restart Apache/Laragon. Untuk publikasi, gunakan HTTPS.
 
-PASSWORD ADMIN: h4f1dz
-
-Admin sekarang mengambil cerita langsung dari database MySQL:
-pending -> menunggu
-published -> approved di database
-rejected -> ditolak
+Fitur admin: moderasi cerita (pending, disetujui, ditolak), pencarian, filter jurusan, statistik pengguna/pengunjung, dan hapus cerita.
