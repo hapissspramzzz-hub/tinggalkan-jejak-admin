@@ -655,6 +655,7 @@ function filterMajors() {
 }
 
 
+async function loadCommunityStories(){try{const r=await fetch('api/cerita.php');const d=await r.json();if(r.ok&&d.success){communityStories=d.data||[];renderCommunitySection();renderMajorGrid(filteredMajors);}}catch(e){console.error('Gagal memuat cerita publik',e);}}
 function renderCommunitySection(){const section=document.getElementById('community-section'),list=document.getElementById('community-list');const stories=communityStories||[];if(!stories.length){section.style.display='none';return;}section.style.display='block';list.replaceChildren();stories.forEach(story=>{const card=document.createElement('div');card.className='story-card';card.addEventListener('click',()=>openNotepad(story.title,story.content,story.authorName,story.fakultasTag||'',false));const mark=document.createElement('span');mark.className='quote-mark';mark.textContent='"';card.append(mark);if(story.fakultasTag){const tag=document.createElement('div');tag.className='fak-tag';tag.textContent='Buat '+story.fakultasTag;card.append(tag);}const title=document.createElement('h4');title.textContent=story.title;card.append(title);const snippet=document.createElement('p');snippet.className='snippet';snippet.textContent=story.snippet||story.content.slice(0,90);card.append(snippet);const open=document.createElement('span');open.className='toggle';open.textContent='Buka catatan →';card.append(open);const by=document.createElement('div');by.className='by-line';by.textContent='oleh '+story.authorName+' · '+(story.angkatan||'Mahasiswa');card.append(by);list.append(card);});}
 
 // Open Major
@@ -1386,6 +1387,7 @@ function closeCropper() {
 // INIT
 // =============================================
 
+async function restoreSession(){try{const r=await fetch('api/me.php',{credentials:'same-origin'});const d=await r.json();if(d.user){currentUser={...d.user,pondok:d.user.tahun_lulus||'',fakultas:d.user.fakultas||'',univ:d.user.universitas||'',photo:d.user.foto||'',stories:[]};renderAuthArea();await loadMyStories();}}catch(e){console.error('Gagal memulihkan sesi',e);}}
 populateFakultasSelect();
 renderHome();
 renderSubjects();
