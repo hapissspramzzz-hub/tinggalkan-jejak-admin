@@ -197,7 +197,7 @@ CREATE TABLE `users` (
   `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `angkatan` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `tahun_lulus` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `foto` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `foto` longtext COLLATE utf8mb4_unicode_ci,
   `role` enum('user','admin') COLLATE utf8mb4_unicode_ci DEFAULT 'user',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
