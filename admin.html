@@ -736,9 +736,9 @@ function renderStories(stories){
   </div></div>`).join('');
 }
 
-async function approveStory(id){if(!confirm('Setujui cerita ini?'))return;await request('api/admin_update_cerita.php',{method:'POST',body:JSON.stringify({id,status:'published'})});showToast('Cerita disetujui','success');loadAllStories();}
-async function rejectStory(id){if(!confirm('Tolak cerita ini?'))return;await request('api/admin_update_cerita.php',{method:'POST',body:JSON.stringify({id,status:'rejected'})});showToast('Cerita ditolak','error');loadAllStories();}
-async function deleteStory(id){if(!confirm('Hapus permanen?'))return;await request('api/admin_delete_cerita.php',{method:'POST',body:JSON.stringify({id})});showToast('Cerita dihapus','success');loadAllStories();}
+async function approveStory(id){if(!confirm('Setujui cerita ini dan tampilkan di Komunitas?'))return;try{await request('api/admin_update_cerita.php',{method:'POST',body:JSON.stringify({id,status:'published'})});showToast('Cerita disetujui dan ditampilkan di Komunitas','success');await loadAllStories();}catch(e){showToast(e.message,'error');}}
+async function rejectStory(id){if(!confirm('Tolak cerita ini?'))return;try{await request('api/admin_update_cerita.php',{method:'POST',body:JSON.stringify({id,status:'rejected'})});showToast('Cerita ditolak','error');await loadAllStories();}catch(e){showToast(e.message,'error');}}
+async function deleteStory(id){if(!confirm('Hapus permanen?'))return;try{await request('api/admin_delete_cerita.php',{method:'POST',body:JSON.stringify({id})});showToast('Cerita dihapus','success');await loadAllStories();}catch(e){showToast(e.message,'error');}}
 
 function switchTab(t){currentTab=t;document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active',b.dataset.tab===t));filterStories();}
 function showToast(m,type='success'){const t=document.getElementById('toast');t.textContent=m;t.className=`toast ${type}`;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}

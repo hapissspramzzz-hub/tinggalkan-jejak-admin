@@ -22,9 +22,12 @@ Aplikasi PHP dan MySQL untuk berbagi cerita mahasiswa dengan moderasi admin.
 - Pendaftaran dan login email/password dengan password hash dan sesi server
 - Profil pengguna, termasuk ubah profil dan hapus akun
 - Pengiriman cerita untuk antrean moderasi
-- Cerita yang disetujui tampil di beranda; cerita yang ditolak tetap terlihat di riwayat pemilik
+- Cerita yang disetujui admin langsung tampil di bagian Komunitas; cerita yang ditolak tetap terlihat di riwayat pemilik
 - Panel admin dengan pencarian, filter jurusan, statistik, setujui, tolak, dan hapus
+- Bagian Pembelajaran berisi mata pelajaran, topik, dan materi ringkas
 - Pencatatan pengunjung unik dan kunjungan harian
+
+Pengguna perlu mendaftar atau masuk untuk mengirim cerita. Admin meninjau cerita di panel `/admin.html`; pilih **Setujui** untuk menerbitkannya di Komunitas atau **Tolak** untuk menolaknya. Navigasi **Komunitas** dan **Pembelajaran** tersedia di bagian atas beranda.
 
 ## Deployment publik
 
