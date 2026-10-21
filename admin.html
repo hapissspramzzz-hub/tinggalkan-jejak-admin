@@ -21,7 +21,7 @@
         }
 
         .admin-container {
-            max-width: 900px;
+            max-width: 1120px;
             margin: 0 auto;
         }
 
@@ -198,20 +198,62 @@
             font-size: 14px;
             line-height: 1.7;
             margin-bottom: 12px;
-            max-height: 120px;
+            max-height: 150px;
             overflow: hidden;
-            position: relative;
         }
 
         .story-card-admin .story-content.expanded {
             max-height: none;
         }
 
-        .story-card-admin .story-content .read-more {
+        .story-read-more {
+            margin: -4px 0 12px;
+            padding: 0;
+            border: 0;
+            background: transparent;
             color: #3E8E63;
             cursor: pointer;
             font-weight: 600;
             font-size: 13px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .story-read-more:hover {
+            text-decoration: underline;
+        }
+
+        .dashboard-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            color: #6B7280;
+            font-size: 13px;
+        }
+
+        .dashboard-toolbar strong {
+            color: #1B2333;
+        }
+
+        .loading-state {
+            text-align: center;
+            padding: 36px 20px;
+            color: #6B7280;
+            background: white;
+            border: 1px solid #ECE6D6;
+            border-radius: 16px;
+        }
+
+        button:disabled {
+            cursor: wait;
+            opacity: 0.65;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        .login-box .btn-login:disabled {
+            opacity: 0.65;
         }
 
         .story-card-admin .story-tags {
@@ -566,7 +608,7 @@
                 <div class="error" id="login-error">Password salah!</div>
                 <input type="password" id="admin-password" placeholder="Masukkan password admin" onkeydown="if(event.key==='Enter') adminLogin()">
                 <button class="btn-login" onclick="adminLogin()">Masuk</button>
-                <p style="margin-top:16px;font-size:12px;color:#6B7280;">Gunakan password admin untuk masuk.</p>
+                <p style="margin-top:16px;font-size:12px;color:#6B7280;">Gunakan password admin yang telah dikonfigurasi di server.</p>
                 <a href="index.html" class="back-link" style="margin-top:12px;display:inline-block;">← Kembali ke Beranda</a>
             </div>
         </div>
@@ -579,10 +621,10 @@
                 <div>
                     <h1>
                         📋 Admin Panel
-                        <span class="badge-admin">Beta</span>
+                        <span class="badge-admin">Moderasi</span>
                     </h1>
                     <div style="font-size:13px;color:#6B7280;margin-top:4px;">
-                        Kelola cerita sebelum ditampilkan di jurusan
+                        Tinjau cerita kiriman pengguna sebelum ditampilkan di Komunitas
                     </div>
                 </div>
                 <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
@@ -636,15 +678,19 @@
 
             <!-- Filter -->
             <div class="filter-bar">
-                <input type="text" id="search-input" placeholder="🔍 Cari judul atau penulis..." oninput="filterStories()">
+                <input type="search" id="search-input" placeholder="🔍 Cari judul, penulis, atau isi cerita..." oninput="filterStories()">
                 <select id="major-filter" onchange="filterStories()">
                     <option value="">Semua jurusan</option>
                 </select>
                 <button class="refresh-btn" onclick="loadAllStories()">🔄 Refresh</button>
             </div>
 
+            <div class="dashboard-toolbar" aria-live="polite">
+                <span id="results-count">Memuat cerita…</span>
+            </div>
+
             <!-- Story List -->
-            <div id="story-list">
+            <div id="story-list" aria-live="polite">
                 <!-- Stories will be rendered here -->
             </div>
 
