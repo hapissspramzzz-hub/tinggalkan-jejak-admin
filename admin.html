@@ -892,7 +892,7 @@ function renderStories(stories){
   <div class="story-meta"><div class="story-author"><div><div class="name">${esc(story.authorName||'Anonim')}</div><div class="detail">${esc(story.angkatan||'Mahasiswa')} · ${formattedDate}</div></div></div></div>
   <h2 class="story-title">${esc(story.title||'Tanpa judul')}</h2>
   <div class="story-content" id="story-content-${id}">${esc(content)}</div>
-  ${content.length>400?`<button class="story-read-more" type="button" aria-expanded="false" aria-controls="story-content-${id}" onclick="toggleStoryContent(this)">Baca selengkapnya</button>`:''}
+  ${content.length>220?`<button class="story-read-more" type="button" aria-expanded="false" aria-controls="story-content-${id}" onclick="toggleStoryContent(this)">Baca selengkapnya</button>`:''}
   <div class="story-tags">${story.fakultasTag?`<span class="tag">📌 ${esc(story.fakultasTag)}</span>`:''}<span class="tag ${esc(story.status)}">${statusLabels[story.status]||'Status tidak diketahui'}</span></div>
   <div class="story-actions">
    ${story.status!=='published'?`<button class="btn btn-approve" onclick="approveStory(${id})">✅ Setujui &amp; tayangkan</button>`:''}
