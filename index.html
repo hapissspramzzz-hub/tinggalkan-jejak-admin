@@ -708,7 +708,7 @@ function normalizeMajorName(name) {
     return (name || '').trim().toLocaleLowerCase('id');
 }
 
-async function loadCommunityStories(){try{const r=await fetch('api/cerita.php');const d=await r.json();if(!r.ok||!d.success)throw new Error(d.message||'Cerita komunitas gagal dimuat');communityStories=d.data||[];renderCommunitySection();renderMajorGrid(filteredMajors);}catch(e){communityStories=[];renderCommunitySection(e.message);console.error('Gagal memuat cerita publik',e);}}
+async function loadCommunityStories(){try{const r=await fetch('api/cerita.php');const d=await r.json();if(!r.ok||!d.success)throw new Error(d.message||'Cerita komunitas gagal dimuat');communityStories=d.data||[];renderCommunitySection();renderMajorGrid(filteredMajors);}catch(e){communityStories=[];renderCommunitySection(e.message);renderMajorGrid(filteredMajors);console.error('Gagal memuat cerita publik',e);}}
 function renderCommunitySection(errorMessage=''){
     const list=document.getElementById('community-list');
     const stories=(communityStories||[]).filter(story=>!normalizeMajorName(story.fakultasTag));
