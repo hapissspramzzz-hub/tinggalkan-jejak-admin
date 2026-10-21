@@ -789,10 +789,169 @@ async function deleteStory(id){if(!confirm('Hapus permanen?'))return;try{await r
 function switchTab(t){currentTab=t;document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active',b.dataset.tab===t));filterStories();}
 function showToast(m,type='success'){const t=document.getElementById('toast');t.textContent=m;t.className=`toast ${type}`;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
 
-(async()=>{try{const r=await fetch('api/admin_status.php');const d=await r.json();if(d.logged_in){document.getElementById('login-screen').style.display='none';document.getElementById('dashboard-screen').style.display='block';loadAllStories();}}catch(e){}})();
+(async()=>{try{const d=await request('api/admin_status.php');if(d.logged_in){setDashboardVisible(true);await loadAllStories();}}catch(e){showToast(`Status login gagal diperiksa: ${e.message}`,'error');}})();
 </script>
 <script>
 async function loadStatistik(){try{const r=await fetch('api/admin_statistik.php',{credentials:'same-origin'});const d=await r.json();if(!r.ok||!d.success)throw new Error(d.message||'Statistik gagal dimuat');document.getElementById('total-users').textContent=d.data.users??0;document.getElementById('total-pengunjung').textContent=d.data.pengunjung_unik??0;document.getElementById('kunjungan-hari-ini').textContent=d.data.hari_ini??0;}catch(e){showToast(e.message,'error');}}
+</script>
+<script>
+let adminToastTimer;
+
+async function request(url,opt={}){
+ const response=await fetch(url,{credentials:'same-origin',...opt,headers:{'Content-Type':'application/json',...(opt.headers||{})}});
+ let data;
+ try{data=await response.json();}catch{throw new Error(`Respons server tidak valid (HTTP ${response.status})`);}
+ if(!response.ok||!data.success)throw new Error(data.message||`Permintaan gagal (HTTP ${response.status})`);
+ return data;
+}
+
+function setDashboardVisible(visible){
+ document.getElementById('login-screen').style.display=visible?'none':'block';
+ document.getElementById('dashboard-screen').style.display=visible?'block':'none';
+}
+
+async function adminLogin(){
+ const input=document.getElementById('admin-password');
+ const button=document.querySelector('.btn-login');
+ const error=document.getElementById('login-error');
+ button.disabled=true;
+ button.textContent='Memeriksa…';
+ error.style.display='none';
+ try{
+  await request('api/admin_login.php',{method:'POST',body:JSON.stringify({password:input.value})});
+  input.value='';
+  setDashboardVisible(true);
+  await loadAllStories();
+ }catch(e){error.textContent=e.message;error.style.display='block';}
+ finally{button.disabled=false;button.textContent='Masuk';}
+}
+
+async function adminLogout(){
+ try{
+  await request('api/admin_logout.php',{method:'POST',body:'{}'});
+  allStories=[];
+  setDashboardVisible(false);
+  document.getElementById('admin-password').focus();
+ }catch(e){showToast(`Gagal keluar: ${e.message}`,'error');}
+}
+
+async function loadAllStories(){
+ const list=document.getElementById('story-list');
+ const refresh=document.querySelector('.filter-bar .refresh-btn');
+ refresh.disabled=true;
+ list.innerHTML='<div class="loading-state" role="status">Memuat cerita…</div>';
+ document.getElementById('results-count').textContent='Memuat cerita…';
+ try{
+  const data=await request('api/admin_cerita.php');
+  allStories=Array.isArray(data.data)?data.data:[];
+  renderStats();
+  populateMajorFilter();
+  filterStories();
+  await loadStatistik();
+ }catch(e){
+  list.innerHTML=`<div class="empty-state"><span class="icon">⚠️</span><h3>Cerita gagal dimuat</h3><p>${esc(e.message)}</p></div>`;
+  document.getElementById('results-count').textContent='Gagal memuat data';
+  showToast(e.message,'error');
+ }finally{refresh.disabled=false;}
+}
+
+function populateMajorFilter(){
+ const select=document.getElementById('major-filter'),previous=select.value;
+ const majors=[...new Set(allStories.map(story=>story.fakultasTag).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'id'));
+ select.replaceChildren(new Option('Semua jurusan',''));
+ majors.forEach(major=>select.add(new Option(major,major)));
+ select.value=majors.includes(previous)?previous:'';
+}
+
+function filterStories(){
+ const query=document.getElementById('search-input').value.trim().toLocaleLowerCase('id');
+ const major=document.getElementById('major-filter').value;
+ const stories=allStories.filter(story=>
+  (currentTab==='all'||story.status===currentTab)&&
+  (!query||[story.title,story.authorName,story.content].some(value=>(value||'').toLocaleLowerCase('id').includes(query)))&&
+  (!major||story.fakultasTag===major)
+ );
+ renderStories(stories);
+ document.getElementById('results-count').innerHTML=`Menampilkan <strong>${stories.length}</strong> dari <strong>${allStories.length}</strong> cerita`;
+}
+
+function renderStories(stories){
+ const container=document.getElementById('story-list');
+ if(!stories.length){
+  const hasFilters=document.getElementById('search-input').value||document.getElementById('major-filter').value||currentTab!=='pending';
+  container.innerHTML=`<div class="empty-state"><span class="icon">📭</span><h3>${hasFilters?'Tidak ada cerita yang cocok':'Belum ada cerita untuk ditinjau'}</h3><p>${hasFilters?'Coba ubah kata kunci, jurusan, atau status yang dipilih.':'Cerita baru dari pengguna akan muncul di sini.'}</p></div>`;
+  return;
+ }
+ const statusLabels={pending:'⏳ Menunggu',published:'✅ Tayang',rejected:'❌ Ditolak'};
+ container.innerHTML=stories.map(story=>{
+  const id=Number(story.id);
+  const content=story.content||'';
+  const date=new Date(story.tanggal);
+  const formattedDate=Number.isNaN(date.getTime())?'Tanggal tidak tersedia':date.toLocaleDateString('id-ID');
+  return `<article class="story-card-admin">
+  <div class="story-meta"><div class="story-author"><div><div class="name">${esc(story.authorName||'Anonim')}</div><div class="detail">${esc(story.angkatan||'Mahasiswa')} · ${formattedDate}</div></div></div></div>
+  <h2 class="story-title">${esc(story.title||'Tanpa judul')}</h2>
+  <div class="story-content" id="story-content-${id}">${esc(content)}</div>
+  ${content.length>400?`<button class="story-read-more" type="button" aria-expanded="false" aria-controls="story-content-${id}" onclick="toggleStoryContent(this)">Baca selengkapnya</button>`:''}
+  <div class="story-tags">${story.fakultasTag?`<span class="tag">📌 ${esc(story.fakultasTag)}</span>`:''}<span class="tag ${esc(story.status)}">${statusLabels[story.status]||'Status tidak diketahui'}</span></div>
+  <div class="story-actions">
+   ${story.status!=='published'?`<button class="btn btn-approve" onclick="approveStory(${id})">✅ Setujui &amp; tayangkan</button>`:''}
+   ${story.status!=='rejected'?`<button class="btn btn-reject" onclick="rejectStory(${id})">❌ Tolak</button>`:''}
+   <button class="btn btn-delete" onclick="deleteStory(${id})">🗑️ Hapus</button>
+  </div></article>`;
+ }).join('');
+}
+
+function toggleStoryContent(button){
+ const content=document.getElementById(button.getAttribute('aria-controls'));
+ const expanded=button.getAttribute('aria-expanded')==='true';
+ content.classList.toggle('expanded',!expanded);
+ button.setAttribute('aria-expanded',String(!expanded));
+ button.textContent=expanded?'Baca selengkapnya':'Tampilkan lebih sedikit';
+}
+
+async function updateStory(id,status){
+ const button=document.querySelector(`.story-card-admin .story-actions button[onclick*="(${id})"]`);
+ const card=button?.closest('.story-card-admin');
+ card?.querySelectorAll('button').forEach(item=>item.disabled=true);
+ try{
+  await request('api/admin_update_cerita.php',{method:'POST',body:JSON.stringify({id,status})});
+  showToast(status==='published'?'Cerita disetujui dan ditampilkan di Komunitas':'Cerita ditolak','success');
+  await loadAllStories();
+ }catch(e){card?.querySelectorAll('button').forEach(item=>item.disabled=false);showToast(e.message,'error');}
+}
+
+async function approveStory(id){if(confirm('Setujui cerita ini dan tampilkan di Komunitas?'))await updateStory(id,'published');}
+async function rejectStory(id){if(confirm('Tolak cerita ini?'))await updateStory(id,'rejected');}
+async function deleteStory(id){
+ if(!confirm('Hapus cerita ini secara permanen?'))return;
+ const button=document.querySelector(`.story-card-admin .story-actions button[onclick="deleteStory(${id})"]`);
+ const card=button?.closest('.story-card-admin');
+ card?.querySelectorAll('button').forEach(item=>item.disabled=true);
+ try{
+  await request('api/admin_delete_cerita.php',{method:'POST',body:JSON.stringify({id})});
+  showToast('Cerita berhasil dihapus','success');
+  await loadAllStories();
+ }catch(e){card?.querySelectorAll('button').forEach(item=>item.disabled=false);showToast(e.message,'error');}
+}
+
+function showToast(message,type='success'){
+ const toast=document.getElementById('toast');
+ toast.textContent=message;
+ toast.className=`toast ${type}`;
+ toast.classList.add('show');
+ clearTimeout(adminToastTimer);
+ adminToastTimer=setTimeout(()=>toast.classList.remove('show'),3500);
+}
+
+async function loadStatistik(){
+ try{
+  const data=await request('api/admin_statistik.php');
+  document.getElementById('total-users').textContent=data.data.users;
+  document.getElementById('total-pengunjung').textContent=data.data.pengunjung_unik;
+  document.getElementById('kunjungan-hari-ini').textContent=data.data.hari_ini;
+ }catch(e){showToast(`Statistik gagal dimuat: ${e.message}`,'error');}
+}
 </script>
 
 <script src="app.js" defer></script>
