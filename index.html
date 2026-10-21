@@ -249,7 +249,7 @@ input,textarea,select,button{border-radius:14px !important;}
 
 <div id="community-section" style="margin-top:48px;">
 <div class="section-heading-row">
-<div class="section-label">Komunitas — cerita terbaru</div>
+<div class="section-label">Komunitas — cerita umum</div>
 <button class="section-cta" type="button" onclick="startStorySubmission()">Kirim cerita ke admin</button>
 </div>
 <div class="story-list" id="community-list"></div>
@@ -376,8 +376,8 @@ input,textarea,select,button{border-radius:14px !important;}
 <option value="">Tidak ditujukan ke jurusan tertentu (opsional)</option>
 </select>
 <input type="text" id="new-story-fakultas-other" placeholder="Tulis nama jurusannya" style="display:none;margin-top:8px;">
-<div class="hint">Kolom jurusan ini opsional, isi kalau ceritamu relevan buat jurusan tertentu.</div>
-<div class="hint">Cerita dikirim ke admin untuk ditinjau. Setelah disetujui, cerita akan langsung tampil di bagian Komunitas.</div>
+<div class="hint">Pilih jurusan agar cerita yang disetujui masuk ke balok jurusan tersebut. Jika tidak memilih jurusan, cerita tampil di bagian Komunitas.</div>
+<div class="hint">Semua cerita ditinjau admin sebelum ditampilkan.</div>
 <button onclick="submitMyStory()">Kirim cerita untuk ditinjau</button>
 </div>
 <div class="section-label">Cerita yang sudah kamu tulis</div>
@@ -640,21 +640,54 @@ function renderHome() {
 function renderMajorGrid(keys) {
     const grid = document.getElementById('major-grid');
     const countLabel = document.getElementById('major-count-label');
-    
-    countLabel.innerHTML = `Menampilkan <strong>${keys.length}</strong> dari <strong>${Object.keys(MAJORS_DATA).length}</strong> jurusan`;
-    
-    grid.innerHTML = keys.map(key => {
-        const m = MAJORS_DATA[key];
-        const count = (communityStories||[]).filter(story => (story.fakultasTag||'').toLowerCase() === m.name.toLowerCase()).length;
-        return `
-            <div class="major-card" onclick="openMajor('${key}')">
-                <span class="corner"></span>
-                <span class="icon">${m.icon || '📌'}</span>
-                <h3>${m.name}</h3>
-                <span class="count">${count} cerita <span class="empty-story-badge">Kosong</span></span>
-            </div>
-        `;
-    }).join('');
+    const search = document.getElementById('search-major-input').value.trim().toLocaleLowerCase('id');
+    const category = document.getElementById('filter-major-category').value;
+    const knownNames = new Set(Object.values(MAJORS_DATA).map(major => normalizeMajorName(major.name)));
+    const customMajors = [...new Map((communityStories || [])
+        .map(story => story.fakultasTag?.trim())
+        .filter(name => name && !knownNames.has(normalizeMajorName(name)))
+        .map(name => [normalizeMajorName(name), name])).values()]
+        .filter(name => (category === 'all' || category === 'lainnya') && name.toLocaleLowerCase('id').includes(search))
+        .map(name => ({ key: name, name, icon: '📌' }));
+    const majors = keys.map(key => ({ key, ...MAJORS_DATA[key] })).concat(customMajors);
+
+    countLabel.innerHTML = `Menampilkan <strong>${majors.length}</strong> jurusan`;
+    grid.replaceChildren();
+
+    majors.forEach(major => {
+        const count = (communityStories || []).filter(story =>
+            normalizeMajorName(story.fakultasTag) === normalizeMajorName(major.name)
+        ).length;
+        const card = document.createElement('div');
+        card.className = 'major-card';
+        card.setAttribute('role', 'button');
+        card.tabIndex = 0;
+        card.addEventListener('click', () => openMajor(major.key));
+        card.addEventListener('keydown', event => {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                openMajor(major.key);
+            }
+        });
+
+        const corner = document.createElement('span');
+        corner.className = 'corner';
+        const icon = document.createElement('span');
+        icon.className = 'icon';
+        icon.textContent = major.icon || '📌';
+        const title = document.createElement('h3');
+        title.textContent = major.name;
+        const storyCount = document.createElement('span');
+        storyCount.className = 'count';
+        storyCount.textContent = `${count} cerita`;
+        const emptyBadge = document.createElement('span');
+        emptyBadge.className = 'empty-story-badge';
+        emptyBadge.textContent = 'Kosong';
+        emptyBadge.style.display = count > 0 ? 'none' : 'inline-block';
+        storyCount.append(' ', emptyBadge);
+        card.append(corner, icon, title, storyCount);
+        grid.append(card);
+    });
 }
 
 function filterMajors() {
@@ -667,18 +700,61 @@ function filterMajors() {
         const matchCategory = category === 'all' || m.category === category;
         return matchName && matchCategory;
     });
-    
+    filteredMajors = keys;
     renderMajorGrid(keys);
 }
 
+function normalizeMajorName(name) {
+    return (name || '').trim().toLocaleLowerCase('id');
+}
 
 async function loadCommunityStories(){try{const r=await fetch('api/cerita.php');const d=await r.json();if(!r.ok||!d.success)throw new Error(d.message||'Cerita komunitas gagal dimuat');communityStories=d.data||[];renderCommunitySection();renderMajorGrid(filteredMajors);}catch(e){communityStories=[];renderCommunitySection(e.message);console.error('Gagal memuat cerita publik',e);}}
-function renderCommunitySection(errorMessage=''){const list=document.getElementById('community-list');const stories=communityStories||[];list.replaceChildren();if(errorMessage||!stories.length){const empty=document.createElement('div');empty.className='community-empty';const title=document.createElement('h3');title.textContent=errorMessage?'Cerita komunitas gagal dimuat':'Belum ada cerita yang disetujui';const description=document.createElement('p');description.textContent=errorMessage?errorMessage:'Cerita yang dikirim akan tampil di sini setelah ditinjau dan disetujui admin.';empty.append(title,description);list.append(empty);return;}stories.forEach(story=>{const card=document.createElement('div');card.className='story-card';card.addEventListener('click',()=>openNotepad(story.title,story.content,story.authorName,story.fakultasTag||'',false));const mark=document.createElement('span');mark.className='quote-mark';mark.textContent='"';card.append(mark);if(story.fakultasTag){const tag=document.createElement('div');tag.className='fak-tag';tag.textContent='Buat '+story.fakultasTag;card.append(tag);}const title=document.createElement('h4');title.textContent=story.title;card.append(title);const snippet=document.createElement('p');snippet.className='snippet';snippet.textContent=story.snippet||story.content.slice(0,90);card.append(snippet);const open=document.createElement('span');open.className='toggle';open.textContent='Buka catatan →';card.append(open);const by=document.createElement('div');by.className='by-line';by.textContent='oleh '+story.authorName+' · '+(story.angkatan||'Mahasiswa');card.append(by);list.append(card);});}
+function renderCommunitySection(errorMessage=''){
+    const list=document.getElementById('community-list');
+    const stories=(communityStories||[]).filter(story=>!normalizeMajorName(story.fakultasTag));
+    list.replaceChildren();
+    if(errorMessage||!stories.length){
+        const empty=document.createElement('div');
+        empty.className='community-empty';
+        const title=document.createElement('h3');
+        title.textContent=errorMessage?'Cerita komunitas gagal dimuat':'Belum ada cerita umum';
+        const description=document.createElement('p');
+        description.textContent=errorMessage?errorMessage:'Cerita tanpa jurusan tertentu tampil di sini. Cerita yang memilih jurusan ada di balok jurusannya.';
+        empty.append(title,description);
+        list.append(empty);
+        return;
+    }
+    stories.forEach(story=>{
+        const card=document.createElement('div');
+        card.className='story-card';
+        card.addEventListener('click',()=>openNotepad(story.title,story.content,story.authorName,'',false));
+        const mark=document.createElement('span');
+        mark.className='quote-mark';
+        mark.textContent='"';
+        const title=document.createElement('h4');
+        title.textContent=story.title;
+        const snippet=document.createElement('p');
+        snippet.className='snippet';
+        snippet.textContent=story.snippet||story.content.slice(0,90);
+        const open=document.createElement('span');
+        open.className='toggle';
+        open.textContent='Buka catatan →';
+        const by=document.createElement('div');
+        by.className='by-line';
+        by.textContent='oleh '+story.authorName+' · '+(story.angkatan||'Mahasiswa');
+        card.append(mark,title,snippet,open,by);
+        list.append(card);
+    });
+}
 
 // Open Major
 function openMajor(key) {
     currentMajorKey = key;
     const major = MAJORS_DATA[key];
+    if (!major) {
+        showMajorUsers(key);
+        return;
+    }
     const guide = major.guide;
     
     if (guide) {
@@ -714,7 +790,7 @@ function dismissGuide() {
     if (currentMajorKey) showMajorUsers(currentMajorKey);
 }
 
-function showMajorUsers(key){const major=MAJORS_DATA[key],stories=(communityStories||[]).filter(s=>(s.fakultasTag||'').toLowerCase()===major.name.toLowerCase());document.getElementById('major-icon').textContent=major.icon||'📌';document.getElementById('major-name').textContent=major.name;document.getElementById('major-sub').textContent=stories.length?`${stories.length} cerita untuk jurusan ini`:'Belum ada cerita untuk jurusan ini. Jadilah yang pertama!';const grid=document.getElementById('user-grid');grid.replaceChildren();if(!stories.length){const empty=document.createElement('div');empty.className='empty';empty.style.cssText='padding:40px 20px;text-align:center;grid-column:1/-1;background:var(--bg);border-radius:18px;border:2px dashed var(--border)';empty.textContent='Belum ada cerita yang disetujui. Kirim ceritamu agar muncul di sini.';grid.append(empty);}else stories.forEach(story=>{const card=document.createElement('article');card.className='user-card';card.addEventListener('click',()=>openNotepad(story.title,story.content,story.authorName,story.fakultasTag||'',false));const heading=document.createElement('h3');heading.textContent=story.title;const snippet=document.createElement('p');snippet.className='snippet';snippet.textContent=(story.content||'').slice(0,160);const by=document.createElement('div');by.className='by-line';by.textContent='oleh '+story.authorName+' · '+(story.angkatan||'Mahasiswa');card.append(heading,snippet,by);grid.append(card);});showScreen('major');}
+function showMajorUsers(key){const major=MAJORS_DATA[key]||Object.values(MAJORS_DATA).find(item=>normalizeMajorName(item.name)===normalizeMajorName(key))||{name:key,icon:'📌'},stories=(communityStories||[]).filter(story=>normalizeMajorName(story.fakultasTag)===normalizeMajorName(major.name));document.getElementById('major-icon').textContent=major.icon||'📌';document.getElementById('major-name').textContent=major.name;document.getElementById('major-sub').textContent=stories.length?`${stories.length} cerita untuk jurusan ini`:'Belum ada cerita untuk jurusan ini. Jadilah yang pertama!';const grid=document.getElementById('user-grid');grid.replaceChildren();if(!stories.length){const empty=document.createElement('div');empty.className='empty';empty.style.cssText='padding:40px 20px;text-align:center;grid-column:1/-1;background:var(--bg);border-radius:18px;border:2px dashed var(--border)';empty.textContent='Belum ada cerita yang disetujui. Kirim ceritamu agar muncul di sini.';grid.append(empty);}else stories.forEach(story=>{const card=document.createElement('article');card.className='user-card';card.addEventListener('click',()=>openNotepad(story.title,story.content,story.authorName,story.fakultasTag||'',false));const heading=document.createElement('h3');heading.textContent=story.title;const snippet=document.createElement('p');snippet.className='snippet';snippet.textContent=(story.content||'').slice(0,160);const by=document.createElement('div');by.className='by-line';by.textContent='oleh '+story.authorName+' · '+(story.angkatan||'Mahasiswa');card.append(heading,snippet,by);grid.append(card);});showScreen('major');}
 function openMajorGuide() {
     if (!currentMajorKey) return;
     const guide = MAJORS_DATA[currentMajorKey]?.guide;
@@ -1243,7 +1319,7 @@ function openMyProfile() {
 function renderMyStories(){const list=document.getElementById('my-story-list');if(!currentUser.stories.length){list.innerHTML='<div class="empty">Belum ada cerita. Yuk tulis jejak pertamamu di atas.</div>';return;}list.replaceChildren();currentUser.stories.forEach(story=>{const card=document.createElement('div');card.className='story-card';card.addEventListener('click',()=>openNotepad(story.title,story.content,currentUser.nama,story.fakultasTag||'',false));const title=document.createElement('h4');title.textContent=story.title;const snippet=document.createElement('p');snippet.className='snippet';snippet.textContent=story.snippet||story.content.slice(0,90);const status=document.createElement('span');status.className='toggle';status.textContent=story.status==='pending'?'Menunggu persetujuan':story.status==='approved'?'Tayang':'Ditolak';card.append(title,snippet,status);list.append(card);});}
 
 async function submitMyStory() {
- if(!currentUser){openRegister();return;}const title=document.getElementById('new-story-title').value.trim(),content=document.getElementById('new-story-content').value.trim(),sel=document.getElementById('new-story-fakultas');const jurusan=sel.value==='__lainnya__'?document.getElementById('new-story-fakultas-other').value.trim():sel.value;if(!title||!content){alert('Judul dan isi cerita wajib diisi.');return;}
+ if(!currentUser){openRegister();return;}const title=document.getElementById('new-story-title').value.trim(),content=document.getElementById('new-story-content').value.trim(),sel=document.getElementById('new-story-fakultas');const jurusan=sel.value==='__lainnya__'?document.getElementById('new-story-fakultas-other').value.trim():sel.value;if(!title||!content){alert('Judul dan isi cerita wajib diisi.');return;}if(sel.value==='__lainnya__'&&!jurusan){alert('Isi nama jurusan agar cerita masuk ke balok jurusan yang sesuai.');return;}
  try{const r=await fetch('api/cerita.php',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({judul:title,isi:content,jurusan})});const d=await r.json();if(!r.ok||!d.success)throw new Error(d.message||'Cerita gagal dikirim');document.getElementById('new-story-title').value='';document.getElementById('new-story-content').value='';sel.value='';document.getElementById('new-story-fakultas-other').value='';document.getElementById('new-story-fakultas-other').style.display='none';alert(d.message);await loadMyStories();}catch(e){alert(e.message);}
 }
 async function loadMyStories(){if(!currentUser)return;try{const r=await fetch('api/cerita_saya.php',{credentials:'same-origin'});const d=await r.json();if(r.ok&&d.success){currentUser.stories=d.data||[];renderMyStories();}}catch(e){console.error('Gagal memuat cerita saya',e);}}

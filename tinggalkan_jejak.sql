@@ -16,6 +16,7 @@ CREATE TABLE `cerita` (
   `id` int NOT NULL AUTO_INCREMENT,
   `user_id` int NOT NULL,
   `jurusan_id` int DEFAULT NULL,
+  `jurusan_nama` varchar(150) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `judul` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `isi` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
   `status` enum('pending','approved','rejected') COLLATE utf8mb4_unicode_ci DEFAULT 'pending',

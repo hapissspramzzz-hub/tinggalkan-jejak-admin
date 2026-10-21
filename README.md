@@ -27,7 +27,13 @@ Aplikasi PHP dan MySQL untuk berbagi cerita mahasiswa dengan moderasi admin.
 - Bagian Pembelajaran berisi mata pelajaran, topik, dan materi ringkas
 - Pencatatan pengunjung unik dan kunjungan harian
 
-Pengguna perlu mendaftar atau masuk untuk mengirim cerita. Admin meninjau cerita di panel `/admin.html`; pilih **Setujui** untuk menerbitkannya di Komunitas atau **Tolak** untuk menolaknya. Navigasi **Komunitas** dan **Pembelajaran** tersedia di bagian atas beranda.
+Pengguna perlu mendaftar atau masuk untuk mengirim cerita. Admin meninjau cerita di panel `/admin.html`; pilih **Setujui** untuk menerbitkannya. Cerita tanpa jurusan tampil di bagian Komunitas, sedangkan cerita yang memilih jurusan tampil pada balok jurusan yang sesuai. Untuk database yang sudah ada dari versi sebelumnya, jalankan migrasi berikut satu kali:
+
+```sql
+ALTER TABLE cerita ADD COLUMN jurusan_nama VARCHAR(150) NULL AFTER jurusan_id;
+```
+
+Navigasi **Komunitas** dan **Pembelajaran** tersedia di bagian atas beranda.
 
 ## Deployment publik
 
