@@ -88,6 +88,9 @@ body{background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif;min-he
 .user-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;}
 .user-card{background:var(--card);border:1px solid #FFFFFF;box-shadow:0 1px 4px rgba(27,35,51,0.06);border-radius:18px;padding:16px;cursor:pointer;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease;}
 .user-card:hover{transform:translateY(-3px);border-color:var(--orange);box-shadow:0 10px 24px rgba(27,35,51,0.1);}
+.user-card .read-more{display:inline-block;margin-top:10px;padding:0;border:0;background:none;color:var(--blue);font:600 12px 'Inter',sans-serif;cursor:pointer;}
+.user-card .read-more:hover{text-decoration:underline;}
+.user-card .read-more:focus-visible{outline:2px solid var(--blue);outline-offset:3px;border-radius:3px;}
 .user-card img{width:50px;height:50px;border-radius:50%;background:var(--card);border:2px solid var(--card);box-shadow:0 0 0 1px var(--border);object-fit:cover;margin-bottom:10px;}
 .id-box{border:1px solid #FFFFFF;box-shadow:0 1px 3px rgba(27,35,51,0.05);border-radius:12px;padding:8px 12px;background:var(--card);text-align:left;}
 .id-box .id-name{font-family:'Fraunces',serif;font-weight:600;font-size:13px;color:var(--ink);margin-bottom:3px;}
@@ -790,7 +793,65 @@ function dismissGuide() {
     if (currentMajorKey) showMajorUsers(currentMajorKey);
 }
 
-function showMajorUsers(key){const major=MAJORS_DATA[key]||Object.values(MAJORS_DATA).find(item=>normalizeMajorName(item.name)===normalizeMajorName(key))||{name:key,icon:'📌'},stories=(communityStories||[]).filter(story=>normalizeMajorName(story.fakultasTag)===normalizeMajorName(major.name));document.getElementById('major-icon').textContent=major.icon||'📌';document.getElementById('major-name').textContent=major.name;document.getElementById('major-sub').textContent=stories.length?`${stories.length} cerita untuk jurusan ini`:'Belum ada cerita untuk jurusan ini. Jadilah yang pertama!';const grid=document.getElementById('user-grid');grid.replaceChildren();if(!stories.length){const empty=document.createElement('div');empty.className='empty';empty.style.cssText='padding:40px 20px;text-align:center;grid-column:1/-1;background:var(--bg);border-radius:18px;border:2px dashed var(--border)';empty.textContent='Belum ada cerita yang disetujui. Kirim ceritamu agar muncul di sini.';grid.append(empty);}else stories.forEach(story=>{const card=document.createElement('article');card.className='user-card';card.addEventListener('click',()=>openNotepad(story.title,story.content,story.authorName,story.fakultasTag||'',false));const heading=document.createElement('h3');heading.textContent=story.title;const snippet=document.createElement('p');snippet.className='snippet';snippet.textContent=(story.content||'').slice(0,160);const by=document.createElement('div');by.className='by-line';by.textContent='oleh '+story.authorName+' · '+(story.angkatan||'Mahasiswa');card.append(heading,snippet,by);grid.append(card);});showScreen('major');}
+function showMajorUsers(key) {
+    const major = MAJORS_DATA[key] || Object.values(MAJORS_DATA).find(item =>
+        normalizeMajorName(item.name) === normalizeMajorName(key)
+    ) || { name: key, icon: '📌' };
+    const stories = (communityStories || []).filter(story =>
+        normalizeMajorName(story.fakultasTag) === normalizeMajorName(major.name)
+    );
+    document.getElementById('major-icon').textContent = major.icon || '📌';
+    document.getElementById('major-name').textContent = major.name;
+    document.getElementById('major-sub').textContent = stories.length
+        ? `${stories.length} cerita untuk jurusan ini`
+        : 'Belum ada cerita untuk jurusan ini. Jadilah yang pertama!';
+
+    const grid = document.getElementById('user-grid');
+    grid.replaceChildren();
+    if (!stories.length) {
+        const empty = document.createElement('div');
+        empty.className = 'empty';
+        empty.style.cssText = 'padding:40px 20px;text-align:center;grid-column:1/-1;background:var(--bg);border-radius:18px;border:2px dashed var(--border)';
+        empty.textContent = 'Belum ada cerita yang disetujui. Kirim ceritamu agar muncul di sini.';
+        grid.append(empty);
+    } else {
+        stories.forEach(story => {
+            const card = document.createElement('article');
+            card.className = 'user-card';
+            card.addEventListener('click', () => openNotepad(story.title, story.content, story.authorName, story.fakultasTag || '', false));
+
+            const heading = document.createElement('h3');
+            heading.textContent = story.title;
+
+            const content = story.content || '';
+            const previewLength = 160;
+            const snippet = document.createElement('p');
+            snippet.className = 'snippet';
+            snippet.textContent = content.length > previewLength
+                ? `${content.slice(0, previewLength).trimEnd()}…`
+                : content;
+
+            const by = document.createElement('div');
+            by.className = 'by-line';
+            by.textContent = `oleh ${story.authorName || 'Anonim'} · ${story.angkatan || 'Mahasiswa'}`;
+            card.append(heading, snippet, by);
+
+            if (content.length > previewLength) {
+                const readMore = document.createElement('button');
+                readMore.type = 'button';
+                readMore.className = 'read-more';
+                readMore.textContent = 'Baca lebih lanjut →';
+                readMore.addEventListener('click', event => {
+                    event.stopPropagation();
+                    openNotepad(story.title, content, story.authorName, story.fakultasTag || '', false);
+                });
+                card.append(readMore);
+            }
+            grid.append(card);
+        });
+    }
+    showScreen('major');
+}
 function openMajorGuide() {
     if (!currentMajorKey) return;
     const guide = MAJORS_DATA[currentMajorKey]?.guide;
